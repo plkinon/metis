@@ -1,1 +1,1 @@
-# metis
+# METIS - Constrained mechanics computing
