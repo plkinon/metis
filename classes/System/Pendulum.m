@@ -1,6 +1,6 @@
-classdef Pendulum < Problem
+classdef Pendulum < System
 
-    %% Pendulum problem in 2 or 3 dimensions
+    %% Pendulum system in 2 or 3 dimensions
 
     methods
 

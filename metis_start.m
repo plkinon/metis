@@ -8,22 +8,10 @@ addpath(genpath(fileparts(which(mfilename))));
 % Load configuration parameters from file
 CONFIG = metis_load('config_input');
 
-% Define System from Class
-system = Pendulum(CONFIG);
-
-% Define Integrator from Class
-integrator = Ggl_gen_alpha(CONFIG);
-
-% Initialise integrator for current system
-integrator = integrator.initialise(CONFIG,system);
-
-% Intialise System for current integrator
-system = system.initialise(CONFIG,integrator);
+% Initialise system, integrator and solver by class
+[system,integrator,solver] = metis_initialise(CONFIG);
 
 %% METIS solver
-% Define Solver from class
-solver = Newton(CONFIG);
-
 % Solve my System with my Solver and my Integration scheme
 system = solver.solve(system,integrator);
 

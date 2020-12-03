@@ -1,5 +1,5 @@
-classdef Problem
-    % Abstract problem class
+classdef System
+    % Abstract system class
 
     properties
         MASS_MAT
