@@ -7,9 +7,8 @@ DIM     = 3;
 nDOF    = 3;
 
 %% Integrator
-INTEGRATOR = 'Ggl_gen_alpha';
-INTEGRATION_VARIABLES = 0.5;
-DT    = 0.02;
+INTEGRATOR = 'Ggl_variational';
+DT    = 0.1;
 T_0   = 0;
 T_END = 5;
 

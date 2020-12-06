@@ -3,9 +3,15 @@ classdef Ggl_std < Integrator
 %
 % - based constraints on position and velocity level
 %
+% - independent momenta variables (Hamilton-Potryagin approach)
+%
 % - standard stabilisation scheme by Gear, Gupta & Leimkuhler where
-%   lambda_n serves as an unknown and therefore it differs from GGL with
-%   Gen-alpha=0
+%   lambda_n serves as an unknown
+%
+% - not derived from variational principle: constraints evaluated at
+%   t_{n+1} and ODE-RHS fpr q at t_{n+1} and for p at t_n
+%
+% - bad performance!
 %
 % Author: Philipp Kinon
 % Date  : 01.12.2020

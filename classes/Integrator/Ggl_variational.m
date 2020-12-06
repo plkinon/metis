@@ -1,5 +1,18 @@
 classdef Ggl_variational < Integrator
-% GGL Variational Integrator without starting procedure (1st attempt by PB)
+%% Variational integration scheme for GGL-like constrained DAE
+%
+% - based on constraint on position and velocity level 
+%   (GGL-stabilisation)
+%
+% - independent momenta variables (Hamilton Potryagin approach)
+%
+% - derived from variational principle by Peter Betsch (1st attempt for
+%   new 'GGL-functional'
+%
+% - constraints are enforced at t_{n+1}
+%
+% Author: Philipp Kinon
+% Date  : 06.12.2020
 
     methods
         function self = initialise(self,~,this_problem)

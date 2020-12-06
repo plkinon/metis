@@ -1,13 +1,17 @@
 classdef Ggl_gen_alpha < Integrator
-%% Midpont-Integration scheme for standard constrained DAE
+%% Gen-alpha-typed-Integration scheme for standard constrained DAE
 %
-% - based only on constraint on position and velocity level 
+% - based on constraint on position and velocity level 
 %   (GGL-stabilisation)
 %
-% - for at most quadratic constraint and potential and alpha=1/2 this 
-%   method is equivalent to energy-momentum scheme
+% - independent momenta variables (Hamilton Potryagin approach)
 %
-% - for choices alpha={0;1} there are problems
+% - not derived from variational principle but simply evaluates RHS of ODE 
+%   at t_{n+alpha} or t_{n+1-alpha} respectively 
+%
+% - constraints are enforced at t_{n+1}
+% 
+% - setting alpha apart from 1/2 leads to problems
 %
 % Author: Philipp Kinon
 % Date  : 01.12.2020

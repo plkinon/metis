@@ -1,12 +1,14 @@
 classdef Gen_alpha < Integrator
-%% Midpont-Integration scheme for standard constrained DAE
+%% Gen-Alpha-typed-Integration scheme for standard constrained DAE
 %
 % - based only on constraint on position level
 %
-% - for at most quadratic constraint and potential and alpha=1/2 this 
-% method is equivalent to energy-momentum scheme
+% - independent momenta variables (Hamilton Potryagin approach)
+%
+% - not derived from variational principle but simply evaluates RHS at
+%   t_{n+alpha} or t_{n+1-alpha} respectively
 % 
-% - setting alpha to {0;1} leads to problems
+% - setting alpha apart from 1/2 leads to problems
 %
 % Author: Philipp Kinon
 % Date  : 01.12.2020
