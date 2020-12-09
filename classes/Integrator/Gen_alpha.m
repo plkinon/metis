@@ -11,7 +11,7 @@ classdef Gen_alpha < Integrator
 % - setting alpha apart from 1/2 leads to problems
 %
 % Author: Philipp Kinon
-% Date  : 01.12.2020
+% Date  : 09.12.2020
 
     properties
         
@@ -56,17 +56,23 @@ classdef Gen_alpha < Integrator
             DV_nal     = this_problem.potential_gradient(q_nal);
             D2V_nal    = this_problem.potential_hessian(q_nal);
             G_nal      = this_problem.constraint_gradient(q_nal);
-            D2g_nal    = this_problem.constraint_hessian(q_nal);
+            t_nal    = zeros(n);
+            
+            % Hessian of constraints are multiplied by LMs for each
+            % Constraint (avoid 3rd order tensor)
+            for i = 1:m
+                t_nal   = t_nal + this_problem.constraint_hessian(q_nal,m)*lambda_nal(m);
+            end
             
             %% Residual vector 
             resi = [qn1 - qn - h*IM*p_nal                        ;
-                    pn1 - pn + h*DV_nal   + h*lambda_nal*G_nal'  ;
+                    pn1 - pn + h*DV_nal   + h*G_nal'*lambda_nal  ;
                     g_n1                                         ];
 
             %% Tangent matrix
-            tang = [eye(n)                                    -h*(1-al)*IM      zeros(n,1) ;
-                    h*al*D2V_nal + h*al*D2g_nal*lambda_nal    eye(n)            al*h*G_nal'; 
-                    G_n1                                      zeros(n,1)'       0          ];
+            tang = [eye(n)                                    -h*(1-al)*IM      zeros(n,m) ;
+                    h*al*D2V_nal + h*al*t_nal                 eye(n)            al*h*G_nal'; 
+                    G_n1                                      zeros(n,m)'       zeros(m)          ];
             
         end
         

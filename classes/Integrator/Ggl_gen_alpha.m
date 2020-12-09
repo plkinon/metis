@@ -14,7 +14,7 @@ classdef Ggl_gen_alpha < Integrator
 % - setting alpha apart from 1/2 leads to problems
 %
 % Author: Philipp Kinon
-% Date  : 01.12.2020
+% Date  : 09.12.2020
 
     properties
         
@@ -25,7 +25,7 @@ classdef Ggl_gen_alpha < Integrator
     methods
         function self = initialise(self,CONFIG,this_problem)
             self.NAME  = 'GGL-Gen-alpha';
-            self.nVARS = 2*this_problem.nDOF++2*this_problem.mCONSTRAINTS;
+            self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.ALPHA = CONFIG.INTEGRATION_VARIABLES(1);
         end
@@ -47,8 +47,7 @@ classdef Ggl_gen_alpha < Integrator
             gamma_n1  = zn1(2*n+m+1:2*n+2*m);
             G_n1      = this_problem.constraint_gradient(qn1);
             g_n1      = this_problem.constraint(qn1);
-            D2g_n1    = this_problem.constraint_hessian(qn1);
-            
+          
             %% Known quantities from last time-step
             qn      = zn(1:n);
             pn      = zn(n+1:2*n);
@@ -66,20 +65,39 @@ classdef Ggl_gen_alpha < Integrator
             D2V_nal    = this_problem.potential_hessian(q_nal);
             G_nal      = this_problem.constraint_gradient(q_nal);
             G_n1mal    = this_problem.constraint_gradient(q_n1mal);
-            D2g_nal    = this_problem.constraint_hessian(q_nal);
-            D2g_n1mal  = this_problem.constraint_hessian(q_n1mal);
+            
+            % Hessian of constraints are multiplied by LMs for each
+            % Constraint (avoid 3rd order tensor)
+            t_n1mal    = zeros(n);
+            for i = 1:m
+                t_n1mal   = t_n1mal + this_problem.constraint_hessian(q_n1mal,i)*gamma_n1mal(i);
+            end
+            t_nal = zeros(n);
+            for i = 1:m
+                t_nal   = t_nal + this_problem.constraint_hessian(q_nal,i)*lambda_nal(i);
+            end
+            
+            % Hessian of constraints are multiplied by inverse MassMat and
+            % pn1 for each constraint to avoid 3rd order tensors
+            T_n1 = zeros(m,n);
+            for i = 1:m
+                tmp = this_problem.constraint_hessian(qn1,i);
+                for k = 1:n
+                    T_n1(i,k) = tmp(:,k)'*IM*pn1;
+                end
+            end
             
             %% Residual vector 
             resi = [qn1 - qn - h*IM*p_n1mal + h * G_n1mal' *gamma_n1mal ;
-                    pn1 - pn + h*DV_nal   + h*lambda_nal*G_nal'       ;
+                    pn1 - pn + h*DV_nal   + h*G_nal'*lambda_nal      ;
                     g_n1                                              ;
                     G_n1*IM*pn1                                       ];
 
             %% Tangent matrix
-            tang = [eye(n) + h*(1-al)*D2g_n1mal*gamma_n1mal   -h*(1-al)*IM      zeros(n,1)   (1-al)*h*G_n1mal';
-                    h*al*D2V_nal + h*al*D2g_nal*lambda_nal    eye(n)            al*h*G_nal'  zeros(n,1)       ; 
-                    G_n1                                      zeros(n,1)'       0            0                ;
-                    (D2g_n1*IM*pn1)'                          G_n1*IM           0            0               ];
+            tang = [eye(n) + h*(1-al)*t_n1mal                 -h*(1-al)*IM      zeros(n,m)   (1-al)*h*G_n1mal';
+                    h*al*D2V_nal + h*al*t_nal                 eye(n)            al*h*G_nal'  zeros(n,m)       ; 
+                    G_n1                                      zeros(n,m)'       zeros(m)     zeros(m)         ;
+                    T_n1                                      G_n1*IM           zeros(m)     zeros(m)      ];
             
         end
         

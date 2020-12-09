@@ -7,82 +7,15 @@ classdef Postprocess
             set(0, 'defaultfigureposition', [850, 450, 1200, 600])
         end
 
-        function animation(~, this_problem, this_integrator, CONFIG)
+        function animation(~, this_problem,this_integrator, CONFIG)
             % Function which displays an animation of the trajectory if
             % desired by user
 
             if CONFIG.shouldAnimate == true
-
+                
                 fig = figure();
-                DIM = this_problem.DIM;
-                q = this_problem.z(:, 1:DIM);
-                l = this_problem.GEOM(1);
-                NT = this_integrator.NT;
-
+                this_problem.give_animation(fig);
                 title(strcat(this_integrator.NAME, ': Trajectory'))
-                axis equal
-                axis([-1.1 * l, 1.1 * l, -1.1 * l, 1.1 * l, -1.1 * l, 1.1 * l]);
-                xlabel('x');
-                ylabel('y');
-                zlabel('z');
-                grid on;
-
-                xa = q(1, 1);
-                ya = q(1, 2);
-                if DIM == 3
-                    za = q(1, 3);
-                else
-                    za = 0;
-                end
-
-                for j = 1:NT + 1
-
-                    cla(fig);
-                    hold on
-
-                    %% Current position
-                    x = q(j, 1);
-                    y = q(j, 2);
-                    if DIM == 3
-                        z = q(j, 3);
-                    else
-                        z = 0;
-                    end
-
-                    %% Reference sphere
-                    plot3(xa, ya, za, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    hold on
-
-                    %% Reference constraint
-                    x3 = [0; xa];
-                    y3 = [0; ya];
-                    z3 = [0; za];
-                    plot3(x3, y3, z3, 'k', 'LineWidth', 1);
-
-                    %% current position of the mass
-                    hold on
-                    if DIM == 3
-                        plot3(q(1:j, 1), q(1:j, 2), q(1:j, 3), 'k');
-                    else
-                        plot3(q(1:j, 1), q(1:j, 2), zeros(j, 1), 'k');
-                    end
-                    plot3(x, y, z, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [1, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    grid on
-
-                    %% current position of the constraint
-                    x3 = [0; x];
-                    y3 = [0; y];
-                    z3 = [0; z];
-                    plot3(x3, y3, z3, 'k', 'linewidth', 1);
-                    if DIM == 2
-                        view(0, 90)
-                    else
-                        view(136, 23)
-                    end
-
-                    drawnow
-                    
-                end
 
             end
 
@@ -91,10 +24,12 @@ classdef Postprocess
         function this_problem = compute(~, this_problem)
             % Function which computes energetic quantities, ang. Mom. , ...
             % as functions of time for a given q and p-vector
-
+            nDOF = this_problem.nDOF;
+            m = this_problem.mCONSTRAINTS;
+            d = this_problem.nBODIES;
             DIM = this_problem.DIM;
-            q = this_problem.z(:, 1:DIM);
-            p = this_problem.z(:, DIM+1:2*DIM);
+            q = this_problem.z(:, 1:nDOF);
+            p = this_problem.z(:, nDOF+1:2*nDOF);
             NT = size(q, 1);
             M = this_problem.MASS_MAT;
             IM = M\eye(size(M));
@@ -105,18 +40,20 @@ classdef Postprocess
             J = zeros(NT, 3);
             diffH = zeros(NT-1, 1);
             diffJ = zeros(NT-1, 3);
-            constraint_position = zeros(NT,1);
-            constraint_velocity = zeros(NT,1);
+            constraint_position = zeros(NT,m);
+            constraint_velocity = zeros(NT,m);
 
             for j = 1:NT
-                T(j) = 1 / 2 * p(j, :) * M * p(j, :)';
+                T(j) = 1 / 2 * p(j, :) * IM' * p(j, :)';
                 V(j) = this_problem.potential(q(j,:)');
                 H(j) = T(j) + V(j);
-                constraint_position(j) = this_problem.constraint(q(j,:)');
-                constraint_velocity(j) = this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)';
+                constraint_position(j,:) = this_problem.constraint(q(j,:)')';
+                constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)')';
 
                 if DIM == 3
-                    J(j, :) = cross(q(j, :), p(j, :));
+                    for k = 1:d
+                        J(j, :) = J(j,:) + cross(q(j,(d-1)*DIM+1:d*DIM), p(j, (d-1)*DIM+1:d*DIM));
+                    end
                 end
 
                 if j > 1

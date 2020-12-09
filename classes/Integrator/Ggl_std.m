@@ -9,12 +9,13 @@ classdef Ggl_std < Integrator
 %   lambda_n serves as an unknown
 %
 % - not derived from variational principle: constraints evaluated at
-%   t_{n+1} and ODE-RHS fpr q at t_{n+1} and for p at t_n
+%   t_{n+1} and ODE-RHS for q at t_{n+1} and for p at t_n
 %
 % - bad performance!
 %
 % Author: Philipp Kinon
-% Date  : 01.12.2020
+% Date  : 09.12.2020
+
     methods
         function self = initialise(self,~,this_problem)
             self.NAME  = 'GGL-std ';
@@ -39,24 +40,40 @@ classdef Ggl_std < Integrator
             G_n1    = this_problem.constraint_gradient(qn1);
             g_n1    = this_problem.constraint(qn1);
             
+            % Hessian of constraints are multiplied by LMs for each
+            % Constraint (avoid 3rd order tensor)
+            t_n1    = zeros(n);
+            for i = 1:m
+                t_n1   = t_n1 + this_problem.constraint_hessian(qn1,i)*gamman1(i);
+            end
+            
+            % Hessian of constraints are multiplied by inverse MassMat and
+            % pn1 for each constraint to avoid 3rd order tensors
+            T_n1 = zeros(m,n);
+            for i = 1:m
+                tmp = this_problem.constraint_hessian(qn1,i);
+                for k = 1:n
+                    T_n1(i,k) = tmp(:,k)'*IM*pn1;
+                end
+            end
+            
             %% Known quantities from last time-step
             qn     = zn(1:n);
             pn     = zn(n+1:2*n);
             G_n    = this_problem.constraint_gradient(qn);
-            D2g    = this_problem.constraint_hessian(qn);
             DV_n   = this_problem.potential_gradient(qn);
             
             %% Residual vector 
-            resi = [qn1 - qn - h*IM*pn1 + h*gamman1*G_n1' ;
-                    pn1 - pn + h*DV_n   + h*lambdan*G_n'  ;
+            resi = [qn1 - qn - h*IM*pn1 + h*G_n1'*gamman1 ;
+                    pn1 - pn + h*DV_n   + h*G_n'*lambdan  ;
                     g_n1                                  ;
                     G_n1*IM*pn1                          ];
 
             %% Tangent matrix
-            tang = [eye(n) + h*D2g*gamman1      -h*IM          zeros(n,1)    h*G_n1'     ;
-                    zeros(n)                    eye(n)         h*G_n'        zeros(n,1)  ; 
-                    G_n1                        zeros(n,1)'    0             0           ;
-                    (D2g*IM*pn1)'               G_n1*IM        0             0           ];
+            tang = [eye(n) + h*t_n1             -h*IM          zeros(n,m)    h*G_n1'     ;
+                    zeros(n)                    eye(n)         h*G_n'        zeros(n,m)  ; 
+                    G_n1                        zeros(n,m)'    zeros(m)      zeros(m)           ;
+                    T_n1                        G_n1*IM        zeros(m)      zeros(m)    ];
             
         end
         
