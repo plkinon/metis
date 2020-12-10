@@ -1,13 +1,13 @@
 %% Problem Parameters
-SYSTEM  = 'FourParticleSystem';
-EXT_ACC = [0; 0; 0];
-Q_0     = [0; 0; 0; 1; 0; 0; 0; 1; 0; 1; 1; 0];
-V_0     = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 2/1.7];
-MASS    = [1; 3; 2.3; 1.7];
+SYSTEM  = 'DoublePendulum';
+EXT_ACC = [0; 0; 9.81];
+Q_0     = [1; 0; 0; 2.5; 0; 0];
+V_0     = [0; 0.3; 0; 0; 0; 0];
+MASS    = [1; 1.5];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'Gen_alpha';
+INTEGRATOR = 'Ggl_gen_alpha';
 INTEGRATION_VARIABLES = 0.5;
 DT    = 0.02;
 T_0   = 0;
@@ -17,10 +17,10 @@ T_END = 10;
 SOLVER         = 'Newton';
 MAX_ITERATIONS = 40;
 TOLERANCE      = 1E-08;
-NUM_TANGENT    = true;
+NUM_TANGENT    = false;
 
 %% Postprocessing
-shouldAnimate   = true;
+shouldAnimate   = false;
 plot_quantities =  {'energy'};
 
 %% Write variables into a .mat-File
