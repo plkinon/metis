@@ -66,8 +66,37 @@ classdef FourParticleSystem < System
             
         end
         
-        function D2V = potential_hessian(~,q)
-            D2V = zeros(size(q,1));
+        function D2V = potential_hessian(self,q)
+            % Extract single position vectors
+            q1 = q(1:self.DIM);
+            q2 = q(self.DIM+1:2*self.DIM);
+            q3 = q(2*self.DIM+1:3*self.DIM);
+            q4 = q(3*self.DIM+1:4*self.DIM);
+            nDIM = self.DIM;
+                        
+            % Potential law parameters
+            P  = self.p;
+            l13 = self.GEOM(3);
+            l24 = self.GEOM(4);
+            k1 = self.K1;
+            k2 = self.K2;
+            
+            % Build up separate entries
+            D2V11 = (k1*P*(2*P-1)*norm(q3-q1)^(2*P-3)-k1*P*(P-1)*l13^P*norm(q3-q1)^(P-3))*(q1-q3)*(q1-q3)' + ...
+                        k1*P*(norm(q3-q1)^P-l13^P)*norm(q3-q1)^(P-1)*eye(self.DIM);
+            D2V22 = (k2*P*(2*P-1)*norm(q4-q2)^(2*P-3)-k2*P*(P-1)*l24^P*norm(q4-q2)^(P-3))*(q2-q4)*(q2-q4)' + ...
+                        k2*P*(norm(q4-q2)^P-l24^P)*norm(q4-q2)^(P-1)*eye(self.DIM);
+            D2V13 = -D2V11;
+            D2V33 = -(-D2V11);
+            D2V24 = -D2V22;
+            D2V44 = -(-D2V22);
+            
+            % Compose hessian
+            D2V = [D2V11 zeros(nDIM) D2V13 zeros(nDIM);
+                   zeros(nDIM) D2V22 zeros(nDIM) D2V24;
+                   D2V13 zeros(nDIM) D2V33 zeros(nDIM);
+                   zeros(nDIM) D2V24 zeros(nDIM) D2V44];
+            
         end
 
         function g = constraint(self, q)
