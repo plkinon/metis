@@ -3,6 +3,13 @@ function [this_system, this_integrator, this_solver] = metis_initialise(CONFIG)
 % Author: Philipp Kinon
 % date: 03.12.2020
 
+fprintf('************************************************** \n');
+fprintf(' METIS - Computing constrained mechanical systems \n');
+fprintf('************************************************** \n');
+
+%% Check if user input is valid
+check_user_input(CONFIG);
+
 %% System
 % Takes user-defined string and evaluates it as the constructor of a class
 % system
