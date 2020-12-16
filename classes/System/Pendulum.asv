@@ -69,10 +69,10 @@ classdef Pendulum < System
             end
         end
         
-        function DzetaDq = constraint_invariant_gradient(~,q,i)
+        function DzetaDq = constraint_invariant_gradient(self,q,i)
                         
             if i == 1
-                DzetaDq = 2*q';
+                DzetaDq = [2*(q1-q2);  -2*(q1-q2); zeros(self.DIM,1); zeros(self.DIM,1)];
             else
                 error('Problem has only 1 invariant for the constraint.');
             end

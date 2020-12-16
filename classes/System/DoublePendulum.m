@@ -66,6 +66,46 @@ classdef DoublePendulum < System
             
         end
         
+        function [] = potential_invariant(~,~,~)
+            
+            error('Problem has only no invariants for the potential.');
+
+        end
+        
+        function [] = potential_invariant_gradient(~,~,~)
+            
+            error('Problem has only no invariants for the potential.');
+            
+        end
+        
+        function zeta = constraint_invariant(self,q,i)
+            
+            q1 = q(1:self.DIM);
+            q2 = q(self.DIM+1:2*self.DIM);
+            
+            if i == 1
+                zeta = q1'*q1;
+            elseif i == 2
+                zeta = (q2-q1)'*(q2-q1);
+            else
+                error('Problem has only 2 invariants for the constraint.');
+            end
+        end
+        
+        function DzetaDq = constraint_invariant_gradient(self,q,i)
+            
+            q1 = q(1:self.DIM);
+            q2 = q(self.DIM+1:2*self.DIM);
+            
+            if i == 1
+                DzetaDq = [2*q1; zeros(self.DIM,1)];
+            elseif i == 2
+                DzetaDq = [-2*(q2-q1); 2*(q2-q1)];
+            else
+                error('Problem has only 2 invariants for the constraint.');
+            end
+        end
+        
         function give_animation(self,fig)
             
             

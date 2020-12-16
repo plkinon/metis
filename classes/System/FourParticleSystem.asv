@@ -154,22 +154,6 @@ classdef FourParticleSystem < System
             end
         end
         
-        function DpiDq = potential_invariant_gradient(self,q,i)
-            
-            q1 = q(1:self.DIM);
-            q2 = q(self.DIM+1:2*self.DIM);
-            q3 = q(2*self.DIM+1:3*self.DIM);
-            q4 = q(3*self.DIM+1:4*self.DIM);
-            
-            if i == 1
-                DpiDq = [2*(q1-q3); zeros(self.DIM,1); -2*(q1-q3); zeros(self.DIM,1)];
-            elseif i == 2
-                DpiDq = [zeros(self.DIM,1);2*(q2-q4);  zeros(self.DIM,1); -2*(q2-q4)];
-            else
-                error('Problem has only 2 invariants for the potential.');
-            end
-        end
-        
         function zeta = constraint_invariant(self,q,i)
             
             q1 = q(1:self.DIM);
@@ -180,25 +164,9 @@ classdef FourParticleSystem < System
             if i == 1
                 zeta = (q1-q2)'*(q1-q2);
             elseif i == 2
-                zeta = (q3-q4)'*(q3-q4);
+                zeta = (q2-q4)'*(q2-q4);
             else
-                error('Problem has only 2 invariants for the constraint.');
-            end
-        end
-        
-        function DzetaDq = constraint_invariant_gradient(self,q,i)
-            
-            q1 = q(1:self.DIM);
-            q2 = q(self.DIM+1:2*self.DIM);
-            q3 = q(2*self.DIM+1:3*self.DIM);
-            q4 = q(3*self.DIM+1:4*self.DIM);
-            
-            if i == 1
-                DzetaDq = [2*(q1-q2);  -2*(q1-q2); zeros(self.DIM,1); zeros(self.DIM,1)];
-            elseif i == 2
-                DzetaDq = [zeros(self.DIM,1);  zeros(self.DIM,1); 2*(q3-q4); -2*(q3-q4)];
-            else
-                error('Problem has only 2 invariants for the constraint.');
+                error('Problem has only 2 invariants for the potential.');
             end
         end
         
