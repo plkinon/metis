@@ -15,7 +15,8 @@ classdef DoublePendulum < System
             self.EXT_ACC      = repmat(CONFIG.EXT_ACC,self.nBODIES,1);
             self.GEOM(1)      = norm(CONFIG.Q_0(1:CONFIG.DIM));   %length of 1st rod
             self.GEOM(2)      = norm(CONFIG.Q_0(CONFIG.DIM+1:2*CONFIG.DIM)-CONFIG.Q_0(1:CONFIG.DIM)); %length of 2nd rod
-            
+            self.nPotentialInvariants  = 0;
+            self.nConstraintInvariants = 2;
         end
 
         function self = initialise(self, CONFIG, this_integrator)

@@ -47,25 +47,46 @@ classdef EMS_std < Integrator
             q_n05      = 0.5*(qn + qn1);
             p_n05      = 0.5*(pn + pn1);
             lambda_n05 = 0.5*(lambdan + lambda_n1);
-            DV_n05     = this_problem.internal_potential_gradient(q_n05) + this_problem.external_potential_gradient(q_n05);
-            D2V_n05    = this_problem.internal_potential_hessian(q_n05) + this_problem.external_potential_hessian(q_n05);
+            DVext_n05  = this_problem.external_potential_gradient(q_n05);
+            D2Vext_n05 = this_problem.external_potential_hessian(q_n05);
             G_n05      = this_problem.constraint_gradient(q_n05);
             t_n05      = zeros(n);
+            
+            %% Discrete gradients
+            DG_Vint = zeros(n,1);
+            for i = 1:this_problem.nPotentialInvariants
+                pi_n     = this_problem.potential_invariant(qn,i);
+                pi_n1    = this_problem.potential_invariant(qn1,i);
+                Vs_n     = this_problem.potential_from_invariant(pi_n,i);
+                Vs_n1    = this_problem.potential_from_invariant(pi_n1,i);
+                DPiq_n05 = this_problem.potential_invariant_gradient(q_n05,i);
+                DG_Vint  = DG_Vint + (Vs_n1-Vs_n)/(pi_n1-pi_n)*DPiq_n05;
+            end
+            
+            DG_g = zeros(m,n);
+            for j = 1:this_problem.nConstraintInvariants
+                zeta_n = this_problem.constraint_invariant(qn,j);
+                zeta_n1 = this_problem.constraint_invariant(qn1,j);
+                gs_n = this_problem.constraint_from_invariant(zeta_n,j);
+                gs_n1 = this_problem.constraint_from_invariant(zeta_n1,j);
+                DzetaDq_n05 = this_problem.constraint_invariant_gradient(q_n05,j);
+                DG_g(j,:) = (gs_n1 - gs_n)/(zeta_n1 - zeta_n)*DzetaDq_n05';
+            end
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
             for i = 1:m
-                t_n05   = t_n05 + this_problem.constraint_hessian(q_n05,m)*lambda_n05(m);
+                t_n05   = t_n05 + this_problem.constraint_hessian(q_n05,m)*lambda_n1(m);
             end
             
             %% Residual vector 
-            resi = [qn1 - qn - h*IM*p_n05                        ;
-                    pn1 - pn + h*DV_n05   + h*G_n05'*lambda_n05  ;
-                    g_n1                                         ];
+            resi = [qn1 - qn - h*IM*p_n05                                     ;
+                    pn1 - pn + h*DVext_n05   + h*DG_Vint + h*DG_g'*lambda_n1  ;
+                    g_n1                                                     ];
 
             %% Tangent matrix
             tang = [eye(n)                                    -h*0.5*IM      zeros(n,m) ;
-                    h*0.5*D2V_n05 + h*0.5*t_n05                 eye(n)            0.5*h*G_n05'; 
+                    h*0.5*D2Vext_n05 + h*0.5*t_n05                 eye(n)            h*G_n05'; 
                     G_n1                                      zeros(n,m)'       zeros(m)          ];
             
         end

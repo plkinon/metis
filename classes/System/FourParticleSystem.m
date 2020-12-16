@@ -25,6 +25,8 @@ classdef FourParticleSystem < System
             self.K1           = 100;
             self.K2           = 1000;
             self.p            = 2;
+            self.nPotentialInvariants = 2;
+            self.nConstraintInvariants = 2;
         end
 
         function self = initialise(self, CONFIG, this_integrator)
@@ -181,6 +183,14 @@ classdef FourParticleSystem < System
             end
         end
         
+        function Vs = potential_from_invariant(self,pi,i)
+            if i == 1
+                Vs = 0.5 * self.K1 * (pi - self.GEOM(3))^2;
+            elseif i ==2
+                Vs = 0.5 * self.K2 * (pi - self.GEOM(4))^2;
+            end
+        end
+        
         function zeta = constraint_invariant(self,q,i)
             
             q1 = q(1:self.DIM);
@@ -210,6 +220,15 @@ classdef FourParticleSystem < System
                 DzetaDq = [zeros(self.DIM,1);  zeros(self.DIM,1); 2*(q3-q4); -2*(q3-q4)];
             else
                 error('Problem has only 2 invariants for the constraint.');
+            end
+        end
+        
+        function gs = constraint_from_invariant(self,zeta,i)
+            
+            if i == 1
+                gs = 0.5 * (zeta - self.GEOM(1)^2);
+            elseif i == 2
+                gs = 0.5 * (zeta - self.GEOM(2)^2);
             end
         end
         

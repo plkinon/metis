@@ -17,7 +17,7 @@ T_END = 10;
 SOLVER         = 'Newton';
 MAX_ITERATIONS = 40;
 TOLERANCE      = 1E-08;
-NUM_TANGENT    = false;
+NUM_TANGENT    = true;
 
 %% Postprocessing
 shouldAnimate   = true;

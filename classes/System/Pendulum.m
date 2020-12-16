@@ -13,6 +13,9 @@ classdef Pendulum < System
             self.nDOF         = self.nBODIES*CONFIG.DIM;
             self.EXT_ACC      = repmat(CONFIG.EXT_ACC,self.nBODIES,1);
             self.GEOM(1)      = norm(CONFIG.Q_0(1:CONFIG.DIM)); %length of pendulum
+            self.nPotentialInvariants  = 0;
+            self.nConstraintInvariants = 1;
+            
         end
 
         function self = initialise(self, CONFIG, this_integrator)

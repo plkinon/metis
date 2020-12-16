@@ -11,6 +11,8 @@ classdef System
         nBODIES
         nLM
         GEOM
+        nPotentialInvariants
+        nConstraintInvariants
         z
         H
         T
