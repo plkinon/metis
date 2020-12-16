@@ -21,18 +21,31 @@ classdef Pendulum < System
             self.z(1, :) = [CONFIG.Q_0', (self.MASS_MAT * CONFIG.V_0)', this_integrator.LM0'];
         end
         
-        function V = potential(self, q)
-            V = (self.MASS_MAT*self.EXT_ACC)'*q;
+        function V_ext = external_potential(self, q)
+            V_ext = (self.MASS_MAT*self.EXT_ACC)'*q;
         end
         
-        function DV = potential_gradient(self,~)
-            DV = self.MASS_MAT*self.EXT_ACC;
+        function DV_ext = external_potential_gradient(self,~)
+            DV_ext = self.MASS_MAT*self.EXT_ACC;
         end
         
-        function D2V = potential_hessian(~,q)
-            D2V = zeros(size(q,1));
+        function D2V_ext = external_potential_hessian(~,q)
+            D2V_ext = zeros(size(q,1));
         end
 
+        function V_int = internal_potential( ~, ~)
+            V_int = 0;
+        end
+        
+        function DV_int = internal_potential_gradient(~,q)
+            DV_int = zeros(size(q));
+        end
+        
+        function D2V_int = internal_potential_hessian(~,q)
+            D2V_int = zeros(size(q,1));
+        end
+
+        
         function g = constraint(self, q)
             % Constraint on position level
             g = 0.5 * (q' * q - self.GEOM(1)^2);

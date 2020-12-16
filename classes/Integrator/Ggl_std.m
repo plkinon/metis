@@ -61,7 +61,7 @@ classdef Ggl_std < Integrator
             qn     = zn(1:n);
             pn     = zn(n+1:2*n);
             G_n    = this_problem.constraint_gradient(qn);
-            DV_n   = this_problem.potential_gradient(qn);
+            DV_n   = this_problem.internal_potential_gradient(qn) + this_problem.external_potential_gradient(qn);
             
             %% Residual vector 
             resi = [qn1 - qn - h*IM*pn1 + h*G_n1'*gamman1 ;

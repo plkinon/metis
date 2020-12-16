@@ -47,8 +47,8 @@ classdef EMS_std < Integrator
             q_n05      = 0.5*(qn + qn1);
             p_n05      = 0.5*(pn + pn1);
             lambda_n05 = 0.5*(lambdan + lambda_n1);
-            DV_n05     = this_problem.potential_gradient(q_n05);
-            D2V_n05    = this_problem.potential_hessian(q_n05);
+            DV_n05     = this_problem.internal_potential_gradient(q_n05) + this_problem.external_potential_gradient(q_n05);
+            D2V_n05    = this_problem.internal_potential_hessian(q_n05) + this_problem.external_potential_hessian(q_n05);
             G_n05      = this_problem.constraint_gradient(q_n05);
             t_n05      = zeros(n);
             

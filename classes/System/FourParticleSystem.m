@@ -33,10 +33,13 @@ classdef FourParticleSystem < System
             self.z(1, :) = [CONFIG.Q_0', (self.MASS_MAT * CONFIG.V_0)', this_integrator.LM0'];
         end
         
-        function V = potential(self, q)
+        function V_ext = external_potential(self, q)
             % External potential
             V_ext = (self.MASS_MAT*self.EXT_ACC)'*q;
             
+        end
+        
+        function V_int = internal_potential(self,q)
             % Internal potential
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
@@ -44,12 +47,16 @@ classdef FourParticleSystem < System
             q4 = q(3*self.DIM+1:4*self.DIM);
             
             V_int = 1/2*self.K1*(norm(q3-q1)^self.p-self.GEOM(3)^self.p)^2 + 1/2*self.K2*(norm(q4-q2)^self.p-self.GEOM(4)^self.p)^2;
-            
-            V = V_int+V_ext;
+
         end
         
-        function DV = potential_gradient(self,q)
+        function DV_ext = external_potential_gradient(self,~)
+            
             DV_ext = self.MASS_MAT*self.EXT_ACC;
+            
+        end
+        
+        function DV_int = internal_potential_gradient(self,q)
             
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
@@ -61,12 +68,12 @@ classdef FourParticleSystem < System
                       self.K2*P*(norm(q4-q2)^P-self.GEOM(4)^P)*norm(q4-q2)^(P-1)*(q2-q4);
                       self.K1*P*(norm(q3-q1)^P-self.GEOM(3)^P)*norm(q3-q1)^(P-1)*(q3-q1);
                       self.K2*P*(norm(q4-q2)^P-self.GEOM(4)^P)*norm(q4-q2)^(P-1)*(q4-q2)];
-                
-            DV = DV_ext + DV_int;
-            
-        end
+                  
+        end          
         
-        function D2V = potential_hessian(self,q)
+        
+        function D2V_int = internal_potential_hessian(self,q)
+            
             % Extract single position vectors
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
@@ -92,11 +99,15 @@ classdef FourParticleSystem < System
             D2V44 = -(-D2V22);
             
             % Compose hessian
-            D2V = [D2V11 zeros(nDIM) D2V13 zeros(nDIM);
+            D2V_int = [D2V11 zeros(nDIM) D2V13 zeros(nDIM);
                    zeros(nDIM) D2V22 zeros(nDIM) D2V24;
                    D2V13 zeros(nDIM) D2V33 zeros(nDIM);
                    zeros(nDIM) D2V24 zeros(nDIM) D2V44];
             
+        end
+        
+        function D2V_ext = external_potential_hessian(~,q)
+            D2V_ext = zeros(size(q,1));
         end
 
         function g = constraint(self, q)

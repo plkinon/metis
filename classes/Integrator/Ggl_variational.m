@@ -60,7 +60,7 @@ classdef Ggl_variational < Integrator
             pn     = zn(n+1:2*n);
             gamman = zn(2*n+m+1:end);
             G_n    = this_problem.constraint_gradient(qn);
-            DV_n   = this_problem.potential_gradient(qn);
+            DV_n   = this_problem.internal_potential_gradient(qn) + this_problem.external_potential_gradient(qn);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)

@@ -61,8 +61,8 @@ classdef Ggl_gen_alpha < Integrator
             lambda_nal = (1-al)*lambdan + al*lambda_n1;
             gamma_n1mal = al*gamman + (1-al)*gamma_n1;
             
-            DV_nal     = this_problem.potential_gradient(q_nal);
-            D2V_nal    = this_problem.potential_hessian(q_nal);
+            DV_nal     = this_problem.internal_potential_gradient(q_nal) + this_problem.external_potential_gradient(q_nal);
+            D2V_nal    = this_problem.internal_potential_hessian(q_nal) + this_problem.external_potential_hessian(q_nal);
             G_nal      = this_problem.constraint_gradient(q_nal);
             G_n1mal    = this_problem.constraint_gradient(q_n1mal);
             
