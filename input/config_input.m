@@ -7,11 +7,11 @@ MASS    = [1; 3; 2.3; 1.7];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'Ggl_variational';
+INTEGRATOR = 'Gen_alpha';
 INTEGRATION_VARIABLES = 0.5;
-DT    = 0.02;
+DT    = 0.1;
 T_0   = 0;
-T_END = 10;
+T_END = 2;
 
 %% Solver Method
 SOLVER         = 'Newton';
@@ -20,8 +20,8 @@ TOLERANCE      = 1E-08;
 NUM_TANGENT    = true;
 
 %% Postprocessing
-shouldAnimate   = true;
-plot_quantities =  {'energy','energy_difference','angular_momentum_3','angular_momentum_difference_3','constraint_position','constraint_velocity'};
+shouldAnimate   = false;
+plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
 
 %% Write variables into a .mat-File
 save(mfilename);

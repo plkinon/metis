@@ -62,7 +62,7 @@ classdef Postprocess
                 end
 
             end
-
+                       
             this_problem.T = T;
             this_problem.V = V;
             this_problem.H = H;
@@ -107,14 +107,14 @@ classdef Postprocess
                         xlabel('t');
                         ylabel('Energy');
 
-                    case 'angular_momentum_3'
+                    case 'angular_momentum'
 
                         %plots the ang. Mom. about dim-axis over time
-                        axis = 3;
-                        plotline = plot(t, J(:,axis));
+                        plotline = plot(t, J(:,:));
                         title(strcat(this_integrator.NAME, ': Angular Momentum'))
+                        legend('J1','J2','J3');
                         xlabel('t');
-                        ylabel(strcat('Angular Momentum about {} ', num2str(axis), '-axis'));
+                        ylabel('Angular Momentum');
 
                     case 'energy_difference'
 
@@ -125,15 +125,15 @@ classdef Postprocess
                         ylabel('H_{n+1}-H_{n}');
                         legend(strcat('std(H)=', num2str(std(H))));
 
-                    case 'angular_momentum_difference_3'
+                    case 'angular_momentum_difference'
 
-                        %plots the increments of ang. Mom. over time about desired axis (dim)
-                        axis = 3;             
-                        plotline = plot(t(2:end), diffJ(:,axis));
+                        %plots the increments of ang. Mom. over time about desired axis (dim)      
+                        plotline = plot(t(2:end), diffJ(:,:));
                         title(strcat(this_integrator.NAME, ': Ang. mom. - difference'));
                         xlabel('t');
-                        ylabel(strcat('J_{n+1}-J_{n} about {} ', num2str(axis), '-axis'));
-                        legend(strcat('std(J)=', num2str(std(J(:,axis)))));
+                        legend('J1','J2','J3');
+                        ylabel('J_{n+1}-J_{n}');
+                        legend(strcat('std(J)=[', num2str(std(J(:,:))),']'));
 
 
                     case 'constraint_position'
