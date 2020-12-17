@@ -116,6 +116,7 @@ classdef EMS_std < Integrator
                     g_n1                                                     ];
 
             %% Tangent matrix
+            %% TODO: analytische Tangente
             tang = [eye(n)                               -h*0.5*IM      zeros(n,m) ;
                     h*0.5*D2Vext_n05 + h*0.5*t_n05       eye(n)         h*G_n05'   ; 
                     G_n1                                 zeros(n,m)'    zeros(m)  ];

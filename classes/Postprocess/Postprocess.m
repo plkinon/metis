@@ -52,7 +52,7 @@ classdef Postprocess
 
                 if DIM == 3
                     for k = 1:d
-                        J(j, :) = J(j,:) + cross(q(j,(d-1)*DIM+1:d*DIM), p(j, (d-1)*DIM+1:d*DIM));
+                        J(j, :) = J(j,:) + cross(q(j,(k-1)*DIM+1:k*DIM), p(j, (k-1)*DIM+1:k*DIM));
                     end
                 end
 
