@@ -94,6 +94,15 @@ classdef Pendulum < System
             end
         end
         
+        function gs = constraint_from_invariant(self,zeta,i)
+            
+            if i == 1
+                gs = 0.5 * (zeta - self.GEOM(1)^2);
+            else
+                error('Problem has only 1 invariant for the constraint.');
+            end
+        end
+        
         function give_animation(self,fig)
             
                 DIM = self.DIM;

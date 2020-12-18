@@ -47,6 +47,7 @@ classdef EMS_std < Integrator
             p_n05      = 0.5*(pn + pn1);
             DVext_n05  = this_problem.external_potential_gradient(q_n05);
             D2Vext_n05 = this_problem.external_potential_hessian(q_n05);
+            D2Vint_n05 = this_problem.internal_potential_hessian(q_n05);
             G_n05      = this_problem.constraint_gradient(q_n05);
             t_n05      = zeros(n);
             
@@ -117,9 +118,9 @@ classdef EMS_std < Integrator
 
             %% Tangent matrix
             %% TODO: analytische Tangente
-            tang = [eye(n)                               -h*0.5*IM      zeros(n,m) ;
-                    h*0.5*D2Vext_n05 + h*0.5*t_n05       eye(n)         h*G_n05'   ; 
-                    G_n1                                 zeros(n,m)'    zeros(m)  ];
+            tang = [eye(n)                                                  -h*0.5*IM      zeros(n,m) ;
+                    h*0.5*D2Vext_n05 + h*0.5*D2Vint_n05 + h*0.5*t_n05       eye(n)         h*DG_g'   ; 
+                    G_n1                                                    zeros(n,m)'    zeros(m)  ];
             
         end
         

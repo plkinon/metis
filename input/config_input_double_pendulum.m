@@ -7,7 +7,7 @@ MASS    = [1; 1.5];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'Ggl_variational';
+INTEGRATOR = 'EMS_std';
 INTEGRATION_VARIABLES = 0.5;
 DT    = 0.02;
 T_0   = 0;
@@ -17,11 +17,11 @@ T_END = 10;
 SOLVER         = 'Newton';
 MAX_ITERATIONS = 40;
 TOLERANCE      = 1E-08;
-NUM_TANGENT    = false;
+NUM_TANGENT    = true;
 
 %% Postprocessing
 shouldAnimate   = false;
-plot_quantities =  {'energy'};
+plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
 
 %% Write variables into a .mat-File
 save(mfilename);

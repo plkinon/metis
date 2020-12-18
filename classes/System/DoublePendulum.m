@@ -119,6 +119,15 @@ classdef DoublePendulum < System
             end
         end
         
+        function gs = constraint_from_invariant(self,zeta,i)
+            
+            if i == 1
+                gs = 0.5 * (zeta - self.GEOM(1)^2);
+            elseif i == 2
+                gs = 0.5 * (zeta - self.GEOM(2)^2);
+            end
+        end
+        
         function give_animation(self,fig)
             
             
