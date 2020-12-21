@@ -17,6 +17,7 @@ classdef DoublePendulum < System
             self.GEOM(2)      = norm(CONFIG.Q_0(CONFIG.DIM+1:2*CONFIG.DIM)-CONFIG.Q_0(1:CONFIG.DIM)); %length of 2nd rod
             self.nPotentialInvariants  = 0;
             self.nConstraintInvariants = 2;
+            self.nVconstraintInvariants = 2;
         end
 
         function self = initialise(self, CONFIG, this_integrator)
@@ -126,6 +127,66 @@ classdef DoublePendulum < System
             elseif i == 2
                 gs = 0.5 * (zeta - self.GEOM(2)^2);
             end
+        end
+        
+        % invariant of the velocity invariant
+        function pi2 = vConstraint_invariant(self,q,p,i)
+            
+            q1 = q(1:self.DIM);
+            q2 = q(self.DIM+1:2*self.DIM);
+            
+            p1 = p(1:self.DIM);
+            p2 = p(self.DIM+1:2*self.DIM);
+            
+            m1 = self.MASS(1);
+            m2 = self.MASS(2);
+            
+            if i == 1
+                pi2 = (q1)'*(p1/m1);
+            elseif i == 2
+                pi2 = (q2-q1)'*(p2/m2-p1/m1);
+            end
+        end
+        
+        % gradient of the invariant of the velocity constraint w.r.t. q
+        function Dpi2Dq = vConstraint_invariant_gradient_q(self,~,p,i)
+                      
+            p1 = p(1:self.DIM);
+            p2 = p(self.DIM+1:2*self.DIM);
+            
+            m1 = self.MASS(1);
+            m2 = self.MASS(2);
+            
+            if i == 1
+                Dpi2Dq = [(p1/m1); zeros(self.DIM,1)];  
+            elseif i == 2
+                Dpi2Dq = [-(p2/m2-p1/m1);+(p2/m2-p1/m1)];
+            end
+            
+        end
+        
+        % gradient of the invariant of the velocity constraint w.r.t. p
+        function Dpi2Dp = vConstraint_invariant_gradient_p(self,q,~,i)
+            
+            q1 = q(1:self.DIM);
+            q2 = q(self.DIM+1:2*self.DIM);
+            
+            m1 = self.MASS(1);
+            m2 = self.MASS(2);
+            
+            if i == 1
+                Dpi2Dp = [ 1/m1*(q1) ; zeros(self.DIM,1)];  
+            elseif i == 2
+                Dpi2Dp = [ -1/m1*(q2-q1) ; 1/m2*(q2-q1)];
+            end
+            
+        end
+        
+        % velocity constraint computed with its invariant
+        function gv = Vconstraint_from_invariant(~,pi2,~)
+            
+            gv = pi2;
+            
         end
         
         function give_animation(self,fig)

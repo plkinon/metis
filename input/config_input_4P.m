@@ -7,7 +7,7 @@ MASS    = [1; 3; 2.3; 1.7];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'Ggl_gen_alpha';
+INTEGRATOR = 'Ggl_variational';
 INTEGRATION_VARIABLES = 0.5;
 DT    = 0.02;
 T_0   = 0;

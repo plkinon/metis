@@ -3,9 +3,6 @@ function CONFIG =  metis_load(INPUT_FILE)
 % Author: Philipp
 % date: 02.12.2020
 
-% Clear workspace, close all windows and clear command window 
-close all; clc;
-
 % Define all the parameters that METIS needs to run a simulation in a
 % .m-file
 run(INPUT_FILE);

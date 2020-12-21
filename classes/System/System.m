@@ -13,6 +13,7 @@ classdef System
         GEOM
         nPotentialInvariants
         nConstraintInvariants
+        nVconstraintInvariants
         z
         H
         T

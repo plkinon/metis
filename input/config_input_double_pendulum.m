@@ -7,9 +7,9 @@ MASS    = [1; 1.5];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'EMS_std';
+INTEGRATOR = 'EMS_ggl';
 INTEGRATION_VARIABLES = 0.5;
-DT    = 0.02;
+DT    = 0.1;
 T_0   = 0;
 T_END = 10;
 
@@ -20,7 +20,7 @@ TOLERANCE      = 1E-08;
 NUM_TANGENT    = true;
 
 %% Postprocessing
-shouldAnimate   = false;
+shouldAnimate   = true;
 plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
 
 %% Write variables into a .mat-File

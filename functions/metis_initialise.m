@@ -3,6 +3,9 @@ function [this_system, this_integrator, this_solver] = metis_initialise(CONFIG)
 % Author: Philipp Kinon
 % date: 03.12.2020
 
+% Clear workspace, close all windows and clear command window 
+close all; clc;
+
 fprintf('************************************************** \n');
 fprintf(' METIS - Computing constrained mechanical systems \n');
 fprintf('************************************************** \n');

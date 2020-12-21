@@ -15,7 +15,8 @@ classdef Pendulum < System
             self.GEOM(1)      = norm(CONFIG.Q_0(1:CONFIG.DIM)); %length of pendulum
             self.nPotentialInvariants  = 0;
             self.nConstraintInvariants = 1;
-            
+            self.nVconstraintInvariants = 1;      
+                          
         end
 
         function self = initialise(self, CONFIG, this_integrator)
@@ -75,6 +76,42 @@ classdef Pendulum < System
             error('Problem has only no invariants for the potential.');
             
         end
+        
+        %% Invariant formulations
+        %  e.g. for EMS
+        
+        % invariant of the velocity invariant
+        function pi2 = vConstraint_invariant(self,q,p,i)
+            
+            m = self.MASS;
+            pi2 = q'*p/m;
+            
+        end
+        
+        % gradient of the invariant of the velocity constraint w.r.t. q
+        function Dpi2Dq = vConstraint_invariant_gradient_q(self,~,p,i)
+                      
+            m = self.MASS;
+            Dpi2Dq = p/m;
+            
+        end
+        
+        % gradient of the invariant of the velocity constraint w.r.t. p
+        function Dpi2Dp = vConstraint_invariant_gradient_p(self,q,~,i)
+            
+            m = self.MASS;
+            Dpi2Dp = q/m;
+            
+        end
+        
+        % velocity constraint computed with its invariant
+        function gv = Vconstraint_from_invariant(~,pi2,~)
+            
+            gv = pi2;
+            
+        end
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%
         
         function zeta = constraint_invariant(~,q,i)
                      

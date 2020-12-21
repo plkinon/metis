@@ -6,7 +6,7 @@ addpath(genpath(fileparts(which(mfilename))));
 
 %% METIS initialise
 % Load configuration parameters from file
-CONFIG = metis_load('config_input_4P');
+CONFIG = metis_load('config_input_4P_EMS');
 
 % Initialise system, integrator and solver by class
 [system,integrator,solver] = metis_initialise(CONFIG);
