@@ -7,17 +7,15 @@ MASS    = [1; 3; 2.3; 1.7];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'EMS_ggl';
-INTEGRATION_VARIABLES = 0.5;
-ALL_DT = [0.1 0.01 0.001];
+INTEGRATOR = 'Ggl_variational';
+ALL_DT = [0.02 0.01 0.001];
 T_0   = 0;
 T_END = 1;
 
 %% Solver Method
 SOLVER         = 'Newton';
 MAX_ITERATIONS = 40;
-TOLERANCE      = 1E-08;
-NUM_TANGENT    = true;
+TOLERANCE      = 1E-09;
 
 %% Postprocessing
 % no postprocessing

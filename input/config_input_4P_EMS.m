@@ -8,7 +8,6 @@ DIM     = 3;
 
 %% Integrator
 INTEGRATOR = 'EMS_ggl';
-INTEGRATION_VARIABLES = 0.5;
 DT    = 0.1;
 T_0   = 0;
 T_END = 1;
@@ -16,8 +15,7 @@ T_END = 1;
 %% Solver Method
 SOLVER         = 'Newton';
 MAX_ITERATIONS = 40;
-TOLERANCE      = 1E-08;
-NUM_TANGENT    = true;
+TOLERANCE      = 1E-09;
 
 %% Postprocessing
 shouldAnimate   = true;

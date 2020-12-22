@@ -5,11 +5,11 @@ clearvars;
 addpath(genpath(fileparts(which(mfilename))));
 
 %% METIS initialise
-% Load configuration parameters from file
-CONFIG = metis_load('config_input_4P_EMS');
+% Load configuration parameters from file into Metis-object
+simulation = Metis('config_input_4P_EMS');
 
 % Initialise system, integrator and solver by class
-[system,integrator,solver] = metis_initialise(CONFIG);
+[system,integrator,solver] = simulation.initialise();
 
 %% METIS solver
 % Solve my System with my Solver and my Integration scheme
@@ -23,7 +23,7 @@ postprocess = Postprocess();
 system = postprocess.compute(system);
 
 % Animation of trajectory
-postprocess.animation(system,integrator,CONFIG);
+postprocess.animation(system,integrator,simulation);
 
 % Time-evolution of postprocessing quantites as plots
-postprocess.plot(CONFIG,system,integrator);
+postprocess.plot(simulation,system,integrator);

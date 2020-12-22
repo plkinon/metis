@@ -7,11 +7,11 @@ classdef Postprocess
             set(0, 'defaultfigureposition', [850, 450, 1200, 600])
         end
 
-        function animation(~, this_problem,this_integrator, CONFIG)
+        function animation(~, this_problem,this_integrator, this_simulation)
             % Function which displays an animation of the trajectory if
             % desired by user
-
-            if CONFIG.shouldAnimate == true
+            
+            if this_simulation.shouldAnimate == true
                 
                 fig = figure();
                 this_problem.give_animation(fig);
@@ -74,8 +74,8 @@ classdef Postprocess
 
         end
 
-        function plot(~,CONFIG, this_problem, this_integrator)
-                      
+        function plot(~,this_simulation, this_problem, this_integrator)
+            
             H = this_problem.H;
             V = this_problem.V;
             T = this_problem.T;
@@ -89,11 +89,11 @@ classdef Postprocess
             Mmin = min([min(V), min(T), min(H)]);
             Mmax = max([max(V), max(T), max(H)]);
             
-            for i = 1:length(CONFIG.plot_quantities)
+            for i = 1:length(this_simulation.plot_quantities)
                 
                 figure();
                 grid on;
-                quantity = CONFIG.plot_quantities{i};
+                quantity = this_simulation.plot_quantities{i};
             
                 switch quantity
 

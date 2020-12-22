@@ -1,4 +1,4 @@
-classdef Ggl_gen_alpha < Integrator
+classdef MP_ggl < Integrator
 %% Gen-alpha-typed-Integration scheme for standard constrained DAE
 %
 % - based on constraint on position and velocity level 
@@ -7,27 +7,18 @@ classdef Ggl_gen_alpha < Integrator
 % - independent momenta variables (Hamilton Potryagin approach)
 %
 % - not derived from variational principle but simply evaluates RHS of ODE 
-%   at t_{n+alpha} or t_{n+1-alpha} respectively 
+%   at t_{n+1/2}  
 %
 % - constraints are enforced at t_{n+1}
-% 
-% - setting alpha apart from 1/2 leads to problems
 %
 % Author: Philipp Kinon
 % Date  : 09.12.2020
 
-    properties
-        
-        ALPHA
-        
-    end
-
     methods
-        function self = initialise(self,CONFIG,this_problem)
-            self.NAME  = 'GGL-Gen-alpha';
+        function self = initialise(self,~,this_problem)
+            self.NAME  = 'MP-GGL';
             self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
-            self.ALPHA = CONFIG.INTEGRATION_VARIABLES(1);
         end
         
         function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
@@ -38,7 +29,6 @@ classdef Ggl_gen_alpha < Integrator
             h  = self.DT;
             n  = this_problem.nDOF;
             m  = this_problem.mCONSTRAINTS;
-            al = self.ALPHA;
             
             %% Unknows which will be iterated
             qn1       = zn1(1:n);
@@ -55,26 +45,23 @@ classdef Ggl_gen_alpha < Integrator
             gamman  = zn(2*n+m+1:2*n+2*m);
             
             %% Alpha evaluated quantities
-            q_nal      = (1-al)*qn + al*qn1;
-            q_n1mal    = al*qn + (1-al)*qn1;
-            p_n1mal      = al*pn + (1-al)*pn1;
-            lambda_nal = (1-al)*lambdan + al*lambda_n1;
-            gamma_n1mal = al*gamman + (1-al)*gamma_n1;
-            
-            DV_nal     = this_problem.internal_potential_gradient(q_nal) + this_problem.external_potential_gradient(q_nal);
-            D2V_nal    = this_problem.internal_potential_hessian(q_nal) + this_problem.external_potential_hessian(q_nal);
-            G_nal      = this_problem.constraint_gradient(q_nal);
-            G_n1mal    = this_problem.constraint_gradient(q_n1mal);
+            q_n05      = (0.5)*qn + 0.5*qn1;
+            p_n05      = 0.5*pn + (0.5)*pn1;
+            lambda_n05 = (0.5)*lambdan + 0.5*lambda_n1;
+            gamma_n05  = 0.5*gamman + (0.5)*gamma_n1;
+            DV_n05     = this_problem.internal_potential_gradient(q_n05) + this_problem.external_potential_gradient(q_n05);
+            D2V_n05    = this_problem.internal_potential_hessian(q_n05) + this_problem.external_potential_hessian(q_n05);
+            G_n05      = this_problem.constraint_gradient(q_n05);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
             t_n1mal    = zeros(n);
             for i = 1:m
-                t_n1mal   = t_n1mal + this_problem.constraint_hessian(q_n1mal,i)*gamma_n1mal(i);
+                t_n1mal   = t_n1mal + this_problem.constraint_hessian(q_n1mal,i)*gamma_n05(i);
             end
             t_nal = zeros(n);
             for i = 1:m
-                t_nal   = t_nal + this_problem.constraint_hessian(q_nal,i)*lambda_nal(i);
+                t_nal   = t_nal + this_problem.constraint_hessian(q_n05,i)*lambda_n05(i);
             end
             
             % Hessian of constraints are multiplied by inverse MassMat and
@@ -88,16 +75,16 @@ classdef Ggl_gen_alpha < Integrator
             end
             
             %% Residual vector 
-            resi = [qn1 - qn - h*IM*p_n1mal + h * G_n1mal' *gamma_n1mal ;
-                    pn1 - pn + h*DV_nal   + h*G_nal'*lambda_nal      ;
+            resi = [qn1 - qn - h*IM*p_n05 + h * G_n05' *gamma_n05     ;
+                    pn1 - pn + h*DV_n05   + h*G_nal'*lambda_n05       ;
                     g_n1                                              ;
                     G_n1*IM*pn1                                       ];
 
             %% Tangent matrix
-            tang = [eye(n) + h*(1-al)*t_n1mal                 -h*(1-al)*IM      zeros(n,m)   (1-al)*h*G_n1mal';
-                    h*al*D2V_nal + h*al*t_nal                 eye(n)            al*h*G_nal'  zeros(n,m)       ; 
-                    G_n1                                      zeros(n,m)'       zeros(m)     zeros(m)         ;
-                    T_n1                                      G_n1*IM           zeros(m)     zeros(m)      ];
+            tang = [eye(n) + h*(0.5)*t_n1mal                  -h*(0.5)*IM       zeros(n,m)    (0.5)*h*G_n05';
+                    h*0.5*D2V_n05 + h*0.5*t_nal               eye(n)            0.5*h*G_nal'  zeros(n,m)       ; 
+                    G_n1                                      zeros(n,m)'       zeros(m)      zeros(m)         ;
+                    T_n1                                      G_n1*IM           zeros(m)      zeros(m)      ];
             
         end
         

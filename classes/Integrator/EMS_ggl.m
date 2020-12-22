@@ -18,7 +18,7 @@ classdef EMS_ggl < Integrator
 
     methods
         function self = initialise(self,~,this_problem)
-            self.NAME  = 'EMS-ggl';
+            self.NAME  = 'EMS-GGL';
             self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
         end
@@ -167,10 +167,11 @@ classdef EMS_ggl < Integrator
                     G_n1*IM*pn1                                                                   ];
 
             %% Tangent matrix
-            tang = [eye(n) - h*0.5*t_n05g                                   -h*0.5*IM         zeros(n,m)    -h*DG_gv_p';
-                    h*0.5*D2Vext_n05 + 2*h*0.5*D2Vint_n05 + h*0.5*t_n05l    eye(n)            h*DG_g'       h*DG_gv_q'       ; 
-                    G_n1                                                    zeros(n,m)'       zeros(m)      zeros(m)         ;
-                    T_n1                                                    G_n1*IM           zeros(m)      zeros(m)      ];
+            tang = [];
+            %tang = [eye(n) - h*0.5*t_n05g                                   -h*0.5*IM         zeros(n,m)    -h*DG_gv_p';
+            %        h*0.5*D2Vext_n05 + 2*h*0.5*D2Vint_n05 + h*0.5*t_n05l    eye(n)            h*DG_g'       h*DG_gv_q'       ; 
+            %        G_n1                                                    zeros(n,m)'       zeros(m)      zeros(m)         ;
+            %        T_n1                                                    G_n1*IM           zeros(m)      zeros(m)      ];
         end
         
     end

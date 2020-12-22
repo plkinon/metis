@@ -8,7 +8,6 @@ DIM     = 3;
 
 %% Integrator
 INTEGRATOR = 'Ggl_variational';
-INTEGRATION_VARIABLES = 0.5;
 DT    = 0.02;
 T_0   = 0;
 T_END = 10;
@@ -16,8 +15,7 @@ T_END = 10;
 %% Solver Method
 SOLVER         = 'Newton';
 MAX_ITERATIONS = 40;
-TOLERANCE      = 1E-08;
-NUM_TANGENT    = false;
+TOLERANCE      = 1E-09;
 
 %% Postprocessing
 shouldAnimate   = true;
