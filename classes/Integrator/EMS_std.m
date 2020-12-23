@@ -77,7 +77,7 @@ classdef EMS_std < Integrator
                 if abs(pi_n1 - pi_n) > 1e-09 
                     % discrete gradient
                     DG_Vint  = DG_Vint + (Vs_n1-Vs_n)/(pi_n1-pi_n)*DPiq_n05;
-                    K21_DG_V    = K21_DG_V + (DVsDpi_n1*DPiDq_n1*1/(pi_n1-pi_n) - (Vs_n1-Vs_n)/(pi_n1-pi_n)^2*DPiDq_n1)*DPiq_n05' + (Vs_n1-Vs_n)/(pi_n1-pi_n)*1/2*D2PiDq2;
+                    K21_DG_V    = K21_DG_V + DPiq_n05*(DVsDpi_n1*DPiDq_n1*1/(pi_n1-pi_n) - (Vs_n1-Vs_n)/(pi_n1-pi_n)^2*DPiDq_n1)' + (Vs_n1-Vs_n)/(pi_n1-pi_n)*1/2*D2PiDq2;
                 
                 else
                     % else use MP evaluation of gradient
@@ -114,7 +114,7 @@ classdef EMS_std < Integrator
                 if abs(zeta_n1 - zeta_n) > 1e-9
                     % discrete gradient
                     DG_g(j,:)   = (gs_n1 - gs_n)/(zeta_n1 - zeta_n)*DzetaDq_n05';
-                    K21_DG_g    = K21_DG_g + lambda_n1(j)*((DgsDzeta_n1*DzetaDq_n1*1/(zeta_n1-zeta_n) - (gs_n1 - gs_n)/(zeta_n1 - zeta_n)^2*DzetaDq_n1)'*DzetaDq_n05 + (gs_n1 - gs_n)/(zeta_n1 - zeta_n)*1/2*D2zetaDq2);
+                    K21_DG_g    = K21_DG_g + lambda_n1(j)*(DzetaDq_n05'*(DgsDzeta_n1*DzetaDq_n1*1/(zeta_n1-zeta_n) - (gs_n1 - gs_n)/(zeta_n1 - zeta_n)^2*DzetaDq_n1) + (gs_n1 - gs_n)/(zeta_n1 - zeta_n)*1/2*D2zetaDq2);
                 
                 else
                     % else use MP evaluation of gradient
