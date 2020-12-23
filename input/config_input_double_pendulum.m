@@ -7,10 +7,10 @@ MASS    = [1; 1.5];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'EMS_ggl';
-DT    = 0.1;
+INTEGRATOR = 'EMS_std';
+DT    = 0.05;
 T_0   = 0;
-T_END = 10;
+T_END = 1;
 
 %% Solver Method
 SOLVER         = 'Newton';

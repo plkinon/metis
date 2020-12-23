@@ -135,7 +135,7 @@ classdef Pendulum < System
         function D2zetaDq2 = constraint_invariant_hessian(self,~,i)
                                   
             if i == 1
-                D2zetaDq2 = 2*ones(self.DIM); 
+                D2zetaDq2 = 2*eye(self.DIM); 
             else
                 error('Problem has only 1 invariant for the constraint.');
             end

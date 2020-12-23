@@ -8,7 +8,7 @@ DIM     = 3;
 
 %% Integrator
 INTEGRATOR = 'EMS_std';
-DT    = 0.02;
+DT    = 0.05;
 T_0   = 0;
 T_END = 1;
 

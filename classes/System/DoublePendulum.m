@@ -120,12 +120,37 @@ classdef DoublePendulum < System
             end
         end
         
+        function D2zetaDq2 = constraint_invariant_hessian(self,q,i)
+            
+            q1 = q(1:self.DIM);
+            q2 = q(self.DIM+1:2*self.DIM);
+            
+            if i == 1
+                D2zetaDq2 = [2*eye(self.DIM) zeros(self.DIM);
+                             zeros(self.DIM) zeros(self.DIM)  ];
+            elseif i == 2
+                D2zetaDq2 = [2*eye(self.DIM) -2*eye(self.DIM);
+                             -2*eye(self.DIM) 2*eye(self.DIM)  ];
+            else
+                error('Problem has only 2 invariants for the constraint.');
+            end
+        end
+        
         function gs = constraint_from_invariant(self,zeta,i)
             
             if i == 1
                 gs = 0.5 * (zeta - self.GEOM(1)^2);
             elseif i == 2
                 gs = 0.5 * (zeta - self.GEOM(2)^2);
+            end
+        end
+        
+        function gs = constraint_gradient_from_invariant(self,zeta,i)
+            
+            if i == 1
+                gs = 0.5;
+            elseif i == 2
+                gs = 0.5;
             end
         end
         

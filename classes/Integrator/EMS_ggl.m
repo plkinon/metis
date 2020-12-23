@@ -31,6 +31,7 @@ classdef EMS_ggl < Integrator
             h  = self.DT;
             n  = this_problem.nDOF;
             m  = this_problem.mCONSTRAINTS;
+            p  = this_problem.nPotentialInvariants;
             
             %% Unknows which will be iterated
             qn1       = zn1(1:n);
@@ -57,61 +58,85 @@ classdef EMS_ggl < Integrator
             %% Discrete gradients
             % for the internal potential
             DG_Vint = zeros(n,1);
+            K21_DG_V = zeros(n,n);
             
             % for every invariant individually
-            for i = 1:this_problem.nPotentialInvariants
+            for i = 1:p
                 %compute i-th invariants 
                 pi_n     = this_problem.potential_invariant(qn,i);
                 pi_n1    = this_problem.potential_invariant(qn1,i);
+                % evaluate internal potential depending on invariants
+                Vs_n     = this_problem.potential_from_invariant(pi_n,i);
+                Vs_n1    = this_problem.potential_from_invariant(pi_n1,i);
+                % derivative of invariant w.r.t. q_n05
+                DPiq_n05 = this_problem.potential_invariant_gradient(q_n05,i);
+                
+                %for the tangent matrix
+                D2PiDq2   = this_problem.potential_invariant_hessian(q_n05,i);
+                DPiDq_n1  = this_problem.potential_invariant_gradient(qn1,i);
+                DVsDpi_n1 = this_problem.potential_gradient_from_invariant(pi_n1,i);
                 
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
                 if abs(pi_n1 - pi_n) > 1e-09
-                    % evaluate internal potential depending on invariants
-                    Vs_n     = this_problem.potential_from_invariant(pi_n,i);
-                    Vs_n1    = this_problem.potential_from_invariant(pi_n1,i);
-                    % derivative of invariant w.r.t. q_n05
-                    DPiq_n05 = this_problem.potential_invariant_gradient(q_n05,i);
+                    
                     % discrete gradient
                     DG_Vint  = DG_Vint + (Vs_n1-Vs_n)/(pi_n1-pi_n)*DPiq_n05;
+                    
+                    K21_DG_V    = K21_DG_V + DPiq_n05*(DVsDpi_n1*DPiDq_n1*1/(pi_n1-pi_n) - (Vs_n1-Vs_n)/(pi_n1-pi_n)^2*DPiDq_n1)' + (Vs_n1-Vs_n)/(pi_n1-pi_n)*1/2*D2PiDq2;
+                
                 else
                     % else use MP evaluation of gradient
-                    DG_Vint = DG_Vint + this_problem.internal_potential_gradient(q_n05);
+                    DG_Vint = DG_Vint + 1/p*this_problem.internal_potential_gradient(q_n05);
+                    K21_DG_V  = K21_DG_V  + 1/p*D2Vint_n05;
                 end
                 
             end
             
             %% for the gradients of the position constraints
             DG_g    = zeros(m,n);
+            K21_DG_g = zeros(n,n);
             
             % for every invariant individually
             for j = 1:this_problem.nConstraintInvariants
                 %compute i-th invariants 
                 zeta_n  = this_problem.constraint_invariant(qn,j);
                 zeta_n1 = this_problem.constraint_invariant(qn1,j);
+                % evaluate constraints depending on invariants
+                gs_n = this_problem.constraint_from_invariant(zeta_n,j);
+                gs_n1 = this_problem.constraint_from_invariant(zeta_n1,j);
+                % derivative of invariant w.r.t. q_n05
+                DzetaDq_n05 = this_problem.constraint_invariant_gradient(q_n05,j);
+                
+                % tangent matrix terms
+                D2zetaDq2   = this_problem.constraint_invariant_hessian(qn1,j);
+                DgsDzeta_n1 = this_problem.constraint_gradient_from_invariant(qn1,j);
+                DzetaDq_n1  = this_problem.constraint_invariant_gradient(qn1,j);
                 
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
                 if abs(zeta_n1 - zeta_n) > 1e-9
-                    % evaluate constraints depending on invariants
-                    gs_n = this_problem.constraint_from_invariant(zeta_n,j);
-                    gs_n1 = this_problem.constraint_from_invariant(zeta_n1,j);
-                    % derivative of invariant w.r.t. q_n05
-                    DzetaDq_n05 = this_problem.constraint_invariant_gradient(q_n05,j);
+                    
                     % discrete gradient for poisition constraint
                     DG_g(j,:) = (gs_n1 - gs_n)/(zeta_n1 - zeta_n)*DzetaDq_n05';
                     
+                    K21_DG_g    = K21_DG_g + lambda_n1(j)*(DzetaDq_n05'*(DgsDzeta_n1*DzetaDq_n1*1/(zeta_n1-zeta_n) - (gs_n1 - gs_n)/(zeta_n1 - zeta_n)^2*DzetaDq_n1) + (gs_n1 - gs_n)/(zeta_n1 - zeta_n)*1/2*D2zetaDq2);
+                
                     
                 else
                     % else use MP evaluation of gradient
                     G_tmp     = this_problem.constraint_gradient(q_n05);
                     DG_g(j,:) = G_tmp(j,:);
+                    K21_DG_g  = K21_DG_g  + lambda_n1(j)*this_problem.constraint_hessian(q_n05,j);
                 end
             end
             
             %% for the gradients of the velocity constraints
             DG_gv_q = zeros(m,n);
             DG_gv_p = zeros(m,n);
+            K12_DG_gv = zeros(n,n);
+            K21_DG_gv = zeros(n,n);
+            K22_DG_gv = zeros(n,n);
             
             % for every invariant individually
             for k = 1:this_problem.nVconstraintInvariants
@@ -119,16 +144,17 @@ classdef EMS_ggl < Integrator
                 %compute k-th invariants 
                 pi_n = this_problem.vConstraint_invariant(qn,pn,k);
                 pi_n1 = this_problem.vConstraint_invariant(qn1,pn1,k);
+                % evaluate constraints depending on invariants
+                gv_n1 = this_problem.Vconstraint_from_invariant(pi_n1,k);
+                gv_n  = this_problem.Vconstraint_from_invariant(pi_n,k);
+                % derivative of invariant w.r.t. q_n05
+                DpiDqn05 = this_problem.vConstraint_invariant_gradient_q(q_n05,p_n05,k);
+                DpiDpn05 = this_problem.vConstraint_invariant_gradient_p(q_n05,p_n05,k);
                 
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
                 if abs(pi_n1 - pi_n) > 1e-09
-                    % evaluate constraints depending on invariants
-                    gv_n1 = this_problem.Vconstraint_from_invariant(pi_n1,k);
-                    gv_n  = this_problem.Vconstraint_from_invariant(pi_n,k);
-                    % derivative of invariant w.r.t. q_n05
-                    DpiDqn05 = this_problem.vConstraint_invariant_gradient_q(q_n05,p_n05,k);
-                    DpiDpn05 = this_problem.vConstraint_invariant_gradient_p(q_n05,p_n05,k);
+                    
                     % discrete gradient for velocity constraint
                     DG_gv_q(k,:) = (gv_n1 -gv_n)/(pi_n1-pi_n)*DpiDqn05;
                     DG_gv_p(k,:) = (gv_n1 -gv_n)/(pi_n1-pi_n)*DpiDpn05;
@@ -168,10 +194,10 @@ classdef EMS_ggl < Integrator
 
             %% Tangent matrix
             tang = [];
-            %tang = [eye(n) - h*0.5*t_n05g                                   -h*0.5*IM         zeros(n,m)    -h*DG_gv_p';
-            %        h*0.5*D2Vext_n05 + 2*h*0.5*D2Vint_n05 + h*0.5*t_n05l    eye(n)            h*DG_g'       h*DG_gv_q'       ; 
-            %        G_n1                                                    zeros(n,m)'       zeros(m)      zeros(m)         ;
-            %        T_n1                                                    G_n1*IM           zeros(m)      zeros(m)      ];
+            %tang = [eye(n) - h*K11_DG_gv                                        -h*0.5*IM +K12_DG_gv        zeros(n,m)    -h*DG_gv_p';
+            %        h*0.5*D2Vext_n05 + h*K21_DG_V + h*K21_DG_g + h*K21_DG_gv    eye(n) + K22_DG_gv          h*DG_g'       h*DG_gv_q'       ; 
+            %        G_n1                                                        zeros(n,m)'                 zeros(m)      zeros(m)         ;
+            %        T_n1                                                        G_n1*IM                     zeros(m)      zeros(m)      ];
         end
         
     end

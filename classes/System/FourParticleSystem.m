@@ -89,11 +89,11 @@ classdef FourParticleSystem < System
             nDIM = self.DIM;
                         
             % Potential law parameters
-            P  = self.p;
+            P   = self.p;
             l13 = self.GEOM(3);
             l24 = self.GEOM(4);
-            k1 = self.K1;
-            k2 = self.K2;
+            k1  = self.K1;
+            k2  = self.K2;
             
             % Build up separate entries
             D2V11 = (k1*P*(2*P-1)*norm(q3-q1)^(2*P-3)-k1*P*(P-1)*l13^P*norm(q3-q1)^(P-3))*(q1-q3)*(q1-q3)' + ...
@@ -170,9 +170,9 @@ classdef FourParticleSystem < System
             q4 = q(3*self.DIM+1:4*self.DIM);
             
             if i == 1
-                pi = (q1-q3)'*(q1-q3);
+                pi = (q3-q1)'*(q3-q1);
             elseif i == 2
-                pi = (q2-q4)'*(q2-q4);
+                pi = (q4-q2)'*(q4-q2);
             else
                 error('Problem has only 2 invariants for the potential.');
             end
@@ -187,9 +187,9 @@ classdef FourParticleSystem < System
             q4 = q(3*self.DIM+1:4*self.DIM);
             
             if i == 1
-                DpiDq = [2*(q1-q3); zeros(self.DIM,1); -2*(q1-q3); zeros(self.DIM,1)];
+                DpiDq = [-2*(q3-q1); zeros(self.DIM,1); 2*(q3-q1); zeros(self.DIM,1)];
             elseif i == 2
-                DpiDq = [zeros(self.DIM,1);2*(q2-q4);  zeros(self.DIM,1); -2*(q2-q4)];
+                DpiDq = [zeros(self.DIM,1);-2*(q4-q2);  zeros(self.DIM,1); 2*(q4-q2)];
             else
                 error('Problem has only 2 invariants for the potential.');
             end
@@ -199,15 +199,15 @@ classdef FourParticleSystem < System
         function D2piDq = potential_invariant_hessian(self,~,i)
                       
             if i == 1
-                D2piDq = [2*ones(self.DIM)  zeros(self.DIM) -2*ones(self.DIM) zeros(self.DIM);
+                D2piDq = [2*eye(self.DIM)  zeros(self.DIM) -2*eye(self.DIM) zeros(self.DIM);
                           zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM);
-                          -2*ones(self.DIM) zeros(self.DIM) 2*ones(self.DIM)  zeros(self.DIM);
+                          -2*eye(self.DIM) zeros(self.DIM) 2*eye(self.DIM)  zeros(self.DIM);
                           zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM)];
             elseif i == 2
                 D2piDq = [zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM);
-                          zeros(self.DIM) 2*ones(self.DIM)  zeros(self.DIM) -2*ones(self.DIM);
+                          zeros(self.DIM) 2*eye(self.DIM)  zeros(self.DIM) -2*eye(self.DIM);
                           zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM);
-                          zeros(self.DIM) -2*ones(self.DIM) zeros(self.DIM) 2*ones(self.DIM)];
+                          zeros(self.DIM) -2*eye(self.DIM) zeros(self.DIM) 2*eye(self.DIM)];
             else
                 error('Problem has only 2 invariants for the potential.');
             end

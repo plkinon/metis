@@ -30,6 +30,7 @@ classdef EMS_std < Integrator
             h  = self.DT;
             n  = this_problem.nDOF;
             m  = this_problem.mCONSTRAINTS;
+            p  = this_problem.nPotentialInvariants;
             
             %% Unknows which will be iterated
             qn1       = zn1(1:n);
@@ -41,10 +42,12 @@ classdef EMS_std < Integrator
             %% Known quantities from last time-step
             qn      = zn(1:n);
             pn      = zn(n+1:2*n);
+            lambdan = zn(2*n+1:2*n+m);
             
             %% MP evaluated quantities
             q_n05      = 0.5*(qn + qn1);
             p_n05      = 0.5*(pn + pn1);
+            lambda_n05 = 0.5*(lambdan + lambda_n1);
             DVext_n05  = this_problem.external_potential_gradient(q_n05);
             D2Vext_n05 = this_problem.external_potential_hessian(q_n05);
             D2Vint_n05 = this_problem.internal_potential_hessian(q_n05);
@@ -57,7 +60,7 @@ classdef EMS_std < Integrator
             K21_DG_V = zeros(n,n);
             
             % for every invariant individually
-            for i = 1:this_problem.nPotentialInvariants
+            for i = 1:p
                 %compute i-th invariants 
                 pi_n     = this_problem.potential_invariant(qn,i);
                 pi_n1    = this_problem.potential_invariant(qn1,i);
@@ -81,8 +84,8 @@ classdef EMS_std < Integrator
                 
                 else
                     % else use MP evaluation of gradient
-                    DG_Vint = DG_Vint + 1/m*this_problem.internal_potential_gradient(q_n05);
-                    K21_DG_V  = K21_DG_V  + 1/m*D2Vint_n05;
+                    DG_Vint = DG_Vint + 1/p*this_problem.internal_potential_gradient(q_n05);
+                    K21_DG_V  = K21_DG_V  + 1/p*D2Vint_n05;
                 end
                 
                 
