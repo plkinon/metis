@@ -131,6 +131,16 @@ classdef Pendulum < System
             end
         end
         
+        % gradient of the invariant of the position constraint w.r.t. q
+        function D2zetaDq2 = constraint_invariant_hessian(self,~,i)
+                                  
+            if i == 1
+                D2zetaDq2 = 2*ones(self.DIM); 
+            else
+                error('Problem has only 1 invariant for the constraint.');
+            end
+        end
+        
         function gs = constraint_from_invariant(self,zeta,i)
             
             if i == 1
@@ -139,6 +149,15 @@ classdef Pendulum < System
                 error('Problem has only 1 invariant for the constraint.');
             end
         end
+        
+        function gs = constraint_gradient_from_invariant(~,~,i)
+            
+            if i == 1
+                gs = 0.5 ;
+            else
+                error('Problem has only 1 invariant for the constraint.');
+            end
+        end  
         
         function give_animation(self,fig)
             

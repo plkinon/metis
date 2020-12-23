@@ -195,12 +195,39 @@ classdef FourParticleSystem < System
             end
         end
         
+        % gradient of potential invariants w.r.t. q
+        function D2piDq = potential_invariant_hessian(self,~,i)
+                      
+            if i == 1
+                D2piDq = [2*ones(self.DIM)  zeros(self.DIM) -2*ones(self.DIM) zeros(self.DIM);
+                          zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM);
+                          -2*ones(self.DIM) zeros(self.DIM) 2*ones(self.DIM)  zeros(self.DIM);
+                          zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM)];
+            elseif i == 2
+                D2piDq = [zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM);
+                          zeros(self.DIM) 2*ones(self.DIM)  zeros(self.DIM) -2*ones(self.DIM);
+                          zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM);
+                          zeros(self.DIM) -2*ones(self.DIM) zeros(self.DIM) 2*ones(self.DIM)];
+            else
+                error('Problem has only 2 invariants for the potential.');
+            end
+        end
+        
         % internal potential computed with the invariant
         function Vs = potential_from_invariant(self,pi,i)
             if i == 1
-                Vs = 0.5 * self.K1 * (pi - self.GEOM(3))^2;
+                Vs = 0.5 * self.K1 * (pi - self.GEOM(3)^2)^2;
             elseif i ==2
-                Vs = 0.5 * self.K2 * (pi - self.GEOM(4))^2;
+                Vs = 0.5 * self.K2 * (pi - self.GEOM(4)^2)^2;
+            end
+        end
+        
+        % gradient of internal potential w.r.t. the invariant
+        function DVsDpi = potential_gradient_from_invariant(self,pi,i)
+            if i == 1
+                DVsDpi = self.K1 * (pi - self.GEOM(3)^2);
+            elseif i ==2
+                DVsDpi = self.K2 * (pi - self.GEOM(4)^2);
             end
         end
         
@@ -312,6 +339,20 @@ classdef FourParticleSystem < System
             end
         end
         
+        % gradient of the invariant of the position constraint w.r.t. q
+        function D2zetaDq2 = constraint_invariant_hessian(self,~,i)
+                        
+            tmp = [eye(self.DIM) -eye(self.DIM); -eye(self.DIM) eye(self.DIM)];
+            
+            if i == 1
+                D2zetaDq2 = [2*tmp  zeros(2*self.DIM); zeros(2*self.DIM) zeros(2*self.DIM)]; 
+            elseif i == 2
+                D2zetaDq2 = [zeros(2*self.DIM) zeros(2*self.DIM) ; zeros(2*self.DIM) 2*tmp];
+            else
+                error('Problem has only 2 invariants for the constraint.');
+            end
+        end
+        
         % position constrained computed with its invariant
         function gs = constraint_from_invariant(self,zeta,i)
             
@@ -321,6 +362,17 @@ classdef FourParticleSystem < System
                 gs = 0.5 * (zeta - self.GEOM(2)^2);
             end
         end   
+        
+         % gradient of position constrained w.r.t. its invariant
+        function gs = constraint_gradient_from_invariant(~,~,i)
+            
+            if i == 1
+                gs = 0.5 ;
+            elseif i == 2
+                gs = 0.5 ;
+            end
+        end   
+        
         
         %% Animation method
         function give_animation(self,fig)
