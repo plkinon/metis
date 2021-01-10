@@ -143,10 +143,10 @@ classdef EMS_std < Integrator
                     g_n1                                                     ];
 
             %% Tangent matrix
-            %tang = [eye(n)                                                  -h*0.5*IM      zeros(n,m) ;
-            %        h*0.5*D2Vext_n05 + h*K21_DG_V + h*K21_DG_g              eye(n)         h*DG_g'   ; 
-            %        G_n1                                                    zeros(n,m)'    zeros(m)  ];
-            tang=[];
+            tang = [eye(n)                                                  -h*0.5*IM      zeros(n,m) ;
+                    h*0.5*D2Vext_n05 + h*K21_DG_V + h*K21_DG_g              eye(n)         h*DG_g'   ; 
+                    G_n1                                                    zeros(n,m)'    zeros(m)  ];
+            %tang=[];
         end
         
     end
