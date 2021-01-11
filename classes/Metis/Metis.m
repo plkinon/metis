@@ -1,6 +1,7 @@
 classdef Metis 
  
     properties
+        %% TODO: Kommentar einfügen, hier alle Input Parameter reinschreiben
         DIM
         DT
         EXT_ACC
@@ -28,7 +29,14 @@ classdef Metis
             % Constructor sets up the METIS workspace and loads all configurations
             % Author: Philipp
             % date: 02.12.2020
+            
+            % Clear workspace, close all windows and clear command window 
+            close all;clc;
 
+            fprintf('************************************************** \n');
+            fprintf(' METIS - Computing constrained mechanical systems \n');
+            fprintf('************************************************** \n');
+            
             % Define all the parameters that METIS needs to run a simulation in a
             % .m-file
             run(INPUT_FILE);
@@ -43,7 +51,7 @@ classdef Metis
                try
                    self.(fn{1}) = configstruct.(fn{1});   %and copy
                catch
-                   warning('Could not copy field %s', fn{1});
+                   error('Unknown config parameters given: %s', fn{1});
                end
             end
             
@@ -53,13 +61,6 @@ classdef Metis
             % Initialises problem, integrator and solver objects
             % Author: Philipp Kinon
             % date: 03.12.2020
-
-            % Clear workspace, close all windows and clear command window 
-            close all; clc;
-
-            fprintf('************************************************** \n');
-            fprintf(' METIS - Computing constrained mechanical systems \n');
-            fprintf('************************************************** \n');
 
             %% Check if user input is valid
             check_user_input(self);
