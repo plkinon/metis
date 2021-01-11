@@ -12,6 +12,9 @@ is_correct_integrator = false;
 is_correct_system     = false;
 is_correct_solver     = false;
 
+
+%% TODO: use "any": any(strcmp(strArray,'str'))
+
 for i = 1:numel(valid_integrator_classes)
     if strcmp(valid_integrator_classes(i).name,[CONFIG.INTEGRATOR,'.m'])
         is_correct_integrator = true;
