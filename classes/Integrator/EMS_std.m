@@ -80,6 +80,7 @@ classdef EMS_std < Integrator
                     V_invariants_difference_too_small = false;
                 else
                     V_invariants_difference_too_small = true;
+                    break
                 end
                 
             end
@@ -142,7 +143,7 @@ classdef EMS_std < Integrator
 
             %% Tangent matrix
             tang = [eye(n)                                        -h*0.5*IM      zeros(n,m);
-                    h*D2Vext_n05 + h*K21_DG_V + h*K21_DG_g        eye(n)         h*DG_g'   ; 
+                    h*0.5*D2Vext_n05 + h*K21_DG_V + h*K21_DG_g        eye(n)         h*DG_g'   ; 
                     G_n1                                          zeros(n,m)'    zeros(m)  ];
         
         end
