@@ -71,10 +71,10 @@ classdef FourParticleSystem < System
             q4 = q(3*self.DIM+1:4*self.DIM);
             P  = self.p;
             
-            DV_int = [self.K1*P*(norm(q3-q1)^P-self.GEOM(3)^P)*norm(q3-q1)^(P-1)*(q1-q3);
-                      self.K2*P*(norm(q4-q2)^P-self.GEOM(4)^P)*norm(q4-q2)^(P-1)*(q2-q4);
-                      self.K1*P*(norm(q3-q1)^P-self.GEOM(3)^P)*norm(q3-q1)^(P-1)*(q3-q1);
-                      self.K2*P*(norm(q4-q2)^P-self.GEOM(4)^P)*norm(q4-q2)^(P-1)*(q4-q2)];
+            DV_int = [self.K1*P*(norm(q3-q1)^P-self.GEOM(3)^P)*norm(q3-q1)^(P-2)*(q1-q3);
+                      self.K2*P*(norm(q4-q2)^P-self.GEOM(4)^P)*norm(q4-q2)^(P-2)*(q2-q4);
+                      self.K1*P*(norm(q3-q1)^P-self.GEOM(3)^P)*norm(q3-q1)^(P-2)*(q3-q1);
+                      self.K2*P*(norm(q4-q2)^P-self.GEOM(4)^P)*norm(q4-q2)^(P-2)*(q4-q2)];
                   
         end          
         
@@ -96,10 +96,14 @@ classdef FourParticleSystem < System
             k2  = self.K2;
             
             % Build up separate entries
-            D2V11 = (k1*P*(2*P-1)*norm(q3-q1)^(2*P-3)-k1*P*(P-1)*l13^P*norm(q3-q1)^(P-3))*(q1-q3)*(q1-q3)' + ...
-                        k1*P*(norm(q3-q1)^P-l13^P)*norm(q3-q1)^(P-1)*eye(self.DIM);
-            D2V22 = (k2*P*(2*P-1)*norm(q4-q2)^(2*P-3)-k2*P*(P-1)*l24^P*norm(q4-q2)^(P-3))*(q2-q4)*(q2-q4)' + ...
-                        k2*P*(norm(q4-q2)^P-l24^P)*norm(q4-q2)^(P-1)*eye(self.DIM);
+            %D2V11 = (k1*P*(2*P-1)*norm(q3-q1)^(2*P-3)-k1*P*(P-1)*l13^P*norm(q3-q1)^(P-3))*(q1-q3)*(q1-q3)' + ...
+            %            k1*P*(norm(q3-q1)^P-l13^P)*norm(q3-q1)^(P-1)*eye(self.DIM);
+            D2V11 = (k1*P*(2*P-2)*norm(q3-q1)^(2*P-4)-k1*P*(P-2)*l13^P*norm(q3-q1)^(P-4))*(q1-q3)*(q1-q3)' + ...
+                        k1*P*(norm(q3-q1)^P-l13^P)*norm(q3-q1)^(P-2)*eye(self.DIM);
+            %D2V22 = (k2*P*(2*P-1)*norm(q4-q2)^(2*P-3)-k2*P*(P-1)*l24^P*norm(q4-q2)^(P-3))*(q2-q4)*(q2-q4)' + ...
+            %            k2*P*(norm(q4-q2)^P-l24^P)*norm(q4-q2)^(P-1)*eye(self.DIM);
+            D2V22 = (k2*P*(2*P-2)*norm(q4-q2)^(2*P-4)-k2*P*(P-2)*l24^P*norm(q4-q2)^(P-4))*(q2-q4)*(q2-q4)' + ...
+                        k2*P*(norm(q4-q2)^P-l24^P)*norm(q4-q2)^(P-2)*eye(self.DIM);
             D2V13 = -D2V11;
             D2V33 = -(-D2V11);
             D2V24 = -D2V22;
