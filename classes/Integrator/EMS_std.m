@@ -54,6 +54,7 @@ classdef EMS_std < Integrator
             % for the internal potential
             DG_Vint = zeros(n,1);
             K21_DG_V = zeros(n,n);
+            V_invariants_difference_too_small = false;
             
             % for every invariant individually
             for i = 1:p
@@ -77,7 +78,6 @@ classdef EMS_std < Integrator
                     % discrete gradient
                     DG_Vint  = DG_Vint + (Vs_n1-Vs_n)/(pi_n1-pi_n)*DPiq_n05;
                     K21_DG_V    = K21_DG_V + DPiq_n05*(DVsDpi_n1*DPiDq_n1*1/(pi_n1-pi_n) - (Vs_n1-Vs_n)/(pi_n1-pi_n)^2*DPiDq_n1)' + (Vs_n1-Vs_n)/(pi_n1-pi_n)*1/2*D2PiDq2;
-                    V_invariants_difference_too_small = false;
                 else
                     V_invariants_difference_too_small = true;
                     break
@@ -94,6 +94,7 @@ classdef EMS_std < Integrator
             % for the gradients of the constraints
             DG_g = zeros(m,n);
             K21_DG_g = zeros(n,n);
+            g_invariants_difference_too_small = false;
             
             % for every invariant individually
             for j = 1:this_problem.nConstraintInvariants
@@ -118,7 +119,6 @@ classdef EMS_std < Integrator
                     % discrete gradient
                     DG_g(j,:)   = (gs_n1 - gs_n)/(zeta_n1 - zeta_n)*DzetaDq_n05';
                     K21_DG_g    = K21_DG_g + lambda_n1(j)*(DzetaDq_n05'*(DgsDzeta_n1*DzetaDq_n1*1/(zeta_n1-zeta_n) - (gs_n1 - gs_n)/(zeta_n1 - zeta_n)^2*DzetaDq_n1) + (gs_n1 - gs_n)/(zeta_n1 - zeta_n)*1/2*D2zetaDq2);
-                    g_invariants_difference_too_small = false;
                 else
                     g_invariants_difference_too_small = true;
                     break

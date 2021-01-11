@@ -207,12 +207,31 @@ classdef DoublePendulum < System
             
         end
         
+        function D2piDqDp = vConstraint_invariant_hessian_qp(self,~,~,i)
+            
+            m1 = self.MASS(1);
+            m2 = self.MASS(2);
+            
+            if i==1
+                D2piDqDp = [eye(self.DIM)*1/m1 zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM)];
+            elseif i==2
+                D2piDqDp = [eye(self.DIM)*1/m1  -eye(self.DIM)*1/m1;
+                            -eye(self.DIM)*1/m2 eye(self.DIM)*1/m2];
+            end
+        end
+        
         % velocity constraint computed with its invariant
         function gv = Vconstraint_from_invariant(~,pi2,~)
             
             gv = pi2;
             
         end
+        
+        function DgvDpi = Vconstraint_gradient_from_invariant(~,~,~)
+            DgvDpi = 1;
+        end
+        
         
         function give_animation(self,fig)
             

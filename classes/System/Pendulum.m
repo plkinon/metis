@@ -104,11 +104,22 @@ classdef Pendulum < System
             
         end
         
+        function D2piDqDp = vConstraint_invariant_hessian_qp(self,~,~,i)
+            
+            m = self.MASS;
+            D2piDqDp = 1/m*eye(self.DIM);
+            
+        end
+        
         % velocity constraint computed with its invariant
         function gv = Vconstraint_from_invariant(~,pi2,~)
             
             gv = pi2;
             
+        end
+        
+        function DgvDpi = Vconstraint_gradient_from_invariant(~,~,~)
+            DgvDpi = 1;
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%

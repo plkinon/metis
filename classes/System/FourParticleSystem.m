@@ -302,12 +302,36 @@ classdef FourParticleSystem < System
             
         end
         
+        function D2piDqDp = vConstraint_invariant_hessian_qp(self,~,~,i)
+            
+            m1 = self.MASS(1);
+            m2 = self.MASS(2);
+            m3 = self.MASS(3);
+            m4 = self.MASS(4);
+            
+            if i==1
+                D2piDqDp = [eye(self.DIM)*1/m1 zeros(self.DIM)     zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    eye(self.DIM)*1/m2  zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM)     zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM)     zeros(self.DIM) zeros(self.DIM)];
+            elseif i==2
+                D2piDqDp = [zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) eye(self.DIM)*1/m3 zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    eye(self.DIM)*1/m4];
+            end
+        end
+        
         % velocity constraint computed with its invariant
         function gv = Vconstraint_from_invariant(~,pi2,~)
             
             gv = pi2;
             
-        end  
+        end 
+        
+        function DgvDpi = Vconstraint_gradient_from_invariant(~,~,~)
+            DgvDpi = 1;
+        end
         
         % invariant of the position constraint
         function zeta = constraint_invariant(self,q,i)
