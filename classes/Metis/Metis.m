@@ -37,9 +37,8 @@ classdef Metis
     
     methods
         
-        function self = Metis(INPUT_FILE)
-            
-            % Constructor sets up the METIS workspace and loads all configurations
+        function [self,this_system, this_integrator, this_solver] = Metis(INPUT_FILE)
+            %% Constructor: sets up the METIS workspace and loads all configurations
             % Author: Philipp
             % date: 02.12.2020
             
@@ -50,23 +49,19 @@ classdef Metis
             fprintf(' METIS - Computing constrained mechanical systems \n');
             fprintf('************************************************** \n');
             
-            % Define all the parameters that METIS needs to run a simulation in a
-            % .m-file
-            run(INPUT_FILE);
-
-            % Load input variables into CONFIG-struct and delete unnecessary .mat-File
-            configstruct = load([INPUT_FILE,'.mat']);
-            delete *.mat
-            configstruct = rmfield(configstruct,{'self','INPUT_FILE'});
-
-            % Converts structure s to an object of class classname.
-            for fn = fieldnames(configstruct)'    %enumerat fields
-               try
-                   self.(fn{1}) = configstruct.(fn{1});   %and copy
-               catch
-                   error('Unknown config parameters given: %s', fn{1});
-               end
-            end
+            %% Set attributes from config file           
+            self = self.get_config_input(INPUT_FILE);
+            
+            %% Check if user input is valid
+            self.check_user_input();
+            
+            %% Define other classes
+            [this_system, this_integrator, this_solver] = self.define_classes();
+            
+            %% Solution Matrix to store results
+            self.z       = zeros(this_integrator.NT, this_integrator.nVARS);
+            self.z(1, :) = [self.Q_0', (this_system.MASS_MAT * self.V_0)', this_integrator.LM0'];
+            self.t       = this_integrator.t;
             
         end
         
@@ -93,6 +88,7 @@ classdef Metis
         end
         
         function state = is_class_available(~,directory,this_class)
+            %% Function: Check if a class is available
             
             % Get all present class-names
             valid_classes     = dir(fullfile(directory,'*.m'));
@@ -112,14 +108,33 @@ classdef Metis
             
         end
         
+        function self = get_config_input(self,INPUT_FILE)
+            %% Function: reads input-file and stores it in the attributes
+            
+            % Define all the parameters that METIS needs to run a simulation in a
+            % .m-file
+            run(INPUT_FILE);
+
+            % Load input variables into CONFIG-struct and delete unnecessary .mat-File
+            configstruct = load([INPUT_FILE,'.mat']);
+            delete *.mat
+            configstruct = rmfield(configstruct,{'self','INPUT_FILE'});
+
+            % Converts structure s to an object of class classname.
+            for fn = fieldnames(configstruct)'    %enumerat fields
+               try
+                   self.(fn{1}) = configstruct.(fn{1});   %and copy
+               catch
+                   error('Unknown config parameters given: %s', fn{1});
+               end
+            end
+            
+        end
         
-        function [self,this_system, this_integrator, this_solver] = initialise(self)
-            % Initialises problem, integrator and solver objects
+        function [this_system, this_integrator, this_solver] = define_classes(self)
+            %% Function: Defines problem, integrator and solver objects
             % Author: Philipp Kinon
             % date: 03.12.2020
-
-            %% Check if user input is valid
-            self.check_user_input();
 
             %% System
             % Takes user-defined string and evaluates it as the constructor of a class
@@ -129,12 +144,7 @@ classdef Metis
             %% Integrator
             % Define Integrator from Class (same procedure as for system)
             this_integrator = feval(self.INTEGRATOR,self,this_system);
-            
-            %% Solution Matrix to store results
-            self.z       = zeros(this_integrator.NT, this_integrator.nVARS);
-            self.z(1, :) = [self.Q_0', (this_system.MASS_MAT * self.V_0)', this_integrator.LM0'];
-            self.t       = this_integrator.t;
-            
+                     
             %% Solver
             % Define Solver from class
             this_solver = Solver(self);

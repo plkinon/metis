@@ -6,10 +6,7 @@ addpath(genpath(fileparts(which(mfilename))));
 
 %% METIS initialise
 % Load configuration parameters from file into Metis-object
-simulation = Metis('config_input_4P_EMS');
-
-% Initialise system, integrator and solver by class
-[simulation,system,integrator,solver] = simulation.initialise();
+[simulation,system,integrator,solver] = Metis('config_input_4P_EMS');
 
 %% METIS solver
 % Solve my System with my Solver and my Integration scheme
