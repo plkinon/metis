@@ -17,10 +17,16 @@ classdef EMS_ggl < Integrator
 % Date  : 20.12.2020
 
     methods
-        function self = initialise(self,~,this_problem)
-            self.NAME  = 'EMS-GGL';
+        
+        function self = EMS_ggl(CONFIG,this_problem)
+            self.DT    = CONFIG.DT;
+            self.T_0   = CONFIG.T_0;
+            self.T_END = CONFIG.T_END;
+            self.t     = CONFIG.T_0:CONFIG.DT:CONFIG.T_END;
+            self.NT    = size(self.t, 2) - 1;
             self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.NAME  = 'EMS-GGL';
         end
         
         function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)

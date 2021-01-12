@@ -14,15 +14,7 @@ classdef System
         nPotentialInvariants
         nConstraintInvariants
         nVconstraintInvariants
-        z
-        H
-        T
-        V
-        J
-        Hdiff
-        Jdiff
-        constraint_position
-        constraint_velocity
+        
     end
 
 end

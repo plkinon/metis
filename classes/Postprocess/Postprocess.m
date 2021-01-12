@@ -7,29 +7,29 @@ classdef Postprocess
             set(0, 'defaultfigureposition', [850, 450, 1200, 600])
         end
 
-        function animation(~, this_problem,this_integrator, this_simulation)
+        function animation(~, this_problem, this_simulation)
             % Function which displays an animation of the trajectory if
             % desired by user
             
             if this_simulation.shouldAnimate == true
                 
                 fig = figure();
-                this_problem.give_animation(fig);
-                title(strcat(this_integrator.NAME, ': Trajectory'))
+                this_problem.give_animation(fig,this_simulation);
+                title(strcat(this_simulation.INTEGRATOR, ': Trajectory'))
 
             end
 
         end
 
-        function this_problem = compute(~, this_problem)
+        function this_simulation = compute(~, this_problem,this_simulation)
             % Function which computes energetic quantities, ang. Mom. , ...
             % as functions of time for a given q and p-vector
             nDOF = this_problem.nDOF;
             m = this_problem.mCONSTRAINTS;
             d = this_problem.nBODIES;
             DIM = this_problem.DIM;
-            q = this_problem.z(:, 1:nDOF);
-            p = this_problem.z(:, nDOF+1:2*nDOF);
+            q = this_simulation.z(:, 1:nDOF);
+            p = this_simulation.z(:, nDOF+1:2*nDOF);
             NT = size(q, 1);
             M = this_problem.MASS_MAT;
             IM = M\eye(size(M));
@@ -63,28 +63,28 @@ classdef Postprocess
 
             end
                        
-            this_problem.T = T;
-            this_problem.V = V;
-            this_problem.H = H;
-            this_problem.J = J;
-            this_problem.Hdiff = diffH;
-            this_problem.Jdiff = diffJ;
-            this_problem.constraint_position = constraint_position;
-            this_problem.constraint_velocity = constraint_velocity;
+            this_simulation.T = T;
+            this_simulation.V = V;
+            this_simulation.H = H;
+            this_simulation.J = J;
+            this_simulation.Hdiff = diffH;
+            this_simulation.Jdiff = diffJ;
+            this_simulation.constraint_position = constraint_position;
+            this_simulation.constraint_velocity = constraint_velocity;
 
         end
 
-        function plot(~,this_simulation, this_problem, this_integrator)
+        function plot(~,this_simulation)
             
-            H = this_problem.H;
-            V = this_problem.V;
-            T = this_problem.T;
-            t = this_integrator.t;
-            J = this_problem.J;
-            diffH = this_problem.Hdiff;
-            diffJ = this_problem.Jdiff;
-            g_pos = this_problem.constraint_position;
-            g_vel = this_problem.constraint_velocity;
+            H = this_simulation.H;
+            V = this_simulation.V;
+            T = this_simulation.T;
+            t = this_simulation.t;
+            J = this_simulation.J;
+            diffH = this_simulation.Hdiff;
+            diffJ = this_simulation.Jdiff;
+            g_pos = this_simulation.constraint_position;
+            g_vel = this_simulation.constraint_velocity;
             
             Mmin = min([min(V), min(T), min(H)]);
             Mmax = max([max(V), max(T), max(H)]);
@@ -102,7 +102,7 @@ classdef Postprocess
                         %plots Energy quantities over time
                         plotline = plot(t, T, t, V, t, H);
                         ylim([Mmin - 0.1 * abs(Mmin), 1.1 * Mmax])
-                        title(strcat(this_integrator.NAME, ': Energy'))
+                        title(strcat(this_simulation.INTEGRATOR, ': Energy'))
                         legend('T', 'V', 'H')
                         xlabel('t');
                         ylabel('Energy');
@@ -111,7 +111,7 @@ classdef Postprocess
 
                         %plots the ang. Mom. about dim-axis over time
                         plotline = plot(t, J(:,:));
-                        title(strcat(this_integrator.NAME, ': Angular Momentum'))
+                        title(strcat(this_simulation.INTEGRATOR, ': Angular Momentum'))
                         legend('J1','J2','J3');
                         xlabel('t');
                         ylabel('Angular Momentum');
@@ -120,7 +120,7 @@ classdef Postprocess
 
                         %plots the increments of Hamiltonian over time
                         plotline = plot(t(2:end), diffH);
-                        title(strcat(this_integrator.NAME, ': Energy difference'))
+                        title(strcat(this_simulation.INTEGRATOR, ': Energy difference'))
                         xlabel('t');
                         ylabel('H_{n+1}-H_{n}');
                         legend(strcat('std(H)=', num2str(std(H))));
@@ -129,7 +129,7 @@ classdef Postprocess
 
                         %plots the increments of ang. Mom. over time about desired axis (dim)      
                         plotline = plot(t(2:end), diffJ(:,:));
-                        title(strcat(this_integrator.NAME, ': Ang. mom. - difference'));
+                        title(strcat(this_simulation.INTEGRATOR, ': Ang. mom. - difference'));
                         xlabel('t');
                         legend('J1','J2','J3');
                         ylabel('J_{n+1}-J_{n}');
@@ -140,7 +140,7 @@ classdef Postprocess
 
                         %plots the position constraint and their violations by integration
                         plotline = plot(t,g_pos);
-                        title(strcat(this_integrator.NAME, ': Constraint on position level'));
+                        title(strcat(this_simulation.INTEGRATOR, ': Constraint on position level'));
                         xlabel('t');
                         ylabel('g(t)');
 
@@ -148,7 +148,7 @@ classdef Postprocess
 
                         %plots the velocity constraint and their violations by integration
                         plotline = plot(t,g_vel);
-                        title(strcat(this_integrator.NAME, ': Constraint on velocity level'));
+                        title(strcat(this_simulation.INTEGRATOR, ': Constraint on velocity level'));
                         xlabel('t');
                         ylabel('G*v(t)');    
 

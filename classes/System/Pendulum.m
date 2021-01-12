@@ -170,10 +170,10 @@ classdef Pendulum < System
             end
         end  
         
-        function give_animation(self,fig)
+        function give_animation(self,fig,this_simulation)
             
                 DIM = self.DIM;
-                q = self.z(:, 1:DIM);
+                q = this_simulation.z(:, 1:DIM);
                 l = sum(self.GEOM(:));
                 NT = size(q,1);
 

@@ -16,10 +16,16 @@ classdef EMS_std < Integrator
 % Date  : 17.12.2020
 
     methods
-        function self = initialise(self,~,this_problem)
-            self.NAME  = 'EMS-std';
+        
+        function self = EMS_std(this_simulation,this_problem)
+            self.DT    = this_simulation.DT;
+            self.T_0   = this_simulation.T_0;
+            self.T_END = this_simulation.T_END;
+            self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
+            self.NT    = size(self.t, 2) - 1;
             self.nVARS = 2*this_problem.nDOF+1*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(this_problem.mCONSTRAINTS,1);
+            self.NAME  = 'EMS-std';
         end
         
         function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)

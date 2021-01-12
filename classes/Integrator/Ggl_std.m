@@ -17,10 +17,16 @@ classdef Ggl_std < Integrator
 % Date  : 09.12.2020
 
     methods
-        function self = initialise(self,~,this_problem)
-            self.NAME  = 'GGL-std ';
+        
+        function self = Ggl_std(this_simulation, this_problem)
+            self.DT    = this_simulation.DT;
+            self.T_0   = this_simulation.T_0;
+            self.T_END = this_simulation.T_END;
+            self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
+            self.NT    = size(self.t, 2) - 1;
             self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.NAME  = 'GGL-std ';
         end
         
         function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)

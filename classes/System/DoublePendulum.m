@@ -233,12 +233,12 @@ classdef DoublePendulum < System
         end
         
         
-        function give_animation(self,fig)
+        function give_animation(self,fig,this_simulation)
             
             
                 DIM = self.DIM;
-                q1 = self.z(:, 1:DIM);
-                q2 = self.z(:,DIM+1:2*DIM);
+                q1 = this_simulation.z(:, 1:DIM);
+                q2 = this_simulation.z(:,DIM+1:2*DIM);
                 l = self.GEOM(1)+self.GEOM(2);
                 NT = size(q1,1);
 

@@ -17,12 +17,21 @@ classdef Metis
         SYSTEM
         TOLERANCE
         T_0
+        t
         T_END
         V_0
         plot_quantities
         shouldAnimate
-        INPUT_FILE
         ALL_DT
+        z
+        H
+        T
+        V
+        J
+        Hdiff
+        Jdiff
+        constraint_position
+        constraint_velocity
         
     end
     
@@ -48,8 +57,8 @@ classdef Metis
             % Load input variables into CONFIG-struct and delete unnecessary .mat-File
             configstruct = load([INPUT_FILE,'.mat']);
             delete *.mat
-            configstruct = rmfield(configstruct,'self');
-            
+            configstruct = rmfield(configstruct,{'self','INPUT_FILE'});
+
             % Converts structure s to an object of class classname.
             for fn = fieldnames(configstruct)'    %enumerat fields
                try
@@ -104,7 +113,7 @@ classdef Metis
         end
         
         
-        function [this_system, this_integrator, this_solver] = initialise(self)
+        function [self,this_system, this_integrator, this_solver] = initialise(self)
             % Initialises problem, integrator and solver objects
             % Author: Philipp Kinon
             % date: 03.12.2020
@@ -119,15 +128,13 @@ classdef Metis
 
             %% Integrator
             % Define Integrator from Class (same procedure as for system)
-            this_integrator = feval(self.INTEGRATOR,self);
-
-            %% Apply integrator to system and vice versa
-            % Initialise integrator for current system
-            this_integrator = this_integrator.initialise(self,this_system);
-
-            % Intialise System for current integrator
-            this_system = this_system.initialise(self,this_integrator);
-
+            this_integrator = feval(self.INTEGRATOR,self,this_system);
+            
+            %% Solution Matrix to store results
+            self.z       = zeros(this_integrator.NT, this_integrator.nVARS);
+            self.z(1, :) = [self.Q_0', (this_system.MASS_MAT * self.V_0)', this_integrator.LM0'];
+            self.t       = this_integrator.t;
+            
             %% Solver
             % Define Solver from class
             this_solver = Solver(self);

@@ -16,11 +16,11 @@ classdef Solver
             
         end
 
-        function this_problem = solve(self, this_problem, this_integrator)
+        function this_simulation = solve(self, this_simulation, this_problem, this_integrator)
             %% Procedure of time-stepping
             
             % Read solution vector and set present zn1 to initial value
-            z = this_problem.z;
+            z = this_simulation.z;
             zn1 = z(1, :)';
             
             %% Time-Stepping
@@ -43,7 +43,7 @@ classdef Solver
             end
             
             % Store solution
-            this_problem.z = z;
+            this_simulation.z = z;
             
         end
         

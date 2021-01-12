@@ -9,21 +9,21 @@ addpath(genpath(fileparts(which(mfilename))));
 simulation = Metis('config_input_4P_EMS');
 
 % Initialise system, integrator and solver by class
-[system,integrator,solver] = simulation.initialise();
+[simulation,system,integrator,solver] = simulation.initialise();
 
 %% METIS solver
 % Solve my System with my Solver and my Integration scheme
-system = solver.solve(system,integrator);
+simulation = solver.solve(simulation,system,integrator);
 
 %% METIS postprocessing
 % Define Postprocessing from class
 postprocess = Postprocess();
 
 % Compute various postprocessing quantities
-system = postprocess.compute(system);
+simulation = postprocess.compute(system,simulation);
 
 % Animation of trajectory
-postprocess.animation(system,integrator,simulation);
+postprocess.animation(system,simulation);
 
 % Time-evolution of postprocessing quantites as plots
-postprocess.plot(simulation,system,integrator);
+postprocess.plot(simulation);

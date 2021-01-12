@@ -403,14 +403,14 @@ classdef FourParticleSystem < System
         
         
         %% Animation method
-        function give_animation(self,fig)
+        function give_animation(self,fig,this_simulation)
             
             
                 DIM = self.DIM;
-                q1 = self.z(:, 1:DIM);
-                q2 = self.z(:,DIM+1:2*DIM);
-                q3 = self.z(:,2*DIM+1:3*DIM);
-                q4 = self.z(:,3*DIM+1:4*DIM);
+                q1 = this_simulation.z(:, 1:DIM);
+                q2 = this_simulation.z(:,DIM+1:2*DIM);
+                q3 = this_simulation.z(:,2*DIM+1:3*DIM);
+                q4 = this_simulation.z(:,3*DIM+1:4*DIM);
                 xmin = min([min(q1(:,1)) min(q2(:,1)) min(q3(:,1)) min(q4(:,1))]);
                 ymin = min([min(q1(:,2)) min(q2(:,2)) min(q3(:,2)) min(q4(:,2))]);
                 zmin = min([min(q1(:,3)) min(q2(:,3)) min(q3(:,3)) min(q4(:,3))]);
