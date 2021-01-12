@@ -6,7 +6,7 @@ addpath(genpath(fileparts(which(mfilename))));
 
 %% METIS initialise
 % Load configuration parameters from file into Metis-object
-simulation = Metis('config_input_error_analysis');
+[simulation,system,integrator,solver] = Metis('config_input_error_analysis');
 
 % Define Postprocessing from class
 postprocess = Postprocess();
@@ -19,22 +19,22 @@ consV = zeros(length(simulation.ALL_DT),1);                        %velocity con
 %% Loop over all desired timestepsizes
 for i = 1:length(simulation.ALL_DT)
     
-    % Set current timestepsize
+    % Apply current timestepsize
     simulation.DT = simulation.ALL_DT(i);
-
-    % Initialise system, integrator and solver by class
-    [system,integrator,solver] = simulation.initialise();
-
+    integrator.DT = simulation.ALL_DT(i);
+    integrator.t  = simulation.T_0:simulation.DT:simulation.T_END;
+    simulation    = simulation.set_solution_matrix(integrator,system);
+    
     %% METIS solver
     % Solve my System with my Solver and my Integration scheme
-    system = solver.solve(system,integrator);
+    simulation = solver.solve(simulation,system,integrator);
 
     % Compute various postprocessing quantities
-    system = postprocess.compute(system);
+    simulation = postprocess.compute(system,simulation);
     
     % Compute position error and velocity constraint violation
-    qEnd(i,:) = system.z(end,1:system.nBODIES*system.DIM);
-    consV(i)  = norm(system.constraint_velocity(end));
+    qEnd(i,:) = simulation.z(end,1:system.nBODIES*system.DIM);
+    consV(i)  = norm(simulation.constraint_velocity(end));
     
 end
 

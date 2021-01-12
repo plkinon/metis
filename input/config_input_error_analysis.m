@@ -9,6 +9,7 @@ DIM     = 3;
 %% Integrator
 INTEGRATOR = 'EMS_ggl';
 ALL_DT = [0.05 0.02 0.01 0.005 0.002 0.001 0.0005 0.0002 0.0001];
+DT = 0.05;
 T_0   = 0;
 T_END = 1;
 

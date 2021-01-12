@@ -58,10 +58,8 @@ classdef Metis
             %% Define other classes
             [this_system, this_integrator, this_solver] = self.define_classes();
             
-            %% Solution Matrix to store results
-            self.z       = zeros(this_integrator.NT, this_integrator.nVARS);
-            self.z(1, :) = [self.Q_0', (this_system.MASS_MAT * self.V_0)', this_integrator.LM0'];
-            self.t       = this_integrator.t;
+            %% Solution Matrix to store results (inc. IVs)          
+            self = self.set_solution_matrix(this_integrator,this_system);
             
         end
         
@@ -149,6 +147,14 @@ classdef Metis
             % Define Solver from class
             this_solver = Solver(self);
 
+        end
+        
+        function self = set_solution_matrix(self,this_integrator,this_system)
+           
+            self.z       = zeros(this_integrator.NT, this_integrator.nVARS);
+            self.z(1, :) = [self.Q_0', (this_system.MASS_MAT * self.V_0)', this_integrator.LM0'];
+            self.t       = this_integrator.t;
+            
         end
         
         
