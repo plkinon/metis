@@ -1,7 +1,11 @@
 classdef Metis 
- 
+    %% Class: Metis
+    % Conducts all the computations, stores Input-Parameters, sets up 
+    % variables, initilises classes and solving methods    
+    
     properties
-        %% TODO: Kommentar einfügen, hier alle Input Parameter reinschreiben
+        % All the necessary parameters, initial values and methods used.
+        % Have to be given in an input-file.
         DIM
         DT
         EXT_ACC
@@ -57,13 +61,60 @@ classdef Metis
             
         end
         
+        function check_user_input(self)
+            %% Check if user input is valid
+            
+            % Set strings for directories that contain class m-files
+            directory_integrator = 'classes/Integrator';
+            directory_system     = 'classes/System';
+            directory_solver     = 'classes/Solver';
+            
+            % Check if user-input is available
+            is_correct_integrator = self.is_class_available(directory_integrator,self.INTEGRATOR);
+            is_correct_system     = self.is_class_available(directory_system,self.SYSTEM);
+            is_correct_solver     = self.is_class_available(directory_solver,self.SOLVER);
+
+            if ~is_correct_integrator 
+                error('User input for integrator not available.');
+            elseif ~is_correct_system 
+                error('User input for system not available.');
+            elseif ~is_correct_solver
+                error('User input for solver not available.');
+            else
+                fprintf('               Valid user input.                   \n');
+                fprintf('************************************************** \n');
+            end
+
+        end
+        
+        function state = is_class_available(~,directory,this_class)
+            
+            % Get all present class-names
+            valid_classes     = dir(fullfile(directory,'*.m'));
+            
+            % Security check for folders
+            isfile    = ~[valid_classes.isdir];
+            filenames = {valid_classes(isfile).name};
+            
+            % Default
+            state = false;
+            
+            % Check whether this_class is an available file in the
+            % directory
+            if any(strcmp(filenames,[this_class,'.m']))
+                state = true;
+            end
+            
+        end
+        
+        
         function [this_system, this_integrator, this_solver] = initialise(self)
             % Initialises problem, integrator and solver objects
             % Author: Philipp Kinon
             % date: 03.12.2020
 
             %% Check if user input is valid
-            check_user_input(self);
+            self.check_user_input();
 
             %% System
             % Takes user-defined string and evaluates it as the constructor of a class
