@@ -73,6 +73,41 @@ classdef Postprocess
             this_simulation.constraint_velocity = constraint_velocity;
 
         end
+        
+        function save(~,export_simulation)
+            
+            % convert timestep-size to string
+            DT_string         = strrep(num2str(export_simulation.DT),'.','');
+            integrator_string = strrep(export_simulation.INTEGRATOR,'_','');
+            % Set export-string-name
+            export_folder = [export_simulation.export_path,export_simulation.SYSTEM,'_',integrator_string,'_DT',DT_string,'/'];
+                
+            
+            if export_simulation.should_export
+                if ~exist(export_folder, 'dir')
+                    mkdir(export_folder)
+                else
+                    warning('off')
+                    rmdir(export_folder,'s')
+                    mkdir(export_folder)
+                    warning('on')
+                    warning('Removed existing output folder.');
+                end
+                
+                % Export
+                save([export_folder,'results'],'export_simulation');
+                
+                if export_simulation.should_export_figures
+                    figHandles = findall(0,'Type','figure'); 
+                    
+                    for i = 1:numel(figHandles)
+                        print(figHandles(i), [export_folder,num2str(i)], '-depsc')
+                    end
+                    
+                end
+            end
+            
+        end
 
         function plot(~,this_simulation)
             

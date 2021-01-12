@@ -24,6 +24,9 @@ classdef Metis
         % Can be given in an input-file (not necessary for computing)
         plot_quantities
         shouldAnimate
+        should_export
+        export_path
+        should_export_figures
         
         %% Solution quantities 
         % Will be filled by Metis
@@ -56,10 +59,15 @@ classdef Metis
             close all;clc;
 
             fprintf('**************************************************** \n');
+            fprintf('  \n');
             fprintf(' METIS - Computing constrained mechanical systems  \n');
-            fprintf('                     *********                     \n');
-            fprintf(' author: Philipp Kinon, Institute of Mechanics (KIT)\n');
+            fprintf(' ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  \n');
+            fprintf('     by: Philipp Kinon, B.Sc. \n');
+            fprintf('         Institute of Mechanics (IFM) \n')
+            fprintf('         Karlsruhe Institute of Technology (KIT) \n')
+            fprintf('  \n');
             fprintf('**************************************************** \n');
+            fprintf('  \n');
             
             %% Set attributes from config file           
             self = self.get_config_input(INPUT_FILE);
@@ -95,8 +103,10 @@ classdef Metis
             if ~is_user_input_complete 
                 error('User input is incomplete. Check for missing input values.');
             else
-                fprintf('               Complete user input.                 \n');
+                fprintf('     Complete user input.                 \n');
+                fprintf('  \n');
                 fprintf('**************************************************** \n');
+                fprintf('  \n');
             end
             
             %% Check validity of given integrator and system        
@@ -109,8 +119,9 @@ classdef Metis
             elseif ~is_correct_system 
                 error('User input for system not available.');
             else
-                fprintf('           Valid system and integrator:            \n');
-                fprintf(['  System: ',self.SYSTEM,', Integrator: ',self.INTEGRATOR,'\n']);
+                fprintf(['     System: ',self.SYSTEM,' \n']);
+                fprintf(['     Integrator: ',self.INTEGRATOR,'\n']);
+                fprintf('  \n');
                 fprintf('**************************************************** \n');
                 
             end
