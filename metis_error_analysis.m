@@ -13,8 +13,8 @@ postprocess = Postprocess();
 
 % Analysis output quantities
 qEnd  = zeros(length(simulation.ALL_DT),size(simulation.Q_0,1));   %position 
-error = zeros(length(simulation.ALL_DT),4);                    %position error w.r.t. to smallest h
-consV = zeros(length(simulation.ALL_DT),1);                    %velocity constraint violation
+error = zeros(length(simulation.ALL_DT),4);                        %position error w.r.t. to smallest h
+consV = zeros(length(simulation.ALL_DT),1);                        %velocity constraint violation
 
 %% Loop over all desired timestepsizes
 for i = 1:length(simulation.ALL_DT)
