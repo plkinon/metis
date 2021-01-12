@@ -4,8 +4,9 @@ classdef Metis
     % variables, initilises classes and solving methods    
     
     properties
-        % All the necessary parameters, initial values and methods used.
-        % Have to be given in an input-file.
+        %% Computation parameters
+        % Have to be given in an input-file one-to-one. Leaving out one or
+        % another will immediately lead to wrong or non-existing results.
         DIM
         DT
         EXT_ACC
@@ -13,16 +14,20 @@ classdef Metis
         MASS
         MAX_ITERATIONS
         Q_0
-        SOLVER
         SYSTEM
         TOLERANCE
         T_0
-        t
         T_END
         V_0
+        
+        %% Postprocessing parameters
+        % Can be given in an input-file (not necessary for computing)
         plot_quantities
         shouldAnimate
-        ALL_DT
+        
+        %% Solution quantities 
+        % Will be filled by Metis
+        t
         z
         H
         T
@@ -32,6 +37,11 @@ classdef Metis
         Jdiff
         constraint_position
         constraint_velocity
+        
+        %% Error analysis parameters
+        % Only necessary if you want to conduct an error analysis for
+        % several timestep-sizes
+        ALL_DT
         
     end
     
@@ -45,9 +55,11 @@ classdef Metis
             % Clear workspace, close all windows and clear command window 
             close all;clc;
 
-            fprintf('************************************************** \n');
-            fprintf(' METIS - Computing constrained mechanical systems \n');
-            fprintf('************************************************** \n');
+            fprintf('**************************************************** \n');
+            fprintf(' METIS - Computing constrained mechanical systems  \n');
+            fprintf('                     *********                     \n');
+            fprintf(' author: Philipp Kinon, Institute of Mechanics (KIT)\n');
+            fprintf('**************************************************** \n');
             
             %% Set attributes from config file           
             self = self.get_config_input(INPUT_FILE);
@@ -64,28 +76,48 @@ classdef Metis
         end
         
         function check_user_input(self)
-            %% Check if user input is valid
+            %% Function: Check if user input is valid
             
-            % Set strings for directories that contain class m-files
-            directory_integrator = 'classes/Integrator';
-            directory_system     = 'classes/System';
+            %% Check completeness of input
+            % Check if all necessary input quantities are given by user
+            necessary_input_list = {'DIM','DT','EXT_ACC','INTEGRATOR','MASS',...
+                                    'MAX_ITERATIONS','Q_0','SYSTEM','TOLERANCE',...
+                                    'T_0','T_END','V_0'};
+            is_user_input_complete = true;
             
-            % Check if user-input is available
-            is_correct_integrator = self.is_class_available(directory_integrator,self.INTEGRATOR);
-            is_correct_system     = self.is_class_available(directory_system,self.SYSTEM);
+            for i = 1:length(necessary_input_list)
+                if isempty(self.(necessary_input_list{i}))
+                    is_user_input_complete = false;
+                end
+            end
+            
+            % Throw error if necessary input quantity is missing
+            if ~is_user_input_complete 
+                error('User input is incomplete. Check for missing input values.');
+            else
+                fprintf('               Complete user input.                 \n');
+                fprintf('**************************************************** \n');
+            end
+            
+            %% Check validity of given integrator and system        
+            % Check if user-input is available in class directories
+            is_correct_integrator = self.is_class_available('classes/Integrator',self.INTEGRATOR);
+            is_correct_system     = self.is_class_available('classes/System',self.SYSTEM);
 
             if ~is_correct_integrator 
                 error('User input for integrator not available.');
             elseif ~is_correct_system 
                 error('User input for system not available.');
             else
-                fprintf('               Valid user input.                   \n');
-                fprintf('************************************************** \n');
+                fprintf('           Valid system and integrator:            \n');
+                fprintf(['  System: ',self.SYSTEM,', Integrator: ',self.INTEGRATOR,'\n']);
+                fprintf('**************************************************** \n');
+                
             end
 
         end
         
-        function state = is_class_available(~,directory,this_class)
+        function is_avaiable = is_class_available(~,directory,this_class)
             %% Function: Check if a class is available
             
             % Get all present class-names
@@ -95,14 +127,9 @@ classdef Metis
             isfile    = ~[valid_classes.isdir];
             filenames = {valid_classes(isfile).name};
             
-            % Default
-            state = false;
-            
             % Check whether this_class is an available file in the
             % directory
-            if any(strcmp(filenames,[this_class,'.m']))
-                state = true;
-            end
+            is_avaiable = any(strcmp(filenames,[this_class,'.m']));
             
         end
         
