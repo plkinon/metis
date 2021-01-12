@@ -1,4 +1,4 @@
-%% Problem Parameters
+%% System Parameters
 SYSTEM  = 'DoublePendulum';
 EXT_ACC = [0; 0; 9.81];
 Q_0     = [1; 0; 0; 2.5; 0; 0];
@@ -13,7 +13,6 @@ T_0   = 0;
 T_END = 1;
 
 %% Solver Method
-SOLVER         = 'Newton';
 MAX_ITERATIONS = 40;
 TOLERANCE      = 1E-09;
 

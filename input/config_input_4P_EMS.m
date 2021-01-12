@@ -1,4 +1,4 @@
-%% Problem Parameters
+%% System Parameters
 SYSTEM  = 'FourParticleSystem';
 EXT_ACC = [0; 0; 0];
 Q_0     = [0; 0; 0; 1; 0; 0; 0; 1; 0; 1; 1; 0];
@@ -13,7 +13,6 @@ T_0   = 0;
 T_END = 1;
 
 %% Solver Method
-SOLVER         = 'Newton';
 MAX_ITERATIONS = 40;
 TOLERANCE      = 1E-09;
 

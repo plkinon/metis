@@ -67,19 +67,15 @@ classdef Metis
             % Set strings for directories that contain class m-files
             directory_integrator = 'classes/Integrator';
             directory_system     = 'classes/System';
-            directory_solver     = 'classes/Solver';
             
             % Check if user-input is available
             is_correct_integrator = self.is_class_available(directory_integrator,self.INTEGRATOR);
             is_correct_system     = self.is_class_available(directory_system,self.SYSTEM);
-            is_correct_solver     = self.is_class_available(directory_solver,self.SOLVER);
 
             if ~is_correct_integrator 
                 error('User input for integrator not available.');
             elseif ~is_correct_system 
                 error('User input for system not available.');
-            elseif ~is_correct_solver
-                error('User input for solver not available.');
             else
                 fprintf('               Valid user input.                   \n');
                 fprintf('************************************************** \n');
@@ -134,7 +130,7 @@ classdef Metis
 
             %% Solver
             % Define Solver from class
-            this_solver = feval(self.SOLVER,self);
+            this_solver = Solver(self);
 
         end
         
