@@ -16,7 +16,8 @@ classdef Postprocess
                 fig = figure();
                 this_problem.give_animation(fig,this_simulation);
                 title(strcat(this_simulation.INTEGRATOR, ': Trajectory'))
-
+                current_fig = gcf;
+                current_fig.Name = 'final_conf';
             end
 
         end
@@ -56,11 +57,11 @@ classdef Postprocess
                     end
                 end
 
-                if j > 1
-                    diffH(j-1) = H(j) - H(j-1);
-                    diffJ(j-1, :) = J(j, :) - J(j-1, :);
-                end
-
+            end
+            
+            for j = 1:(NT-1)
+                diffH(j) = H(j+1) - H(j);
+                diffJ(j, :) = J(j+1, :) - J(j, :);
             end
                        
             this_simulation.T = T;
@@ -91,9 +92,13 @@ classdef Postprocess
                     rmdir(export_folder,'s')
                     mkdir(export_folder)
                     warning('on')
-                    warning('Removed existing output folder.');
+                    fprintf('     Removed existing output folder.                 \n');
+                    fprintf('  \n');
                 end
                 
+                fprintf('     Exporting results...                 \n');
+                fprintf('  \n');
+                                
                 % Export
                 save([export_folder,'results'],'export_simulation');
                 
@@ -101,10 +106,31 @@ classdef Postprocess
                     figHandles = findall(0,'Type','figure'); 
                     
                     for i = 1:numel(figHandles)
-                        print(figHandles(i), [export_folder,num2str(i)], '-depsc')
+                        % Check if current figure has a name
+                        if ~isempty(figHandles(i).Name)
+                            export_name = figHandles(i).Name;
+                        else
+                            export_name = num2str(i);
+                        end
+                        % Clear current figures title
+                        set(0, 'currentfigure', figHandles(i));
+                        title(gca,'');
+                        % Export to .eps
+                        print(figHandles(i), [export_folder,export_name], '-depsc')
+                        % Export to .tikz (requires matlab2tikz/src to be
+                        % in the matlab-path)
+                        %cleanfigure('handle',figHandles(i));
+                        warning('off')
+                        matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false);
+                        warning('on')
                     end
                     
                 end
+                fprintf('     ...finished.                 \n');
+                fprintf('  \n');
+                fprintf('**************************************************** \n');
+                
+                
             end
             
         end
@@ -121,14 +147,12 @@ classdef Postprocess
             g_pos = this_simulation.constraint_position;
             g_vel = this_simulation.constraint_velocity;
             
-            Mmin = min([min(V), min(T), min(H)]);
-            Mmax = max([max(V), max(T), max(H)]);
-            
             for i = 1:length(this_simulation.plot_quantities)
                 
-                figure();
+                fig = figure();
                 grid on;
                 quantity = this_simulation.plot_quantities{i};
+                integrator_string = strrep(this_simulation.INTEGRATOR,'_','-');
             
                 switch quantity
 
@@ -136,56 +160,93 @@ classdef Postprocess
 
                         %plots Energy quantities over time
                         plotline = plot(t, T, t, V, t, H);
-                        ylim([Mmin - 0.1 * abs(Mmin), 1.1 * Mmax])
-                        title(strcat(this_simulation.INTEGRATOR, ': Energy'))
+                        fig.Name = 'energy';
+                        Mmin = min([min(V), min(T), min(H)]);
+                        Mmax = max([max(V), max(T), max(H)]);
+                        ylim([Mmin - 0.1 * abs(Mmin), 1.1 * Mmax]);
+                        title(strcat(integrator_string, ': Energy'));
                         legend('T', 'V', 'H')
                         xlabel('t');
-                        ylabel('Energy');
-
+                        
                     case 'angular_momentum'
 
                         %plots the ang. Mom. about dim-axis over time
                         plotline = plot(t, J(:,:));
-                        title(strcat(this_simulation.INTEGRATOR, ': Angular Momentum'))
-                        legend('J1','J2','J3');
+                        fig.Name = 'ang_mom';
+                        title(strcat(integrator_string, ': Angular Momentum'));
+                        legend('J_1','J_2','J_3');
                         xlabel('t');
-                        ylabel('Angular Momentum');
+                        ylabel('J_i(t)');
 
                     case 'energy_difference'
 
                         %plots the increments of Hamiltonian over time
-                        plotline = plot(t(2:end), diffH);
-                        title(strcat(this_simulation.INTEGRATOR, ': Energy difference'))
+                        plotline = plot(t(1:end-1), diffH);
+                        max_diff = max(diffH);
+                        max_rounded = 10^(floor(log10(max_diff))+1);
+                        min_diff = min(diffH);
+                        min_rounded = -10^(real(floor(log10(min_diff)))+1);
+                        hold on
+                        plot([t(1) t(end)],[max_rounded max_rounded],'k--',[t(1) t(end)],[min_rounded min_rounded],'k--');
+                        ylim([2*min_rounded 2*max_rounded]);
+                        fig.Name = 'H_diff';
+                        title(strcat(integrator_string, ': Energy difference'));
                         xlabel('t');
-                        ylabel('H_{n+1}-H_{n}');
+                        ylabel('H^{n+1}-H^{n}');
                         legend(strcat('std(H)=', num2str(std(H))));
 
                     case 'angular_momentum_difference'
 
                         %plots the increments of ang. Mom. over time about desired axis (dim)      
-                        plotline = plot(t(2:end), diffJ(:,:));
-                        title(strcat(this_simulation.INTEGRATOR, ': Ang. mom. - difference'));
+                        plotline = plot(t(1:end-1), diffJ(:,:));
+                        max_diff = max(max(diffJ));
+                        max_rounded = 10^(floor(log10(max_diff))+1);
+                        min_diff = min(min(diffJ));
+                        min_rounded = -10^(real(floor(log10(min_diff)))+1);
+                        hold on
+                        plot([t(1) t(end)],[max_rounded max_rounded],'k--',[t(1) t(end)],[min_rounded min_rounded],'k--');
+                        ylim([2*min_rounded 2*max_rounded]);
+                        fig.Name = 'J_diff';
+                        title(strcat(integrator_string, ': Ang. mom. - difference'));
                         xlabel('t');
-                        legend('J1','J2','J3');
-                        ylabel('J_{n+1}-J_{n}');
-                        legend(strcat('std(J)=[', num2str(std(J(:,:))),']'));
+                        legend('J_1','J_2','J_3');
+                        ylabel('J_i^{n+1}-J_i^{n}');
+                        legend(strcat('std(J_1)=', num2str(std(J(:,1)))),strcat('std(J_2)=', num2str(std(J(:,2)))),strcat('std(J_3)=', num2str(std(J(:,3)))));
 
 
                     case 'constraint_position'
 
                         %plots the position constraint and their violations by integration
                         plotline = plot(t,g_pos);
-                        title(strcat(this_simulation.INTEGRATOR, ': Constraint on position level'));
+                        max_diff = max(max(g_pos));
+                        max_rounded = 10^(floor(log10(max_diff))+1);
+                        min_diff = min(min(g_pos));
+                        min_rounded = -10^(real(floor(log10(min_diff)))+1);
+                        hold on
+                        plot([t(1) t(end)],[max_rounded max_rounded],'k--',[t(1) t(end)],[min_rounded min_rounded],'k--');
+                        ylim([2*min_rounded 2*max_rounded]);
+                        
+                        fig.Name = 'g_pos';
+                        title(strcat(integrator_string, ': Constraint on position level'));
                         xlabel('t');
-                        ylabel('g(t)');
+                        ylabel('g^q_k(t)');
 
                     case 'constraint_velocity'
 
                         %plots the velocity constraint and their violations by integration
                         plotline = plot(t,g_vel);
-                        title(strcat(this_simulation.INTEGRATOR, ': Constraint on velocity level'));
+                        max_diff = max(max(g_vel));
+                        max_rounded = 10^(floor(log10(max_diff))+1);
+                        min_diff = min(min(g_vel));
+                        min_rounded = -10^(real(floor(log10(min_diff)))+1);
+                        hold on
+                        plot([t(1) t(end)],[max_rounded max_rounded],'k--',[t(1) t(end)],[min_rounded min_rounded],'k--');
+                        ylim([2*min_rounded 2*max_rounded]);
+                        
+                        fig.Name = 'g_vel';
+                        title(strcat(integrator_string, ': Constraint on velocity level'));
                         xlabel('t');
-                        ylabel('G*v(t)');    
+                        ylabel('g^v_k(t)');    
 
                     otherwise
 
@@ -193,9 +254,8 @@ classdef Postprocess
 
                 end
             
-                set(plotline, 'linewidth', 1.5);
-                grid on;
-                
+                set(plotline, 'linewidth', 1.2);
+                                
             end
         
         end

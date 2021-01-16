@@ -10,14 +10,14 @@ DIM     = 3;
 INTEGRATOR = 'EMS_ggl'; 
 DT         = 0.05; 
 T_0        = 0; 
-T_END      = 1; 
+T_END      = 10; 
 
 %% Solver Method
 MAX_ITERATIONS = 40; 
 TOLERANCE      = 1E-09; 
 
 %% Postprocessing
-shouldAnimate         = true; 
+shouldAnimate         = false; 
 plot_quantities       = {'energy', 'energy_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'}; 
 should_export         = true;
 should_export_figures = true;

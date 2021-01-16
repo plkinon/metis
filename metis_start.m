@@ -3,6 +3,7 @@
 % date  : 02.12.2020
 clearvars;
 addpath(genpath(fileparts(which(mfilename))));
+addpath('~/git/matlab2tikz/src');
 
 %% METIS initialise
 % Load configuration parameters from file into Metis-object
