@@ -34,6 +34,17 @@ classdef Postprocess
             NT = size(q, 1);
             M = this_problem.MASS_MAT;
             IM = M\eye(size(M));
+            
+            if strcmp(this_simulation.INTEGRATOR,'Ggl_rk')
+                v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
+            else
+                for j = 1:NT
+                    v(j,:) = IM*p(j,:);
+                end
+            end
+            
+            
+            
 
             T = zeros(NT, 1);
             V = zeros(NT, 1);
@@ -45,11 +56,15 @@ classdef Postprocess
             constraint_velocity = zeros(NT,m);
 
             for j = 1:NT
-                T(j) = 1 / 2 * p(j, :) * IM' * p(j, :)';
+                %if strcmp(this_simulation.INTEGRATOR,'Ggl_rk')
+                %    T(j) = 1/2*v(j,:)*M*v(j,:)';
+                %else
+                    T(j) = 1 / 2 * p(j, :) * IM' * p(j, :)';
+                %end
                 V(j) = this_problem.internal_potential(q(j,:)') + this_problem.external_potential(q(j,:)');
                 H(j) = T(j) + V(j);
                 constraint_position(j,:) = this_problem.constraint(q(j,:)')';
-                constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)')';
+                constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*v(j,:)')';
 
                 if DIM == 3
                     for k = 1:d

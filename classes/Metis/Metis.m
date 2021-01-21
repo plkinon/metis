@@ -190,7 +190,8 @@ classdef Metis
         function self = set_solution_matrix(self,this_integrator,this_system)
            
             self.z       = zeros(this_integrator.NT, this_integrator.nVARS);
-            self.z(1, :) = [self.Q_0', (this_system.MASS_MAT * self.V_0)', this_integrator.LM0'];
+            z0           = this_integrator.set_initial_condition(self,this_system);
+            self.z(1, :) = z0;
             self.t       = this_integrator.t;
             
         end

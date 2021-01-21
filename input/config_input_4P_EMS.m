@@ -19,8 +19,8 @@ TOLERANCE      = 1E-09;
 %% Postprocessing
 shouldAnimate         = false; 
 plot_quantities       = {'energy', 'energy_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'}; 
-should_export         = true;
-should_export_figures = true;
+should_export         = false;
+should_export_figures = false;
 export_path           = 'scratch/';
 
 %% Write variables into a .mat-File

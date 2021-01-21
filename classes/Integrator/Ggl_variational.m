@@ -27,6 +27,12 @@ classdef Ggl_variational < Integrator
             self.NAME  = 'GGL-VI (1st attempt) ';
         end
         
+        function z0 = set_initial_condition(self,this_simulation,this_system)
+            
+            z0 = [this_simulation.Q_0', (this_system.MASS_MAT * this_simulation.V_0)', self.LM0'];
+            
+        end
+        
         function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
             
             %% Abbreviations
