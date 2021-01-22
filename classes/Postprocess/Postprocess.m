@@ -1,5 +1,13 @@
 classdef Postprocess
 
+    properties
+        
+        % Color scheme also for colorblind readers
+        color_scheme = {'#EE6677', '#228833', '#4477AA', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB'};
+        
+    end
+    
+    
     methods
 
         function self = Postprocess()
@@ -129,7 +137,10 @@ classdef Postprocess
                         end
                         % Clear current figures title
                         set(0, 'currentfigure', figHandles(i));
+                        titlestring = get(gca,'title').String;
                         title(gca,'');
+                        set(findall(gca, 'Type', 'Line'),'LineWidth',1.2);
+                        
                         % Export to .eps
                         print(figHandles(i), [export_folder,export_name], '-depsc')
                         % Export to .tikz (requires matlab2tikz/src to be
@@ -138,6 +149,8 @@ classdef Postprocess
                         warning('off')
                         matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false);
                         warning('on')
+                        title(gca,titlestring);
+                        set(findall(gca, 'Type', 'Line'),'LineWidth',1.5);
                     end
                     
                 end
@@ -150,7 +163,7 @@ classdef Postprocess
             
         end
 
-        function plot(~,this_simulation)
+        function plot(self,this_simulation)
             
             H = this_simulation.H;
             V = this_simulation.V;
@@ -178,7 +191,7 @@ classdef Postprocess
                         fig.Name = 'energy';
                         Mmin = min([min(V), min(T), min(H)]);
                         Mmax = max([max(V), max(T), max(H)]);
-                        ylim([Mmin - 0.1 * abs(Mmin), 1.1 * Mmax]);
+                        ylim([Mmin - 0.1 * abs(Mmax-Mmin), Mmax + 0.1 * abs(Mmax-Mmin)]);
                         title(strcat(integrator_string, ': Energy'));
                         legend('T', 'V', 'H')
                         xlabel('t');
@@ -187,6 +200,9 @@ classdef Postprocess
 
                         %plots the ang. Mom. about dim-axis over time
                         plotline = plot(t, J(:,:));
+                        Jmin = min(J(:));
+                        Jmax = max(J(:));
+                        ylim([Jmin - 0.1 * abs(Jmax-Jmin), Jmax + 0.1 * abs(Jmax-Jmin)]);
                         fig.Name = 'ang_mom';
                         title(strcat(integrator_string, ': Angular Momentum'));
                         legend('J_1','J_2','J_3');
@@ -269,7 +285,8 @@ classdef Postprocess
 
                 end
             
-                set(plotline, 'linewidth', 1.2);
+                set(plotline, 'linewidth', 1.5);
+                colororder(self.color_scheme);
                                 
             end
         
