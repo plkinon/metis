@@ -10,14 +10,14 @@ DIM     = 3;
 INTEGRATOR = 'Ggl_rk';
 DT    = 0.02;
 T_0   = 0;
-T_END = 10;
+T_END = 1;
 
 %% Solver Method
 MAX_ITERATIONS = 40;
 TOLERANCE      = 1E-09;
 
 %% Postprocessing
-shouldAnimate   = true;
+shouldAnimate   = false;
 plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
 should_export         = false;
 should_export_figures = false;

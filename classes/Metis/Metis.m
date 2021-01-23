@@ -19,6 +19,7 @@ classdef Metis
         T_0
         T_END
         V_0
+        optime
         
         %% Postprocessing parameters
         % Can be given in an input-file (not necessary for computing)

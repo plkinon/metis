@@ -21,7 +21,7 @@ classdef Ggl_rk < Integrator
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
-            self.PARA  = [1 1]; %[The:round theta  theta: vartheta];
+            self.PARA  = [0.5 0.5]; %[The:round theta  theta: vartheta];
             self.NAME  = 'GGL-RK';
         end
         
@@ -34,6 +34,7 @@ classdef Ggl_rk < Integrator
             m  = this_system.mCONSTRAINTS;
             h  = self.DT;
             The     = self.PARA(1);
+            theta   = self.PARA(2);
             lambda0 = self.LM0(1:m);
             gamma0 = self.LM0(m+1:2*m);
             G_0    = this_system.constraint_gradient(q0);

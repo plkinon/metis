@@ -31,24 +31,38 @@ classdef Solver
             fprintf('     Starting computation ... \n');
             fprintf('  \n');
             
-            for i = 1:this_integrator.NT
+            %% Count time for newton iteration
+            n_eval = 1;
+            stop_time = zeros(n_eval,1);
+            
+            for j = 1:n_eval
+                
+                % Start to count time
+                init_time = tic();
+                
+                for i = 1:this_integrator.NT
 
-                % Update solution vector from previous iteration
-                zn = zn1;
+                    % Update solution vector from previous iteration
+                    zn = zn1;
 
-                % Print current time-step
-                fprintf('----------------------------------------------------\n');
-                fprintf('     Time: t = %.3f, dt = %.3f, step no. %.0f \n', i*this_integrator.DT, this_integrator.DT, i);
+                    % Print current time-step
+                    fprintf('----------------------------------------------------\n');
+                    fprintf('     Time: t = %.3f, dt = %.3f, step no. %.0f \n', i*this_integrator.DT, this_integrator.DT, i);
 
-                % Conduct iteration
-                zn1 = self.newton_iterate(this_integrator, this_problem, zn, zn1);
+                    % Conduct iteration
+                    zn1 = self.newton_iterate(this_integrator, this_problem, zn, zn1);
 
-                % Save update solution for current timestep
-                z(i+1, :) = zn1;
+                    % Save update solution for current timestep
+                    z(i+1, :) = zn1;
 
+                end
+                
+                % Stop counting time
+                stop_time(j) = toc(init_time);
+                
             end
-
             % Store solution
+            this_simulation.optime = stop_time;
             this_simulation.z = z;
             
             fprintf('----------------------------------------------------\n');
