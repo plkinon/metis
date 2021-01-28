@@ -4,12 +4,12 @@ classdef Ggl_rk < Integrator
 % - based on constraint on position and velocity level 
 %   (GGL-stabilisation)
 %
-% - independent momenta variables (Hamilton Potryagin approach)
+% - independent momentum variables (Hamilton Potryagin approach)
 %
 % - derived from variational principle by Peter Betsch
 %
 % Author: Philipp Kinon
-% Date  : 09.12.2020
+% Date  : 28.01.2021
 
     methods
         
@@ -21,7 +21,7 @@ classdef Ggl_rk < Integrator
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
-            self.PARA  = [0.5 0.5]; %[The:round theta  theta: vartheta];
+            self.PARA  = [1 0.5]; %[The:round theta  theta: vartheta];
             self.NAME  = 'GGL-RK';
         end
         
@@ -70,8 +70,10 @@ classdef Ggl_rk < Integrator
             % Hessian of constraints are multiplied by inverse MassMat and
             % pn1 for each constraint to avoid 3rd order tensors
             T_n1 = zeros(m,n);
+            t_n1 = zeros(n);
             for l = 1:m
                 tmp = this_problem.constraint_hessian(qn1,l);
+                t_n1   = t_n1 + this_problem.constraint_hessian(qn1,l)*lambdan(l);
                 for k = 1:n
                     T_n1(l,k) = tmp(:,k)'*IM*pn1;
                 end
@@ -89,28 +91,35 @@ classdef Ggl_rk < Integrator
             q_nt    = (1-The)*qn + The*qn1;
             DV_nt   = this_problem.internal_potential_gradient(q_nt) + this_problem.external_potential_gradient(q_nt);
             G_nt    = this_problem.constraint_gradient(q_nt);
+            D2V_nt  = this_problem.internal_potential_hessian(q_nt) + this_problem.external_potential_hessian(q_nt);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
-            t_n    = zeros(n);
+            t_nt    = zeros(n);
+            T_nt    = zeros(m,n);
             for j = 1:m
-                t_n   = t_n + this_problem.constraint_hessian(q_nt,j)*gamman(j);
+                tmp2 = this_problem.constraint_hessian(q_nt,j);
+                t_nt   = t_nt + this_problem.constraint_hessian(q_nt,j)*gamman(j);
+                for k = 1:n
+                    T_nt(j,k) = tmp2(:,k)'*vn1;
+                end
             end
             
             %% Residual vector 
             resi = [qn1 - qn - h*vn1 - h*IM*G_nt'*gamman                  ;
-                    pn1 - pn + h*DV_nt + h*((1-theta)*G_n'+theta*G_n1')*lambdan + h*t_n*vn1;
-                    (M + h * (1-The) * t_n) * vn1 - pn + h * ( (1-The) * DV_nt + (1-theta) * G_n' * lambdan) ;
+                    pn1 - pn + h*DV_nt + h*((1-theta)*G_n'+theta*G_n1')*lambdan + h*t_nt*vn1;
+                    (M + h * (1-The) * t_nt) * vn1 - pn + h * ( (1-The) * DV_nt + (1-theta) * G_n' * lambdan) ;
                     theta*g_n1 + (1-theta)*g_n                                             ;
                     G_nt*vn1                                              ];
 
             %% Tangent matrix
-            tang = [];
-%             tang = [eye(n) - h*IM*t_n1          -h*IM         zeros(n,m)   -h*IM*G_n1' ;
-%                     zeros(n)                    eye(n)       h*G_n'        zeros(n,m)  ; 
-%                     G_n1                        zeros(n,m)'  zeros(m)      zeros(m)    ;
-%                     T_n1                        G_n1*IM      zeros(m)      zeros(m)    ];
-%             
+            %tang = [];
+            tang = [eye(n) - h*IM*The*t_nt     zeros(n)          -h*eye(n)                   zeros(n,m)                      -h*IM*G_nt' ;
+                    h*D2V_nt*The + theta*t_n1  eye(n)            h*t_nt                      h*((1-theta)*G_n'+theta*G_n1')   h*T_nt'  ;
+                    h*(1-The)*D2V_nt           zeros(n)          (M + h * (1-The) * t_nt)    h*(1-theta) * G_n'                h*(1-The)*T_nt';     
+                    theta*G_n1                 zeros(n,m)'       zeros(n,m)'                 zeros(m)                        zeros(m)    ;
+                    The*T_nt                   zeros(n,m)'       G_nt          zeros(m)      zeros(m)    ];
+             
         end
         
     end
