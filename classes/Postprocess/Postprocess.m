@@ -51,7 +51,7 @@ classdef Postprocess
                 v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
             else
                 for j = 1:NT
-                    v(j,:) = IM*p(j,:);
+                    v(j,:) = IM*p(j,:)';
                 end
             end        
 

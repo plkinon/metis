@@ -21,7 +21,7 @@ classdef Ggl_rk < Integrator
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
-            self.PARA  = [1 0.5]; %[The:round theta  theta: vartheta];
+            self.PARA  = [0.5 0.5]; %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [1 0.5]: exact constraint vel. level
             self.NAME  = 'GGL-RK';
         end
         
@@ -43,8 +43,9 @@ classdef Ggl_rk < Integrator
             for j = 1:m
                 t_0   = t_0 + this_system.constraint_hessian(q0,j)*gamma0(j);
             end
-            p0 = (M+h*(1-The)*t_0)*v0 + h*((1-The)*DV_0 + (1-theta)*G_0'*lambda0); 
-            %p0 = M*v0;
+            %p0 = (M+h*(1-The)*t_0)*v0 + h*((1-The)*DV_0 + (1-theta)*G_0'*lambda0); 
+            % macht keinen Sinn, da p0 aufgegeben wird und v_0 erst später berrechnet
+            p0 = M*v0;
             z0 = [q0', p0', v0' , self.LM0'];
             
         end
