@@ -7,7 +7,7 @@ MASS    = [1; 3; 2.3; 1.7];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'Ggl_rk';
+INTEGRATOR = 'Ggl_theta_mod';
 DT    = 0.02;
 T_0   = 0;
 T_END = 5;

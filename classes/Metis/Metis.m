@@ -11,6 +11,7 @@ classdef Metis
         DT
         EXT_ACC
         INTEGRATOR
+        INT_PARA
         MASS
         MAX_ITERATIONS
         Q_0
@@ -181,7 +182,11 @@ classdef Metis
             %% Integrator
             % Define Integrator from Class (same procedure as for system)
             this_integrator = feval(self.INTEGRATOR,self,this_system);
-                     
+            % Clear given integrator parameter if integrator has none
+            if ~this_integrator.hasPARA
+                clear this_simulation.INT_PARA
+            end
+            
             %% Solver
             % Define Solver from class
             this_solver = Solver(self);

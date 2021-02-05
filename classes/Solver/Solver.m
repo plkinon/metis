@@ -94,9 +94,10 @@ classdef Solver
                 % Check if an analytic tangent matrix is implemented,
                 % if not, compute a numerical one
                 if isempty(tang)
-                    tang = self.compute_numerical_tangent(this_integrator, this_problem, zn1, zn);
+                    tang_num = self.compute_numerical_tangent(this_integrator, this_problem, zn1, zn);
+                    tang = tang_num;
                 end
-
+            
                 % Incrementation of the solution vector
                 delta_z = -tang \ resi;
                 zn1 = zn1 + delta_z;

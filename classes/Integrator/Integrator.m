@@ -10,6 +10,7 @@ classdef Integrator
         NT
         nVARS
         LM0
+        hasPARA
         PARA
     end
 

@@ -21,7 +21,8 @@ classdef Ggl_rk < Integrator
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
-            self.PARA  = [0.5 0.5]; %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [1 0.5]: exact constraint vel. level
+            self.hasPARA = true;
+            self.PARA  = this_simulation.INT_PARA(:); %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [1 0.5]: exact constraint vel. level
             self.NAME  = 'GGL-RK';
         end
         
@@ -116,7 +117,7 @@ classdef Ggl_rk < Integrator
             %% Tangent matrix
             %tang = [];
             tang = [eye(n) - h*IM*The*t_nt     zeros(n)          -h*eye(n)                   zeros(n,m)                      -h*IM*G_nt' ;
-                    h*D2V_nt*The + theta*t_n1  eye(n)            h*t_nt                      h*((1-theta)*G_n'+theta*G_n1')   h*T_nt'  ;
+                    h*D2V_nt*The + h*theta*t_n1  eye(n)            h*t_nt                      h*((1-theta)*G_n'+theta*G_n1')   h*T_nt'  ;
                     h*(1-The)*D2V_nt           zeros(n)          (M + h * (1-The) * t_nt)    h*(1-theta) * G_n'                h*(1-The)*T_nt';     
                     theta*G_n1                 zeros(n,m)'       zeros(n,m)'                 zeros(m)                        zeros(m)    ;
                     The*T_nt                   zeros(n,m)'       G_nt          zeros(m)      zeros(m)    ];

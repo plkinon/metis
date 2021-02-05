@@ -21,7 +21,8 @@ classdef Ggl_theta < Integrator
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
-            self.PARA  = 0.5;
+            self.hasPARA = true;
+            self.PARA  = this_simulation.INT_PARA(1);
             self.NAME  = 'GGL-theta';
         end
         
@@ -43,34 +44,17 @@ classdef Ggl_theta < Integrator
             %% Unknows which will be iterated
             qn1     = zn1(1:n);
             pn1     = zn1(n+1:2*n);
-            lambda_n1 = zn1(2*n+1:2*n+m);
+            lambdan = zn1(2*n+1:2*n+m);
             gamman  = zn1(2*n+m+1:end);
-            G_n1    = this_problem.constraint_gradient(qn1);
-            g_n1    = this_problem.constraint(qn1);
-            
-            % Hessian of constraints are multiplied by inverse MassMat and
-            % pn1 for each constraint to avoid 3rd order tensors
-            T_n1 = zeros(m,n);
-            %t_n1 = zeros(n);
-            for l = 1:m
-                tmp = this_problem.constraint_hessian(qn1,l);
-                %t_n1   = t_n1 + this_problem.constraint_hessian(qn1,l)*lambdan(l);
-                for k = 1:n
-                    T_n1(l,k) = tmp(:,k)'*IM*pn1;
-                end
-            end
             
             %% Known quantities from last time-step
             qn     = zn(1:n);
             pn     = zn(n+1:2*n);
-            lambdan = zn(2*n+1:2*n+m);
-            G_n    = this_problem.constraint_gradient(qn);
             
             %% Quantities at t_n+theta
             theta   = self.PARA(1);
             q_nt    = (1-theta)*qn + theta*qn1;
             p_n1mt  = theta*pn + (1-theta)*pn1;
-            lambda_nt = (1-theta)*lambdan + theta*lambda_n1;
             g_nt    = this_problem.constraint(q_nt);
             DV_nt   = this_problem.internal_potential_gradient(q_nt) + this_problem.external_potential_gradient(q_nt);
             G_nt    = this_problem.constraint_gradient(q_nt);
@@ -78,30 +62,32 @@ classdef Ggl_theta < Integrator
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
-            t_nt    = zeros(n);
-            T_nt    = zeros(m,n);
+            t_nt_gam = zeros(n);
+            t_nt_lam = zeros(n);
+            T_n1     = zeros(m,n);
+            T_nt     = zeros(m,n);
             for j = 1:m
-                tmp2 = this_problem.constraint_hessian(q_nt,j);
-                t_nt   = t_nt + this_problem.constraint_hessian(q_nt,j)*gamman(j);
+                tmp_1 = this_problem.constraint_hessian(qn1,j);
+                tmp_nt = this_problem.constraint_hessian(q_nt,j);
+                t_nt_gam   = t_nt_gam + this_problem.constraint_hessian(q_nt,j)*gamman(j);
+                t_nt_lam   = t_nt_lam + this_problem.constraint_hessian(q_nt,j)*lambdan(j);
                 for k = 1:n
-                    T_nt(j,k) = tmp2(:,k)'*IM*p_n1mt;
+                    T_n1(j,k) = tmp_1(:,k)'*IM*pn1;
+                    T_nt(j,k) = tmp_nt(:,k)'*IM*p_n1mt;
                 end
             end
             
             %% Residual vector 
             resi = [qn1 - qn - h*IM*p_n1mt - h*IM*G_nt'*gamman                  ;
-                    pn1 - pn + h*DV_nt + h*G_nt'*lambda_nt + h*t_nt*IM*p_n1mt;
+                    pn1 - pn + h*DV_nt + h*G_nt'*lambdan + h*t_nt_gam*IM*p_n1mt;
                     g_nt                                              ;
                     G_nt*IM*p_n1mt                                              ];
 
             %% Tangent matrix
-            tang = [];
-            %tang = [eye(n) - h*IM*The*t_nt     zeros(n)          -h*eye(n)                   zeros(n,m)                      -h*IM*G_nt' ;
-            %        h*D2V_nt*The + theta*t_n1  eye(n)            h*t_nt                      h*((1-theta)*G_n'+theta*G_n1')   h*T_nt'  ;
-            %        h*(1-The)*D2V_nt           zeros(n)          (M + h * (1-The) * t_nt)    h*(1-theta) * G_n'                h*(1-The)*T_nt';     
-            %        theta*G_n1                 zeros(n,m)'       zeros(n,m)'                 zeros(m)                        zeros(m)    ;
-            %s        The*T_nt                   zeros(n,m)'       G_nt          zeros(m)      zeros(m)    ];
-             
+            tang = [eye(n) - h*IM*theta*t_nt_gam         -h*IM*(1-theta)               zeros(n,m)      -h*IM*G_nt' ;
+                    h*D2V_nt*theta + h*theta*t_nt_lam    eye(n)+h*t_nt_gam*IM*(1-theta)    h*G_nt'         h*T_nt'     ;
+                    G_nt*theta                           zeros(n,m)'                   zeros(m)        zeros(m)    ;
+                    T_nt*theta                           G_nt*IM*(1-theta)                       zeros(m)        zeros(m)    ];
         end
         
     end

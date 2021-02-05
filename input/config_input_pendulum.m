@@ -7,8 +7,9 @@ MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'Ggl_theta_mod';
-DT    = 0.1;
+INTEGRATOR = 'Ggl_variational';
+INT_PARA = [0.5 0.5];
+DT    = 0.01;
 T_0   = 0;
 T_END = 5;
 

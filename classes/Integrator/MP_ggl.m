@@ -24,6 +24,7 @@ classdef MP_ggl < Integrator
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.hasPARA = false;
             self.NAME  = 'MP-GGL';
         end
         
