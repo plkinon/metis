@@ -25,7 +25,7 @@ classdef Ggl_LR < Integrator
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(1);
-            self.NAME  = 'GGL-VI (2nd attempt) ';
+            self.NAME  = 'GGL-LR';
         end
         
         function z0 = set_initial_condition(self,this_simulation,this_system)

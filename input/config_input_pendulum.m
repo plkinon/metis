@@ -7,11 +7,11 @@ MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'Ggl_theta';
+INTEGRATOR = 'Ggl_LR_enh';
 INT_PARA = [0.5];
-DT    = 0.01;
+DT    = 0.02;
 T_0   = 0;
-T_END = 5;
+T_END = 50;
 
 %% Solver Method
 MAX_ITERATIONS = 40;

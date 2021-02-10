@@ -22,7 +22,7 @@ classdef Ggl_rk < Integrator
             self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.hasPARA = true;
-            self.PARA  = this_simulation.INT_PARA(:); %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [1 0.5]: exact constraint vel. level
+            self.PARA  = this_simulation.INT_PARA(:); %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [0 0.5]: exact constraint vel. level
             self.NAME  = 'GGL-RK';
         end
         
