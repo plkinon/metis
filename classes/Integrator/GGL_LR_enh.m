@@ -1,4 +1,4 @@
-classdef Ggl_LR_enh < Integrator
+classdef GGL_LR_enh < Integrator
 %% Variational integration scheme for GGL-like constrained DAE
 %
 % - based on constraint on position and velocity level 
@@ -6,7 +6,8 @@ classdef Ggl_LR_enh < Integrator
 %
 % - independent momenta variables (Hamilton Potryagin approach)
 %
-% - taken from Leimkuhler & Reich , p.189
+% - taken from Leimkuhler & Reich , p.189, using Gen-Alpha for Psi_h and
+%   making GGL-stabilisation (not a VI)
 %
 % - constraints are enforced at t_{n+1}
 %
@@ -15,7 +16,7 @@ classdef Ggl_LR_enh < Integrator
 
     methods
         
-        function self = Ggl_LR_enh(this_simulation,this_problem)
+        function self = GGL_LR_enh(this_simulation,this_problem)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
