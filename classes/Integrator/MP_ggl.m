@@ -89,7 +89,7 @@ classdef MP_ggl < Integrator
             
             %% Residual vector 
             resi = [qn1 - qn - h*IM*p_n05 + h * G_n05' *gamma_n05     ;
-                    pn1 - pn + h*DV_n05   + h*G_nal'*lambda_n05       ;
+                    pn1 - pn + h*DV_n05   + h*G_n05'*lambda_n05       ;
                     g_n1                                              ;
                     G_n1*IM*pn1                                       ];
 
