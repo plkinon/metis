@@ -1,19 +1,21 @@
-classdef Ggl_rk < Integrator
+classdef GGL_VI_RK < Integrator
 %% Runge-Kutta typed scheme for GGL-like constrained DAE
 %
 % - based on constraint on position and velocity level 
 %   (GGL-stabilisation)
 %
-% - independent momentum variables (Hamilton Potryagin approach)
+% - independent momentum and velocity variables (Hamilton Potryagin approach)
 %
 % - derived from variational principle by Peter Betsch
+%
+% - identical to GGL_VI_theta_B
 %
 % Author: Philipp Kinon
 % Date  : 28.01.2021
 
     methods
         
-        function self = Ggl_rk(this_simulation,this_problem)
+        function self = GGL_VI_RK(this_simulation,this_problem)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
