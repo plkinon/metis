@@ -1,4 +1,4 @@
-classdef Ggl_variational < Integrator
+classdef GGL_VI < Integrator
 %% Variational integration scheme for GGL-like constrained DAE
 %
 % - based on constraint on position and velocity level 
@@ -9,6 +9,8 @@ classdef Ggl_variational < Integrator
 % - derived from variational principle by Peter Betsch (1st attempt for
 %   new 'GGL-functional'
 %
+% - not symplectic
+%
 % - constraints are enforced at t_{n+1}
 %
 % Author: Philipp Kinon
@@ -16,7 +18,7 @@ classdef Ggl_variational < Integrator
 
     methods
         
-        function self = Ggl_variational(this_simulation,this_problem)
+        function self = GGL_VI(this_simulation,this_problem)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
