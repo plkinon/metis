@@ -1,4 +1,4 @@
-classdef Ggl_std < Integrator
+classdef GGL_std < Integrator
 %% GGL integration scheme for constrained DAE
 %
 % - based constraints on position and velocity level

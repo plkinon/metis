@@ -1,19 +1,20 @@
-classdef Ggl_theta < Integrator
-%% Runge-Kutta typed scheme for GGL-like constrained DAE
+classdef GGL_theta_mod < Integrator
+%% One-stage-theta-method (1) for GGL-like constrained DAE
 %
 % - based on constraint on position and velocity level 
 %   (GGL-stabilisation)
 %
 % - independent momentum variables (Hamilton Potryagin approach)
 %
-% - derived from variational principle by Peter Betsch
+% - derived from one-stage thetat method (constraints have been modified)
+%
 %
 % Author: Philipp Kinon
 % Date  : 28.01.2021
 
     methods
         
-        function self = Ggl_theta(this_simulation,this_problem)
+        function self = GGL_theta_mod(this_simulation,this_problem)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
@@ -46,16 +47,17 @@ classdef Ggl_theta < Integrator
             pn1     = zn1(n+1:2*n);
             lambdan = zn1(2*n+1:2*n+m);
             gamman  = zn1(2*n+m+1:end);
+            G_n1    = this_problem.constraint_gradient(qn1);
+            g_n1    = this_problem.constraint(qn1);
             
             %% Known quantities from last time-step
             qn     = zn(1:n);
             pn     = zn(n+1:2*n);
             
-            %% Quantities at t_n+theta
+            %% Theta-evaluated Quantities
             theta   = self.PARA(1);
             q_nt    = (1-theta)*qn + theta*qn1;
             p_n1mt  = theta*pn + (1-theta)*pn1;
-            g_nt    = this_problem.constraint(q_nt);
             DV_nt   = this_problem.internal_potential_gradient(q_nt) + this_problem.external_potential_gradient(q_nt);
             G_nt    = this_problem.constraint_gradient(q_nt);
             D2V_nt  = this_problem.internal_potential_hessian(q_nt) + this_problem.external_potential_hessian(q_nt);
@@ -80,14 +82,15 @@ classdef Ggl_theta < Integrator
             %% Residual vector 
             resi = [qn1 - qn - h*IM*p_n1mt - h*IM*G_nt'*gamman                  ;
                     pn1 - pn + h*DV_nt + h*G_nt'*lambdan + h*t_nt_gam*IM*p_n1mt;
-                    g_nt                                              ;
-                    G_nt*IM*p_n1mt                                              ];
+                    g_n1                                              ;
+                    G_n1*IM*pn1                                              ];
 
             %% Tangent matrix
             tang = [eye(n) - h*IM*theta*t_nt_gam         -h*IM*(1-theta)               zeros(n,m)      -h*IM*G_nt' ;
                     h*D2V_nt*theta + h*theta*t_nt_lam    eye(n)+h*t_nt_gam*IM*(1-theta)    h*G_nt'         h*T_nt'     ;
-                    G_nt*theta                           zeros(n,m)'                   zeros(m)        zeros(m)    ;
-                    T_nt*theta                           G_nt*IM*(1-theta)                       zeros(m)        zeros(m)    ];
+                    G_n1                             zeros(n,m)'                   zeros(m)        zeros(m)    ;
+                    T_n1                             G_n1*IM                       zeros(m)        zeros(m)    ];
+             
         end
         
     end

@@ -1,4 +1,4 @@
-classdef Ggl_theta_2 < Integrator
+classdef GGL_VI_theta_A < Integrator
 %% Runge-Kutta typed scheme for GGL-like constrained DAE
 %
 % - based on constraint on position and velocity level 
@@ -6,14 +6,16 @@ classdef Ggl_theta_2 < Integrator
 %
 % - independent momentum variables (Hamilton Potryagin approach)
 %
-% - derived from variational principle by Peter Betsch
+% - derived from variational principle
+%
+% - symplectic method
 %
 % Author: Philipp Kinon
 % Date  : 28.01.2021
 
     methods
         
-        function self = Ggl_theta_2(this_simulation,this_problem)
+        function self = GGL_VI_theta_A(this_simulation,this_problem)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
@@ -23,7 +25,7 @@ classdef Ggl_theta_2 < Integrator
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(1);
-            self.NAME  = 'GGL-theta-2';
+            self.NAME  = 'GGL-VI-theta-A';
         end
         
         function z0 = set_initial_condition(self,this_simulation,this_system)
