@@ -7,8 +7,8 @@ MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'Rattle2';
-INT_PARA = [1];
+INTEGRATOR = 'GGL_VI_theta_B';
+INT_PARA = [1 0.5];
 DT    = 0.02;
 T_0   = 0;
 T_END = 5;
