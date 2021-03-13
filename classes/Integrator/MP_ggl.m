@@ -70,7 +70,7 @@ classdef MP_ggl < Integrator
             % Constraint (avoid 3rd order tensor)
             t_n1mal    = zeros(n);
             for i = 1:m
-                t_n1mal   = t_n1mal + this_problem.constraint_hessian(q_n1mal,i)*gamma_n05(i);
+                t_n1mal   = t_n1mal + this_problem.constraint_hessian(q_n05,i)*gamma_n05(i);
             end
             t_nal = zeros(n);
             for i = 1:m
@@ -95,7 +95,7 @@ classdef MP_ggl < Integrator
 
             %% Tangent matrix
             tang = [eye(n) + h*(0.5)*t_n1mal                  -h*(0.5)*IM       zeros(n,m)    (0.5)*h*G_n05';
-                    h*0.5*D2V_n05 + h*0.5*t_nal               eye(n)            0.5*h*G_nal'  zeros(n,m)       ; 
+                    h*0.5*D2V_n05 + h*0.5*t_nal               eye(n)            0.5*h*G_n05'  zeros(n,m)       ; 
                     G_n1                                      zeros(n,m)'       zeros(m)      zeros(m)         ;
                     T_n1                                      G_n1*IM           zeros(m)      zeros(m)      ];
             

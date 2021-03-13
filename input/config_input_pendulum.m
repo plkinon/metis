@@ -7,11 +7,11 @@ MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'GGL_VI_theta_B';
+INTEGRATOR = 'MP_ggl';
 INT_PARA = [1 0.5];
-DT    = 0.02;
+DT    = 0.05;
 T_0   = 0;
-T_END = 5;
+T_END = 10;
 
 %% Solver Method
 MAX_ITERATIONS = 40;
