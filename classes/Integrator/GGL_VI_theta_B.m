@@ -25,7 +25,7 @@ classdef GGL_VI_theta_B < Integrator
             self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.hasPARA = true;
-            self.PARA  = this_simulation.INT_PARA(:); %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [0 0.5]: exact constraint vel. level
+            self.PARA  = this_simulation.INT_PARA(:); %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [1 0.5]: exact constraint vel. level
             self.NAME  = 'GGL-VI-theta-B';
         end
         
@@ -113,7 +113,7 @@ classdef GGL_VI_theta_B < Integrator
             
             %% Residual vector 
             resi = [qn1 - qn - h*vn1 - h*IM*G_nt'*gamman                  ;
-                    pn1 - pn + h*DV_nt + h*((1-theta)*G_n'+theta*G_n1')*lambdan + h*t_nt*vn1;
+                    pn1 - pn + h*DV_nt + h*((1-theta)*G_n'+theta*G_n1')*lambdan + h*t_nt*M*vn1;
                     (M*vn1 - p_n1mt + h*(The*(1-theta)*G_n'-theta*(1-The)*G_n1')*lambdan) ;
                     theta*g_n1 + (1-theta)*g_n                                             ;
                     G_nt*vn1                                              ];

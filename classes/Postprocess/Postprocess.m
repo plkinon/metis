@@ -49,8 +49,10 @@ classdef Postprocess
             
             v = zeros(NT,nDOF);
             for j = 1:NT-1
-                if strcmp(this_simulation.INTEGRATOR,'Ggl_rk')    
+                if strcmp(this_simulation.INTEGRATOR,'GGL_VI_RK')    
                     v(j,:) = this_simulation.z(j+1, 2*nDOF+1:3*nDOF);
+                elseif strcmp(this_simulation.INTEGRATOR,'GGL_VI_theta_B')
+                    v(j,:) = this_simulation.z(j, 2*nDOF+1:3*nDOF);
                 else
                     v(j,:) = IM*p(j,:)';
                 end
