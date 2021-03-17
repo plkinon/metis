@@ -21,7 +21,7 @@ classdef GGL_VI_theta_A < Integrator
             self.T_END = this_simulation.T_END;
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
-            self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(1);
@@ -30,7 +30,7 @@ classdef GGL_VI_theta_A < Integrator
         
         function z0 = set_initial_condition(self,this_simulation,this_system)
             
-           z0 = [this_simulation.Q_0', (this_system.MASS_MAT * this_simulation.V_0)', self.LM0'];
+           z0 = [this_simulation.Q_0', (this_system.MASS_MAT * this_simulation.V_0)', this_simulation.V_0' , self.LM0'];
             
         end
             
@@ -46,8 +46,9 @@ classdef GGL_VI_theta_A < Integrator
             %% Unknows which will be iterated
             qn1     = zn1(1:n);
             pn1     = zn1(n+1:2*n);
-            lambdan = zn1(2*n+1:2*n+m);
-            gamman  = zn1(2*n+m+1:end);
+            vn1     = zn1(2*n+1:3*n);
+            lambdan = zn1(3*n+1:3*n+m);
+            gamman  = zn1(3*n+m+1:end);
             
             %% Known quantities from last time-step
             qn     = zn(1:n);
@@ -80,16 +81,18 @@ classdef GGL_VI_theta_A < Integrator
             end
             
             %% Residual vector 
-            resi = [qn1 - qn - h*IM*p_n1mt - h*IM*G_nt'*gamman                  ;
-                    pn1 - pn + h*DV_nt + h*G_nt'*lambdan + h*t_nt_gam*IM*p_n1mt;
+            resi = [qn1 - qn - h*vn1 - h*IM*G_nt'*gamman                  ;
+                    pn1 - pn + h*DV_nt + h*G_nt'*lambdan + h*t_nt_gam*vn1;
+                    M*vn1 - p_n1mt;
                     g_nt                                              ;
-                    G_nt*IM*p_n1mt                                              ];
+                    G_nt*vn1                                              ];
 
             %% Tangent matrix
-            tang = [eye(n) - h*IM*theta*t_nt_gam         -h*IM*(1-theta)               zeros(n,m)      -h*IM*G_nt' ;
-                    h*D2V_nt*theta + h*theta*t_nt_lam    eye(n)+h*t_nt_gam*IM*(1-theta)    h*G_nt'         h*T_nt'     ;
-                    G_nt*theta                           zeros(n,m)'                   zeros(m)        zeros(m)    ;
-                    T_nt*theta                           G_nt*IM*(1-theta)                       zeros(m)        zeros(m)    ];
+            tang = [];
+            %tang = [eye(n) - h*IM*theta*t_nt_gam         -h*IM*(1-theta)               zeros(n,m)      -h*IM*G_nt' ;
+            %        h*D2V_nt*theta + h*theta*t_nt_lam    eye(n)+h*t_nt_gam*IM*(1-theta)    h*G_nt'         h*T_nt'     ;
+            %        G_nt*theta                           zeros(n,m)'                   zeros(m)        zeros(m)    ;
+            %        T_nt*theta                           G_nt*IM*(1-theta)                       zeros(m)        zeros(m)    ];
         end
         
     end

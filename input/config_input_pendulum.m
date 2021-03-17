@@ -7,8 +7,8 @@ MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'GGL_VI_theta_B';
-INT_PARA = [1 0.5];
+INTEGRATOR = 'GGL_VI_theta_A';
+INT_PARA = [0.5];
 DT    = 0.05;
 T_0   = 0;
 T_END = 10;
