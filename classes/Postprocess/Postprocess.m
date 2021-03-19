@@ -77,7 +77,7 @@ classdef Postprocess
                 H(j) = T(j) + V(j);
                 constraint_position(j,:) = this_problem.constraint(q(j,:)')';
                 constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*v(j,:)')';
-
+                    
                 if DIM == 3
                     
                     for k = 1:d
