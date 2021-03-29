@@ -2,13 +2,12 @@
 SYSTEM = 'Pendulum';
 EXT_ACC = [0; 0; 9.81];
 Q_0     = [1; 0; 0];
-V_0     = [0; 0.1; 0];
+V_0     = [0; 1; 0];
 MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'GGL_VI_theta_B';
-INT_PARA = [1 0.5];
+INTEGRATOR = 'GGL_VI';
 DT    = 0.05;
 T_0   = 0;
 T_END = 10;
