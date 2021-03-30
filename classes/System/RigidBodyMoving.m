@@ -275,6 +275,7 @@ classdef RigidBodyMoving < System
                     plot3(xx, yy, zz, 'k', 'linewidth', 1);
                     plot3(xxx, yyy, zzz, 'k', 'linewidth', 1);
                     plot3(xxxx, yyyy, zzzz, 'k', 'linewidth', 1);
+                    
                     view(136, 23)
                     
                     drawnow
