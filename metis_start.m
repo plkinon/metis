@@ -13,6 +13,8 @@ addpath('~/git/matlab2tikz/src');
 % Solve my System with my Solver and my Integration scheme
 simulation = solver.solve(simulation, system, integrator);
 
+0;
+
 %% METIS postprocessing
 % Define Postprocessing from class
 postprocess = Postprocess();
