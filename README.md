@@ -14,7 +14,7 @@ _a project by Philipp L. Kinon_
 
 -   Prof. Dr.-Ing. Peter Betsch
 -   Simeon Schneider M.Sc.
--   Marl Schiebl M.Sc.
+-   Mark Schiebl M.Sc.
 
 **Coding consultant:**
 Julian Bauer M.Sc.
