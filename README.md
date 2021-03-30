@@ -6,7 +6,7 @@ _a project by Philipp L. Kinon_
 
  Metis was a mythical Titaness who became the goddess of wisdom, prudence and ingenuity. Ingenuity being the "practical, complex and implicit" kind differs from the other types of wisdom.
 
- Likewise, this project targets the efficient and aesthetically pleasing numerical computation of dynamical systems being subject to holonomic constraints.
+ Likewise, this project targets the efficient and aesthetically pleasing numerical computation of dynamical systems being subject to holonomic constraints: particle systems as well as rigid body systems.
 
  Metis was mainly initialised by Philipp Kinon, B.Sc. during his master thesis at the _Institute of Mechanics (IFM)_ at _Karlsruhe Institute of Technology (KIT)_, Germany.
 
