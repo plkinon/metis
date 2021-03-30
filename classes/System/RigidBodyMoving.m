@@ -4,19 +4,29 @@ classdef RigidBodyMoving < System
     methods
 
         function self = RigidBodyMoving(CONFIG)
-            self.nBODIES      = 4;
-            self.mCONSTRAINTS = 6;
+            self.nBODIES      = 1;
             self.DIM          = CONFIG.DIM;
             self.MASS         = CONFIG.MASS;
-            self.MASS_MAT     = self.MASS*eye(12);
             self.nDOF         = 12;
-            self.EXT_ACC      = repmat(CONFIG.EXT_ACC,4,1);
-            %self.GEOM(1)      = 0;
-            self.nPotentialInvariants  = 0;
-            self.nConstraintInvariants = 6;
+            self.EXT_ACC      = [CONFIG.EXT_ACC;
+                                 zeros(9,1)];
+            self.mCONSTRAINTS = 6;
+            self.nPotentialInvariants   = 0;
+            self.nConstraintInvariants  = 6;
             self.nVconstraintInvariants = 6;      
-                          
-        end
+            
+            % Assume spheric shape
+            % I_i = 2/5*M*r^2 with r=1
+            M     = self.MASS*eye(self.DIM);
+            M01   = self.MASS/5*eye(self.DIM);
+            M02   = self.MASS/5*eye(self.DIM);
+            M03   = self.MASS/5*eye(self.DIM);
+            
+            self.MASS_MAT = [M          zeros(3,3) zeros(3,3) zeros(3,3);
+                             zeros(3,3) M01        zeros(3,3) zeros(3,3);
+                             zeros(3,3) zeros(3,3) M02        zeros(3,3);
+                             zeros(3,3) zeros(3,3) zeros(3,3) M03       ];
+        end 
 
         function self = initialise(self, CONFIG, this_integrator)
             % Set initial values
@@ -25,13 +35,13 @@ classdef RigidBodyMoving < System
         end
         
         function V_ext = external_potential(self, q)
-            V_ext = 0*(self.MASS_MAT*self.EXT_ACC)'*q;
-            %% TO DO 
+            V_ext = (self.MASS_MAT*self.EXT_ACC)'*q;
+
         end
         
         function DV_ext = external_potential_gradient(self,~)
-            DV_ext = 0*self.MASS_MAT*self.EXT_ACC;
-            %% TO DO
+            DV_ext = self.MASS_MAT*self.EXT_ACC;
+
         end
         
         function D2V_ext = external_potential_hessian(~,q)
@@ -87,11 +97,11 @@ classdef RigidBodyMoving < System
                 D2g(5,5) = 1;
                 D2g(6,6) = 1;
             elseif m==2
-                D2g(7,7) =1;
+                D2g(7,7) = 1;
                 D2g(8,8) = 1;
                 D2g(9,9) = 1;
             elseif m==3
-                D2g(10,10) =1;
+                D2g(10,10) = 1;
                 D2g(11,11) = 1;
                 D2g(12,12) = 1;
             end
@@ -113,33 +123,127 @@ classdef RigidBodyMoving < System
         %  e.g. for EMS
         
         % invariant of the velocity invariant
-        function pi2 = vConstraint_invariant(self,q,p,~)
+        function pi2 = vConstraint_invariant(self,q,p,i)
             
-            m = self.MASS;
-            pi2 = q'*p/m;
+            v = self.MASS_MAT \ p;
+            d1 = q(self.DIM+1:2*self.DIM);
+            d2 = q(2*self.DIM+1:3*self.DIM);
+            d3 = q(3*self.DIM+1:4*self.DIM);
+            v1 = v(self.DIM+1:2*self.DIM);
+            v2 = v(2*self.DIM+1:3*self.DIM);
+            v3 = v(3*self.DIM+1:4*self.DIM);
+            
+            if i == 1
+                pi2 = d1'*v1;
+            elseif i==2
+                pi2 = d2'*v2;
+            elseif i==3
+                pi2 = d3'*v3;
+            elseif i==4
+                pi2 = d1'*v2 + d2'*v1;
+            elseif i==5
+                pi2 = d1'*v3 + d3'*v1;
+            elseif i==6
+                pi2 = d2'*v3 + d3'*v2;
+            else
+                error('Problem has only 6 invariants for the constraint.');
+            end
             
         end
         
         % gradient of the invariant of the velocity constraint w.r.t. q
-        function Dpi2Dq = vConstraint_invariant_gradient_q(self,~,p,~)
-                      
-            m = self.MASS;
-            Dpi2Dq = p/m;
+        function Dpi2Dq = vConstraint_invariant_gradient_q(self,~,p,i)
+            v = self.MASS_MAT \ p;
+
+            v1 = v(self.DIM+1:2*self.DIM);
+            v2 = v(2*self.DIM+1:3*self.DIM);
+            v3 = v(3*self.DIM+1:4*self.DIM);          
+            
+            if i == 1
+                Dpi2Dq = [zeros(3,1); v1; zeros(3,1); zeros(3,1)];
+            elseif i==2
+                Dpi2Dq = [zeros(3,1); zeros(3,1); v2; zeros(3,1)];
+            elseif i==3
+                Dpi2Dq = [zeros(3,1); zeros(3,1); zeros(3,1); v3];
+            elseif i==4
+                Dpi2Dq = [zeros(3,1); v2; v1; zeros(3,1)];
+            elseif i==5
+                Dpi2Dq = [zeros(3,1); v3; zeros(3,1); v1];
+            elseif i==6
+                Dpi2Dq = [zeros(3,1); zeros(3,1); v3; v2];
+            else
+                error('Problem has only 6 invariants for the constraint.');
+            end
             
         end
         
         % gradient of the invariant of the velocity constraint w.r.t. p
-        function Dpi2Dp = vConstraint_invariant_gradient_p(self,q,~,~)
+        function Dpi2Dp = vConstraint_invariant_gradient_p(self,q,p,i)
+            M = self.MASS_MAT;
+            m1 = M(4,4);
+            m2 = M(7,7);
+            m3 = M(10,10);
+            d1 = q(self.DIM+1:2*self.DIM);
+            d2 = q(2*self.DIM+1:3*self.DIM);
+            d3 = q(3*self.DIM+1:4*self.DIM);
             
-            m = self.MASS;
-            Dpi2Dp = q/m;
+            if i == 1
+                Dpi2Dp = [zeros(3,1); d1/m1; zeros(3,1); zeros(3,1)];
+            elseif i==2
+                Dpi2Dp = [zeros(3,1); zeros(3,1); d2/m2; zeros(3,1)];
+            elseif i==3
+                Dpi2Dp = [zeros(3,1); zeros(3,1); zeros(3,1); d3/m3];
+            elseif i==4
+                Dpi2Dp = [zeros(3,1); d2/m2; d1/m1; zeros(3,1)];
+            elseif i==5
+                Dpi2Dp = [zeros(3,1); d3/m3; zeros(3,1); d1/m1];
+            elseif i==6
+                Dpi2Dp = [zeros(3,1); zeros(3,1); d3/m3; d2/m2];
+            else
+                error('Problem has only 6 invariants for the constraint.');
+            end
             
         end
         
-        function D2piDqDp = vConstraint_invariant_hessian_qp(self,~,~,~)
+        function D2piDqDp = vConstraint_invariant_hessian_qp(self,~,~,i)
+            M = self.MASS_MAT;
+
+            m1 = M(4,4);
+            m2 = M(7,7);
+            m3 = M(10,10);
             
-            m = self.MASS;
-            D2piDqDp = 1/m*eye(self.DIM);
+            
+            if i==1
+                D2piDqDp = [zeros(self.DIM)    zeros(self.DIM)     zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    eye(self.DIM)*1/m1  zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM)     zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM)     zeros(self.DIM) zeros(self.DIM)];
+            elseif i==2
+                D2piDqDp = [zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) eye(self.DIM)*1/m2 zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM)];
+            elseif i==3
+                D2piDqDp = [zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    eye(self.DIM)*1/m3];
+            elseif i==4
+                D2piDqDp = [zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    eye(self.DIM)*1/m2 zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) eye(self.DIM)*1/m1 zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM)];
+            elseif i==5
+                D2piDqDp = [zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    eye(self.DIM)*1/m3 zeros(self.DIM) zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    eye(self.DIM)*1/m1];
+            elseif i==6
+                D2piDqDp = [zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) eye(self.DIM)*1/m3 zeros(self.DIM);
+                            zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    eye(self.DIM)*1/m2];
+            end
             
         end
         
@@ -151,55 +255,93 @@ classdef RigidBodyMoving < System
         end
         
         function DgvDpi = Vconstraint_gradient_from_invariant(~,~,~)
+            
             DgvDpi = 1;
+            
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%
         
-        function zeta = constraint_invariant(~,q,i)
-                     
+        function zeta = constraint_invariant(self,q,i)
+              % Constraint on position level
+            d1 = q(self.DIM+1:2*self.DIM);
+            d2 = q(2*self.DIM+1:3*self.DIM);
+            d3 = q(3*self.DIM+1:4*self.DIM);
+            
             if i == 1
-                zeta = q'*q;
+                zeta = d1'*d1;
+            elseif i==2
+                zeta = d2'*d2;
+            elseif i==3
+                zeta = d3'*d3;
+            elseif i==4
+                zeta = d1'*d2;
+            elseif i==5
+                zeta = d1'*d3;
+            elseif i==6
+                zeta = d2'*d3;
             else
-                error('Problem has only 1 invariant for the constraint.');
+                error('Problem has only 6 invariants for the constraint.');
             end
         end
         
-        function DzetaDq = constraint_invariant_gradient(~,q,i)
-                        
+        function DzetaDq = constraint_invariant_gradient(self,q,i)
+            d1 = q(self.DIM+1:2*self.DIM);
+            d2 = q(2*self.DIM+1:3*self.DIM);
+            d3 = q(3*self.DIM+1:4*self.DIM);           
+%             if i == 1
+%                 DzetaDq = 2*q';
             if i == 1
-                DzetaDq = 2*q';
+                DzetaDq = [zeros(3,1); 2*d1; zeros(3,1); zeros(3,1)];
+            elseif i==2
+                DzetaDq = [zeros(3,1); zeros(3,1); 2*d2; zeros(3,1)];
+            elseif i==3
+                DzetaDq = [zeros(3,1); zeros(3,1); zeros(3,1); 2*d3];
+            elseif i==4
+                DzetaDq = [zeros(3,1); d1; d2; zeros(3,1)];
+            elseif i==5
+                DzetaDq = [zeros(3,1); d1; zeros(3,1); d3];
+            elseif i==6
+                DzetaDq = [zeros(3,1); zeros(3,1); d2; d3];
             else
-                error('Problem has only 1 invariant for the constraint.');
+                error('Problem has only 6 invariants for the constraint.');
             end
         end
         
         % gradient of the invariant of the position constraint w.r.t. q
-        function D2zetaDq2 = constraint_invariant_hessian(self,~,i)
-                                  
+        function D2zetaDq2 = constraint_invariant_hessian(~,~,i)
+                 
+            D2zetaDq2 = zeros(12,12);
             if i == 1
-                D2zetaDq2 = 2*eye(self.DIM); 
-            else
-                error('Problem has only 1 invariant for the constraint.');
+                D2zetaDq2(4,4) = 1;
+                D2zetaDq2(5,5) = 1;
+                D2zetaDq2(6,6) = 1;
+            elseif i==2
+                D2zetaDq2(7,7) = 1;
+                D2zetaDq2(8,8) = 1;
+                D2zetaDq2(9,9) = 1;
+            elseif i==3
+                D2zetaDq2(10,10) = 1;
+                D2zetaDq2(11,11) = 1;
+                D2zetaDq2(12,12) = 1;
+                
             end
         end
         
-        function gs = constraint_from_invariant(self,zeta,i)
+        function gs = constraint_from_invariant(~,zeta,i)
             
-            if i == 1
-                gs = 0.5 * (zeta - self.GEOM(1)^2);
-            else
-                error('Problem has only 1 invariant for the constraint.');
+            if i == 1 || i==2 || i==3
+                gs = 0.5 * (zeta - 1);
+            elseif i==4 || i==5 || i==6
+                gs = 0.5*zeta;
             end
+            
         end
         
-        function gs = constraint_gradient_from_invariant(~,~,i)
+        function gs = constraint_gradient_from_invariant(~,~,~)
             
-            if i == 1
-                gs = 0.5 ;
-            else
-                error('Problem has only 1 invariant for the constraint.');
-            end
+                 gs = 0.5 ;
+
         end  
         
         function give_animation(self,fig,this_simulation)

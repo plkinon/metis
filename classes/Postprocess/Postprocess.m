@@ -39,8 +39,8 @@ classdef Postprocess
             
             nDOF = this_problem.nDOF;
             m    = this_problem.mCONSTRAINTS;
-            d    = this_problem.nBODIES;
             DIM  = this_problem.DIM;
+            d    = nDOF/DIM;
             q    = this_simulation.z(:, 1:nDOF);
             p    = this_simulation.z(:, nDOF+1:2*nDOF);
             NT   = size(q, 1);
