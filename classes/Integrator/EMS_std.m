@@ -24,6 +24,7 @@ classdef EMS_std < Integrator
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 2*this_problem.nDOF+1*this_problem.mCONSTRAINTS;
+            self.INDI_VELO = false;
             self.LM0   = zeros(this_problem.mCONSTRAINTS,1);
             self.hasPARA = false;
             self.NAME  = 'EMS-std';
@@ -155,6 +156,7 @@ classdef EMS_std < Integrator
                     g_n1                                                     ];
 
             %% Tangent matrix
+%           tang = [];
             tang = [eye(n)                                        -h*0.5*IM      zeros(n,m);
                     h*0.5*D2Vext_n05 + h*K21_DG_V + h*K21_DG_g        eye(n)         h*DG_g'   ; 
                     G_n1                                          zeros(n,m)'    zeros(m)  ];

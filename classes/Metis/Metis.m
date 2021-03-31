@@ -12,6 +12,7 @@ classdef Metis
         EXT_ACC
         INTEGRATOR
         INT_PARA
+        INDI_VELO
         MASS
         MAX_ITERATIONS
         Q_0
@@ -78,7 +79,7 @@ classdef Metis
             self.check_user_input();
             
             %% Define other classes
-            [this_system, this_integrator, this_solver] = self.define_classes();
+            [self, this_system, this_integrator, this_solver] = self.define_classes();
             
             %% Solution Matrix to store results (inc. IVs)          
             self = self.set_solution_matrix(this_integrator,this_system);
@@ -169,7 +170,7 @@ classdef Metis
             
         end
         
-        function [this_system, this_integrator, this_solver] = define_classes(self)
+        function [self, this_system, this_integrator, this_solver] = define_classes(self)
             %% Function: Defines problem, integrator and solver objects
             % Author: Philipp Kinon
             % date: 03.12.2020
@@ -186,6 +187,7 @@ classdef Metis
             if ~this_integrator.hasPARA
                 clear this_simulation.INT_PARA
             end
+            self.INDI_VELO = this_integrator.INDI_VELO;
             
             %% Solver
             % Define Solver from class

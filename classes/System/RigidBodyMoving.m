@@ -81,12 +81,12 @@ classdef RigidBodyMoving < System
             d2 = q(2*self.DIM+1:3*self.DIM);
             d3 = q(3*self.DIM+1:4*self.DIM);
             null = zeros(1,3);
-            Dg = [null  d1'   null  null;
-                  null  null  d2'   null;
-                  null  null  null  d3';
-                  null  d2'   d1'   null;
-                  null  d3'   null  d1';
-                  null  null  d3'   d2'];
+            Dg = 1/2*[null  2*d1' null   null;
+                      null  null  2*d2'  null;
+                      null  null  null   2*d3';
+                      null  d2'   d1'    null;
+                      null  d3'   null   d1';
+                      null  null  d3'    d2'];
         end
 
         function D2g = constraint_hessian(~,~,m)
@@ -104,6 +104,27 @@ classdef RigidBodyMoving < System
                 D2g(10,10) = 1;
                 D2g(11,11) = 1;
                 D2g(12,12) = 1;
+            elseif m==4
+                D2g(4,7) = 1/2;
+                D2g(5,8) = 1/2;
+                D2g(6,9) = 1/2;
+                D2g(7,4) = 1/2;
+                D2g(8,5) = 1/2;
+                D2g(9,6) = 1/2;
+            elseif m==5
+                D2g(4,10) = 1/2;
+                D2g(5,11) = 1/2;
+                D2g(6,12) = 1/2;
+                D2g(10,4) = 1/2;
+                D2g(11,5) = 1/2;
+                D2g(12,6) = 1/2;
+            elseif m==6
+                D2g(7,10) = 1/2;
+                D2g(8,11) = 1/2;
+                D2g(9,12) = 1/2;
+                D2g(10,7) = 1/2;
+                D2g(11,8) = 1/2;
+                D2g(12,9) = 1/2;
             end
         end
         

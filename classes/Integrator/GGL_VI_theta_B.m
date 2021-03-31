@@ -5,11 +5,11 @@ classdef GGL_VI_theta_B < Integrator
 %   (GGL-stabilisation)
 %
 % - independent momentum and velocity variables (Hamilton Potryagin approach)
-%   (velocities condensed)
 %
 % - derived from variational principle
 %
-% - from symplectic-theta-framework but equivalent to GGL-VI-RK
+% - from symplectic-theta-framework but equivalent to GGL-VI-RK from P.B.
+%   notes
 %
 % Author: Philipp Kinon
 % Date  : 28.01.2021
@@ -23,6 +23,7 @@ classdef GGL_VI_theta_B < Integrator
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.INDI_VELO = true;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(:); %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [1 0.5]: exact constraint vel. level
@@ -119,12 +120,11 @@ classdef GGL_VI_theta_B < Integrator
                     G_nt*vn1                                              ];
 
             %% Tangent matrix
-            tang = [];
-            %tang = [eye(n) - h*IM*The*t_nt     zeros(n)          -h*eye(n)                   zeros(n,m)                      -h*IM*G_nt' ;
-            %        h*D2V_nt*The + h*theta*t_n1  eye(n)            h*t_nt                      h*((1-theta)*G_n'+theta*G_n1')   h*T_nt'  ;
-            %        h*(1-The)*D2V_nt           zeros(n)          (M + h * (1-The) * t_nt)    h*(1-theta) * G_n'                h*(1-The)*T_nt';     
-            %        theta*G_n1                 zeros(n,m)'       zeros(n,m)'                 zeros(m)                        zeros(m)    ;
-            %        The*T_nt                   zeros(n,m)'       G_nt          zeros(m)      zeros(m)    ];
+            tang = [eye(n) - h*IM*The*t_nt       zeros(n)          -h*eye(n)         zeros(n,m)                                  -h*IM*G_nt'  ;
+                    h*D2V_nt*The + h*theta*t_n1  eye(n)            h*t_nt            h*((1-theta)*G_n'+theta*G_n1')               h*T_nt'     ;
+                    h*theta*(1-The)*t_n1         -(1-The)*eye(n)   M                 h*(The*(1-theta)*G_n'-theta*(1-The)*G_n1')   zeros(n,m)  ;     
+                    G_n1                         zeros(n,m)'       zeros(n,m)'       zeros(m)                                     zeros(m)    ;
+                    The*T_nt                     zeros(n,m)'       G_nt              zeros(m)                                     zeros(m)    ];
              
         end
         

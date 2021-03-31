@@ -9,6 +9,7 @@ classdef Integrator
         t
         NT
         nVARS
+        INDI_VELO
         LM0
         hasPARA
         PARA

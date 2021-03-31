@@ -41,22 +41,22 @@ classdef Postprocess
             m    = this_problem.mCONSTRAINTS;
             DIM  = this_problem.DIM;
             d    = nDOF/DIM;
-            q    = this_simulation.z(:, 1:nDOF);
-            p    = this_simulation.z(:, nDOF+1:2*nDOF);
-            NT   = size(q, 1);
+            
+            NT   = this_simulation.T_END/this_simulation.DT +1;
             M    = this_problem.MASS_MAT;
             IM   = M\eye(size(M));
             
-            v = zeros(NT,nDOF);
-            for j = 1:NT-1
-                if strcmp(this_simulation.INTEGRATOR,'GGL_VI_RK')    
-                    v(j,:) = this_simulation.z(j+1, 2*nDOF+1:3*nDOF);
-                elseif strcmp(this_simulation.INTEGRATOR,'GGL_VI_theta_A') || strcmp(this_simulation.INTEGRATOR,'GGL_VI_theta_B')
-                    v(j,:) = this_simulation.z(j, 2*nDOF+1:3*nDOF);
-                else
+            q    = this_simulation.z(:, 1:nDOF);
+            p    = this_simulation.z(:, nDOF+1:2*nDOF);
+            v    = zeros(NT,nDOF);
+            if this_simulation.INDI_VELO == true
+                v = this_simulation.z(:,2*nDOF+1:3*nDOF);
+            else
+                for j=1:NT
                     v(j,:) = IM*p(j,:)';
                 end
-            end        
+               
+            end     
 
             T = zeros(NT, 1);
             V = zeros(NT, 1);

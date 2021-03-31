@@ -22,6 +22,7 @@ classdef GGL_VI_theta_A < Integrator
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.INDI_VELO = true;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(1);
@@ -75,8 +76,8 @@ classdef GGL_VI_theta_A < Integrator
                 t_nt_gam   = t_nt_gam + this_problem.constraint_hessian(q_nt,j)*gamman(j);
                 t_nt_lam   = t_nt_lam + this_problem.constraint_hessian(q_nt,j)*lambdan(j);
                 for k = 1:n
-                    T_n1(j,k) = tmp_1(:,k)'*IM*pn1;
-                    T_nt(j,k) = tmp_nt(:,k)'*IM*p_n1mt;
+                    T_n1(j,k) = tmp_1(:,k)'*vn1;
+                    T_nt(j,k) = tmp_nt(:,k)'*vn1;
                 end
             end
             
@@ -88,11 +89,11 @@ classdef GGL_VI_theta_A < Integrator
                     G_nt*vn1                                              ];
 
             %% Tangent matrix
-            tang = [];
-            %tang = [eye(n) - h*IM*theta*t_nt_gam         -h*IM*(1-theta)               zeros(n,m)      -h*IM*G_nt' ;
-            %        h*D2V_nt*theta + h*theta*t_nt_lam    eye(n)+h*t_nt_gam*IM*(1-theta)    h*G_nt'         h*T_nt'     ;
-            %        G_nt*theta                           zeros(n,m)'                   zeros(m)        zeros(m)    ;
-            %        T_nt*theta                           G_nt*IM*(1-theta)                       zeros(m)        zeros(m)    ];
+            tang = [eye(n) - h*IM*theta*t_nt_gam        zeros(n)            -h*eye(n)         zeros(n,m)          -h*IM*G_nt'  ;
+                    h*D2V_nt*theta + h*theta*t_nt_lam   eye(n)              h*t_nt_gam        h*G_nt'             h*T_n1'     ;
+                    zeros(n)                            -(1-theta)*eye(n)   M                 zeros(n,m)          zeros(n,m)  ;     
+                    G_nt*theta                          zeros(n,m)'         zeros(n,m)'       zeros(m)            zeros(m)    ;
+                    theta*T_nt                          zeros(n,m)'         G_nt              zeros(m)            zeros(m)    ];
         end
         
     end

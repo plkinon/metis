@@ -24,6 +24,7 @@ classdef GGL_LR_alpha < Integrator
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
             self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.INDI_VELO = false;
             self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(1);
