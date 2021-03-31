@@ -7,7 +7,7 @@ addpath('~/git/matlab2tikz/src');
 
 %% METIS initialise
 % Load configuration parameters from file into Metis-object
-[simulation, system, integrator, solver] = Metis('config_input_rigid_body_moving');
+[simulation, system, integrator, solver] = Metis('config_input_heavy_top');
 
 %% METIS solver
 % Solve my System with my Solver and my Integration scheme
