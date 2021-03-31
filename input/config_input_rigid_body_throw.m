@@ -2,13 +2,12 @@
 SYSTEM = 'RigidBodyMoving';
 EXT_ACC = [0; 0; 10];
 Q_0     = [0; 0; 0; 1; 0; 0; 0; 1; 0; 0; 0; 1];
-V_0     = [10; 10; 10; 0; 1; 0; 0; 0; 0; 0; 1; 0];
+V_0     = [10; 10; 10; 0; 1; -1; -1; 0; 0; 1; 0; 0];
 MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'GGL_VI_theta_B';
-INT_PARA = [1 0.5];
+INTEGRATOR = 'EMS_ggl';
 DT    = 0.02;
 T_0   = 0;
 T_END = 2;
