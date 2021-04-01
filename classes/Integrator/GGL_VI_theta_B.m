@@ -125,7 +125,7 @@ classdef GGL_VI_theta_B < Integrator
                     h*theta*(1-The)*t_n1         -(1-The)*eye(n)   M                 h*(The*(1-theta)*G_n'-theta*(1-The)*G_n1')   zeros(n,m)  ;     
                     G_n1                         zeros(n,m)'       zeros(n,m)'       zeros(m)                                     zeros(m)    ;
                     The*T_nt                     zeros(n,m)'       G_nt              zeros(m)                                     zeros(m)    ];
-             
+            %tang = [];
         end
         
     end
