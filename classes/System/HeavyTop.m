@@ -10,19 +10,19 @@ classdef HeavyTop < System
             self.nDOF         = 12;
             self.EXT_ACC      = [CONFIG.EXT_ACC;
                                  zeros(9,1)];
-            a=0.1;
+            a=1;
             r=a/2;
             l=3*a/4;
-            d=l;
-            J1 = 3/80*self.MASS*(4*r^2+a^2) +self.MASS*d^2;
+           
+            J1 = 3/80*self.MASS*(4*r^2+a^2);
             J2 = J1;
             J3 = 3/10*self.MASS*r^2;
                              
-            self.GEOM         = [J1 J2 J3 d];
-            self.mCONSTRAINTS = 6;
+            self.GEOM         = [J1 J2 J3 l];
+            self.mCONSTRAINTS = 9;
             self.nPotentialInvariants   = 0;
-            self.nConstraintInvariants  = 6;
-            self.nVconstraintInvariants = 6;      
+            self.nConstraintInvariants  = 9;
+            self.nVconstraintInvariants = 9;      
             
             M     = self.MASS*eye(self.DIM);
             J01 = self.GEOM(1);
@@ -41,6 +41,7 @@ classdef HeavyTop < System
                              zeros(3,3) M01        zeros(3,3) zeros(3,3);
                              zeros(3,3) zeros(3,3) M02        zeros(3,3);
                              zeros(3,3) zeros(3,3) zeros(3,3) M03       ];
+                         
         end 
 
         function self = initialise(self, CONFIG, this_integrator)
@@ -52,27 +53,28 @@ classdef HeavyTop < System
         function V_ext = external_potential(self, q)
             
             %rotation tensor from directors
-            d = zeros(3,3);
-            I = eye(3);
-            d(1,:) = q(self.DIM+1:2*self.DIM);
-            d(2,:) = q(2*self.DIM+1:3*self.DIM);
-            d(3,:) = q(3*self.DIM+1:4*self.DIM);
+%             d = zeros(3,3);
+%             I = eye(3);
+%             d(1,:) = q(self.DIM+1:2*self.DIM);
+%             d(2,:) = q(2*self.DIM+1:3*self.DIM);
+%             d(3,:) = q(3*self.DIM+1:4*self.DIM);
+%             
+%             R = zeros(3,3);
+%             for i = 1:3
+%                 R = R + d(i,:)'*I(i,:);
+%             end
             
-            R = zeros(3,3);
-            for i = 1:3
-                R = R + d(i,:)'*I(i,:);
-            end
-            
-            L = self.GEOM(4);
-            V_ext = L*self.MASS*self.EXT_ACC(1:3)'*R*[0;0;1];
+           % L = self.GEOM(4);
+            V_ext = self.MASS*self.EXT_ACC(3)*q(3);
 
         end
         
         function DV_ext = external_potential_gradient(self,~)
-            L = self.GEOM(4);
-            DV_ext = [zeros(9,1);
-                      L*self.MASS*self.EXT_ACC(1:3)];
-
+            %L = self.GEOM(4);
+            %DV_ext = [zeros(9,1);
+            %          L*self.MASS*self.EXT_ACC(1:3)];
+            DV_ext = zeros(12,1);
+            DV_ext(3,1) = self.MASS*self.EXT_ACC(3);
         end
         
         function D2V_ext = external_potential_hessian(~,q)
@@ -94,6 +96,8 @@ classdef HeavyTop < System
         
         function g = constraint(self, q)
             % Constraint on position level
+            phi= q(1:self.DIM);
+            L = self.GEOM(4);
             d1 = q(self.DIM+1:2*self.DIM);
             d2 = q(2*self.DIM+1:3*self.DIM);
             d3 = q(3*self.DIM+1:4*self.DIM);
@@ -103,7 +107,8 @@ classdef HeavyTop < System
             g4 = 0.5 * (d1' * d2);
             g5 = 0.5 * (d1' * d3);
             g6 = 0.5 * (d2' * d3);
-            g  = [g1 ; g2; g3; g4; g5; g6];
+            g_cg = phi-L*d3;
+            g  = [g1 ; g2; g3; g4; g5; g6; g_cg];
         end
 
         function Dg = constraint_gradient(self, q)
@@ -112,12 +117,14 @@ classdef HeavyTop < System
             d2 = q(2*self.DIM+1:3*self.DIM);
             d3 = q(3*self.DIM+1:4*self.DIM);
             null = zeros(1,3);
+            L = self.GEOM(4);
             Dg = 1/2*[null  2*d1' null   null;
                       null  null  2*d2'  null;
                       null  null  null   2*d3';
                       null  d2'   d1'    null;
                       null  d3'   null   d1';
-                      null  null  d3'    d2'];
+                      null  null  d3'    d2';
+                      2*eye(3) zeros(3,3) zeros(3,3) -2*L*eye(3)];
         end
 
         function D2g = constraint_hessian(~,~,m)
@@ -157,6 +164,7 @@ classdef HeavyTop < System
                 D2g(11,8) = 1/2;
                 D2g(12,9) = 1/2;
             end
+                
         end
         
         function [] = potential_invariant(~,~,~)
@@ -456,6 +464,9 @@ classdef HeavyTop < System
                     grid on
 
                     %% current position of the constraint
+                    px = [0; x0];
+                    py = [0; y0];
+                    pz = [0; z0];
                     xx = [x0; x1];
                     yy = [y0; y1];
                     zz = [z0; z1];
@@ -466,6 +477,7 @@ classdef HeavyTop < System
                     yyyy = [y0; y3];
                     zzzz = [z0; z3];
                     hold on
+                    plot3(px, py, pz, 'r');
                     plot3(xx, yy, zz, 'k', 'linewidth', 1);
                     plot3(xxx, yyy, zzz, 'k', 'linewidth', 1);
                     plot3(xxxx, yyyy, zzzz, 'k', 'linewidth', 1);
