@@ -1,47 +1,41 @@
 classdef HeavyTop < System
 
-    %% Rigid Body moving through space
+    %% Gyroscopic Top with steady precession ('heavy top')
     methods
 
         function self = HeavyTop(CONFIG)
+            
             self.nBODIES      = 1;
             self.DIM          = CONFIG.DIM;
             self.MASS         = CONFIG.MASS;
             self.nDOF         = 12;
             self.EXT_ACC      = [CONFIG.EXT_ACC;
                                  zeros(9,1)];
-            a=1;
-            r=a/2;
-            l=3*a/4;
-           
+            
+            % Geometric parameters
+            a = 1;
+            r = a/2;
+            l = 3*a/4;
+            
+            % Moments of Inertia
             J1 = 3/80*self.MASS*(4*r^2+a^2);
             J2 = J1;
             J3 = 3/10*self.MASS*r^2;
-                             
-            self.GEOM         = [J1 J2 J3 l];
-            self.mCONSTRAINTS = 9;
+            
+            % Entries of convected Euler tensor
+            m01 = 1/2*(J2+J3-J1);
+            m02 = 1/2*(J1+J3-J2);
+            m03 = 1/2*(J1+J2-J3);
+            mVec = [self.MASS self.MASS self.MASS m01 m01 m01 m02 m02 m02 m03 m03 m03];
+            
+            self.MASS_MAT               = diag(mVec);
+            self.GEOM                   = [J1 J2 J3 l];
+            self.mCONSTRAINTS           = 9;
             self.nPotentialInvariants   = 0;
             self.nConstraintInvariants  = 9;
             self.nVconstraintInvariants = 9;      
+                        
             
-            M     = self.MASS*eye(self.DIM);
-            J01 = self.GEOM(1);
-            J02 = self.GEOM(2);
-            J03 = self.GEOM(3);
-            
-            m01 = 1/2*(J02+J03-J01);
-            m02 = 1/2*(J01+J03-J02);
-            m03 = 1/2*(J01+J02-J03);
-            
-            M01   = m01*eye(self.DIM);
-            M02   = m02*eye(self.DIM);
-            M03   = m03*eye(self.DIM);
-            
-            self.MASS_MAT = [M          zeros(3,3) zeros(3,3) zeros(3,3);
-                             zeros(3,3) M01        zeros(3,3) zeros(3,3);
-                             zeros(3,3) zeros(3,3) M02        zeros(3,3);
-                             zeros(3,3) zeros(3,3) zeros(3,3) M03       ];
-                         
         end 
 
         function self = initialise(self, CONFIG, this_integrator)
@@ -52,29 +46,15 @@ classdef HeavyTop < System
         
         function V_ext = external_potential(self, q)
             
-            %rotation tensor from directors
-%             d = zeros(3,3);
-%             I = eye(3);
-%             d(1,:) = q(self.DIM+1:2*self.DIM);
-%             d(2,:) = q(2*self.DIM+1:3*self.DIM);
-%             d(3,:) = q(3*self.DIM+1:4*self.DIM);
-%             
-%             R = zeros(3,3);
-%             for i = 1:3
-%                 R = R + d(i,:)'*I(i,:);
-%             end
-            
-           % L = self.GEOM(4);
             V_ext = self.MASS*self.EXT_ACC(3)*q(3);
 
         end
         
         function DV_ext = external_potential_gradient(self,~)
-            %L = self.GEOM(4);
-            %DV_ext = [zeros(9,1);
-            %          L*self.MASS*self.EXT_ACC(1:3)];
+
             DV_ext = zeros(12,1);
             DV_ext(3,1) = self.MASS*self.EXT_ACC(3);
+            
         end
         
         function D2V_ext = external_potential_hessian(~,q)
@@ -95,6 +75,7 @@ classdef HeavyTop < System
 
         
         function g = constraint(self, q)
+            
             % Constraint on position level
             phi= q(1:self.DIM);
             L = self.GEOM(4);
@@ -109,9 +90,11 @@ classdef HeavyTop < System
             g6 = 0.5 * (d2' * d3);
             g_cg = phi-L*d3;
             g  = [g1 ; g2; g3; g4; g5; g6; g_cg];
+            
         end
 
         function Dg = constraint_gradient(self, q)
+            
             % Gradient of constraint w.r.t q
             d1 = q(self.DIM+1:2*self.DIM);
             d2 = q(2*self.DIM+1:3*self.DIM);
@@ -125,9 +108,11 @@ classdef HeavyTop < System
                       null  d3'   null   d1';
                       null  null  d3'    d2';
                       2*eye(3) zeros(3,3) zeros(3,3) -2*L*eye(3)];
+                  
         end
 
         function D2g = constraint_hessian(~,~,m)
+            
             % Hessian of g_1 w.r.t. q
             D2g = zeros(12,12);
             if m == 1
@@ -185,10 +170,12 @@ classdef HeavyTop < System
         % invariant of the velocity invariant
         function pi2 = vConstraint_invariant(self,q,p,i)
             
+            L = self.GEOM(4);
             v = self.MASS_MAT \ p;
             d1 = q(self.DIM+1:2*self.DIM);
             d2 = q(2*self.DIM+1:3*self.DIM);
             d3 = q(3*self.DIM+1:4*self.DIM);
+            v0 = v(1:self.DIM);
             v1 = v(self.DIM+1:2*self.DIM);
             v2 = v(2*self.DIM+1:3*self.DIM);
             v3 = v(3*self.DIM+1:4*self.DIM);
@@ -205,6 +192,12 @@ classdef HeavyTop < System
                 pi2 = d1'*v3 + d3'*v1;
             elseif i==6
                 pi2 = d2'*v3 + d3'*v2;
+            elseif i==7
+                pi2 = v0(1) - L*v3(1);
+            elseif i==8
+                pi2 = v0(2) - L*v3(2);
+            elseif i==9
+                pi2 = v0(3) - L*v3(3);
             else
                 error('Problem has only 6 invariants for the constraint.');
             end
@@ -231,6 +224,8 @@ classdef HeavyTop < System
                 Dpi2Dq = [zeros(3,1); v3; zeros(3,1); v1];
             elseif i==6
                 Dpi2Dq = [zeros(3,1); zeros(3,1); v3; v2];
+            elseif i==7 || i==8 || i==9
+                Dpi2Dq = zeros(12,1);
             else
                 error('Problem has only 6 invariants for the constraint.');
             end
@@ -238,8 +233,10 @@ classdef HeavyTop < System
         end
         
         % gradient of the invariant of the velocity constraint w.r.t. p
-        function Dpi2Dp = vConstraint_invariant_gradient_p(self,q,p,i)
+        function Dpi2Dp = vConstraint_invariant_gradient_p(self,q,~,i)
             M = self.MASS_MAT;
+            L = self.GEOM(4);
+            m = M(1,1);
             m1 = M(4,4);
             m2 = M(7,7);
             m3 = M(10,10);
@@ -259,6 +256,12 @@ classdef HeavyTop < System
                 Dpi2Dp = [zeros(3,1); d3/m3; zeros(3,1); d1/m1];
             elseif i==6
                 Dpi2Dp = [zeros(3,1); zeros(3,1); d3/m3; d2/m2];
+            elseif i==7 
+                Dpi2Dp = [1/m; 0; 0; zeros(3,1); zeros(3,1); -L/m3; 0; 0];
+            elseif i==8 
+                Dpi2Dp = [0; 1/m; 0; zeros(3,1); zeros(3,1); 0; -L/m3; 0];
+            elseif i==9 
+                Dpi2Dp = [0; 0; 1/m; zeros(3,1); zeros(3,1); 0; 0; -L/m3];
             else
                 error('Problem has only 6 invariants for the constraint.');
             end
@@ -303,6 +306,8 @@ classdef HeavyTop < System
                             zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    zeros(self.DIM);
                             zeros(self.DIM)    zeros(self.DIM) eye(self.DIM)*1/m3 zeros(self.DIM);
                             zeros(self.DIM)    zeros(self.DIM) zeros(self.DIM)    eye(self.DIM)*1/m2];
+            elseif i==7 || i==8 || i==9
+                D2piDqDp = zeros(12,12);
             end
             
         end
@@ -324,10 +329,11 @@ classdef HeavyTop < System
         
         function zeta = constraint_invariant(self,q,i)
               % Constraint on position level
+            phi = q(1:self.DIM);
             d1 = q(self.DIM+1:2*self.DIM);
             d2 = q(2*self.DIM+1:3*self.DIM);
             d3 = q(3*self.DIM+1:4*self.DIM);
-            
+            L = self.GEOM(4);
             if i == 1
                 zeta = d1'*d1;
             elseif i==2
@@ -340,6 +346,12 @@ classdef HeavyTop < System
                 zeta = d1'*d3;
             elseif i==6
                 zeta = d2'*d3;
+            elseif i==7
+                zeta = phi(1)-L*d3(1);
+            elseif i==8
+                zeta = phi(2)-L*d3(2);
+            elseif i==9
+                zeta = phi(3)-L*d3(3);
             else
                 error('Problem has only 6 invariants for the constraint.');
             end
@@ -348,9 +360,9 @@ classdef HeavyTop < System
         function DzetaDq = constraint_invariant_gradient(self,q,i)
             d1 = q(self.DIM+1:2*self.DIM);
             d2 = q(2*self.DIM+1:3*self.DIM);
-            d3 = q(3*self.DIM+1:4*self.DIM);           
-%             if i == 1
-%                 DzetaDq = 2*q';
+            d3 = q(3*self.DIM+1:4*self.DIM);  
+            L = self.GEOM(4);
+
             if i == 1
                 DzetaDq = [zeros(3,1); 2*d1; zeros(3,1); zeros(3,1)];
             elseif i==2
@@ -363,6 +375,12 @@ classdef HeavyTop < System
                 DzetaDq = [zeros(3,1); d1; zeros(3,1); d3];
             elseif i==6
                 DzetaDq = [zeros(3,1); zeros(3,1); d2; d3];
+            elseif i==7 
+                DzetaDq = [1; 0; 0; zeros(3,1); zeros(3,1); -L; 0; 0];
+            elseif i==8 
+                DzetaDq = [0; 1; 0; zeros(3,1); zeros(3,1); 0; -L; 0];
+            elseif i==9 
+                DzetaDq = [0; 0; 1; zeros(3,1); zeros(3,1); 0; 0; -L];
             else
                 error('Problem has only 6 invariants for the constraint.');
             end
@@ -384,7 +402,27 @@ classdef HeavyTop < System
                 D2zetaDq2(10,10) = 1;
                 D2zetaDq2(11,11) = 1;
                 D2zetaDq2(12,12) = 1;
-                
+            elseif i==4
+                D2zetaDq2(4,7) = 1;
+                D2zetaDq2(5,8) = 1;
+                D2zetaDq2(6,9) = 1;
+                D2zetaDq2(7,4) = 1;
+                D2zetaDq2(8,5) = 1;
+                D2zetaDq2(9,6) = 1;
+            elseif i==5
+                D2zetaDq2(4,10) = 1;
+                D2zetaDq2(5,11) = 1;
+                D2zetaDq2(6,12) = 1;
+                D2zetaDq2(10,4) = 1;
+                D2zetaDq2(11,5) = 1;
+                D2zetaDq2(12,6) = 1;
+            elseif i==6
+                D2zetaDq2(7,10) = 1;
+                D2zetaDq2(8,11) = 1;
+                D2zetaDq2(9,12) = 1;
+                D2zetaDq2(10,7) = 1;
+                D2zetaDq2(11,8) = 1;
+                D2zetaDq2(12,9) = 1;
             end
         end
         
@@ -394,14 +432,19 @@ classdef HeavyTop < System
                 gs = 0.5 * (zeta - 1);
             elseif i==4 || i==5 || i==6
                 gs = 0.5*zeta;
+            elseif i==7 || i==8 || i==9
+                gs = zeta;
             end
             
         end
         
-        function gs = constraint_gradient_from_invariant(~,~,~)
+        function gs = constraint_gradient_from_invariant(~,~,i)
             
-                 gs = 0.5 ;
-
+             gs = 0.5 ;
+             if i==7 || i==8 || i==9
+                gs = 1;
+             end
+             
         end  
         
         function give_animation(self,fig,this_simulation)
