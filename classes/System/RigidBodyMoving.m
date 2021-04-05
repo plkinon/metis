@@ -345,7 +345,27 @@ classdef RigidBodyMoving < System
                 D2zetaDq2(10,10) = 1;
                 D2zetaDq2(11,11) = 1;
                 D2zetaDq2(12,12) = 1;
-                
+            elseif i==4
+                D2zetaDq2(4,7) = 1;
+                D2zetaDq2(5,8) = 1;
+                D2zetaDq2(6,9) = 1;
+                D2zetaDq2(7,4) = 1;
+                D2zetaDq2(8,5) = 1;
+                D2zetaDq2(9,6) = 1;
+            elseif i==5
+                D2zetaDq2(4,10) = 1;
+                D2zetaDq2(5,11) = 1;
+                D2zetaDq2(6,12) = 1;
+                D2zetaDq2(10,4) = 1;
+                D2zetaDq2(11,5) = 1;
+                D2zetaDq2(12,6) = 1;
+            elseif i==6
+                D2zetaDq2(7,10) = 1;
+                D2zetaDq2(8,11) = 1;
+                D2zetaDq2(9,12) = 1;
+                D2zetaDq2(10,7) = 1;
+                D2zetaDq2(11,8) = 1;
+                D2zetaDq2(12,9) = 1;
             end
         end
         
