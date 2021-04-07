@@ -13,7 +13,7 @@ classdef HeavyTop < System
                                  zeros(9,1)];
             
             % Geometric parameters
-            a = 1;
+            a = 0.1;
             r = a/2;
             l = 3*a/4;
             

@@ -5,7 +5,7 @@ DIM = 3;
 
 %% Geometric parameters
 rho  = 2700;                    % mass density
-a    = 1;                       % length of the gyro top
+a    = 0.1;                       % length of the gyro top
 r    = a/2;                     % radius of the gyro top
 l    = 3*a/4;                   % location of center of mass along sym. axis
 MASS = rho*pi*r^2*a/3;          % total mass of the gyro top
@@ -61,7 +61,7 @@ MAX_ITERATIONS = 40;
 TOLERANCE      = 1E-09;
 
 %% Postprocessing
-shouldAnimate   = true;
+shouldAnimate   = false;
 plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
 should_export         = false;
 should_export_figures = false;
