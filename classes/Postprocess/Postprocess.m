@@ -61,9 +61,9 @@ classdef Postprocess
             T = zeros(NT, 1);
             V = zeros(NT, 1);
             H = zeros(NT, 1);
-            J = zeros(NT, 3);
+            L = zeros(NT, 3);
             diffH = zeros(NT-1, 1);
-            diffJ = zeros(NT-1, 3);
+            diffL = zeros(NT-1, 3);
             constraint_position = zeros(NT,m);
             constraint_velocity = zeros(NT,m);
 
@@ -82,7 +82,7 @@ classdef Postprocess
                     
                     for k = 1:d
                         
-                        J(j, :) = J(j,:) + cross(q(j,(k-1)*DIM+1:k*DIM), p(j, (k-1)*DIM+1:k*DIM));
+                        L(j, :) = L(j,:) + cross(q(j,(k-1)*DIM+1:k*DIM), p(j, (k-1)*DIM+1:k*DIM));
                         
                     end
                     
@@ -93,16 +93,16 @@ classdef Postprocess
             for j = 1:(NT-1)
                 
                 diffH(j)    = H(j+1) - H(j);
-                diffJ(j, :) = J(j+1, :) - J(j, :);
+                diffL(j, :) = L(j+1, :) - L(j, :);
                 
             end
                        
             this_simulation.T = T;
             this_simulation.V = V;
             this_simulation.H = H;
-            this_simulation.J = J;
+            this_simulation.L = L;
             this_simulation.Hdiff = diffH;
-            this_simulation.Jdiff = diffJ;
+            this_simulation.Ldiff = diffL;
             this_simulation.constraint_position = constraint_position;
             this_simulation.constraint_velocity = constraint_velocity;
 
@@ -165,7 +165,7 @@ classdef Postprocess
                         % in the matlab-path)
                         %cleanfigure('handle',figHandles(i));
                         warning('off')
-                        matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false);
+                        matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false,'floatformat','%.4g');
                         warning('on')
                         title(gca,titlestring);
                         set(findall(gca, 'Type', 'Line'),'LineWidth',1.5);
@@ -188,9 +188,9 @@ classdef Postprocess
             V = this_simulation.V;
             T = this_simulation.T;
             t = this_simulation.t;
-            J = this_simulation.J;
+            L = this_simulation.L;
             diffH = this_simulation.Hdiff;
-            diffJ = this_simulation.Jdiff;
+            diffL = this_simulation.Ldiff;
             g_pos = this_simulation.constraint_position;
             g_vel = this_simulation.constraint_velocity;
             
@@ -218,15 +218,15 @@ classdef Postprocess
                     case 'angular_momentum'
 
                         %plots the ang. Mom. about dim-axis over time
-                        plotline = plot(t, J(:,:));
-                        Jmin     = min(J(:));
-                        Jmax     = max(J(:));
-                        ylim([Jmin - 0.1 * abs(Jmax-Jmin), Jmax + 0.1 * abs(Jmax-Jmin)]);
+                        plotline = plot(t, L(:,:));
+                        Lmin     = min(L(:));
+                        Lmax     = max(L(:));
+                        ylim([Lmin - 0.1 * abs(Lmax-Lmin), Lmax + 0.1 * abs(Lmax-Lmin)]);
                         fig.Name = 'ang_mom';
                         title(strcat(integrator_string, ': Angular Momentum'));
-                        legend('J_1','J_2','J_3');
+                        legend('L_1','L_2','L_3');
                         xlabel('t');
-                        ylabel('J_i(t)');
+                        ylabel('L_i(t)');
 
                     case 'energy_difference'
 
@@ -248,10 +248,10 @@ classdef Postprocess
                     case 'angular_momentum_difference'
 
                         %plots the increments of ang. Mom. over time about desired axis (dim)      
-                        plotline    = plot(t(1:end-1), diffJ(:,:));
-                        max_diff    = max(max(diffJ));
+                        plotline    = plot(t(1:end-1), diffL(:,:));
+                        max_diff    = max(max(diffL));
                         max_rounded = 10^(floor(log10(max_diff))+1);
-                        min_diff    = min(min(diffJ));
+                        min_diff    = min(min(diffL));
                         min_rounded = -10^(real(floor(log10(min_diff)))+1);
                         hold on
                         plot([t(1) t(end)],[max_rounded max_rounded],'k--',[t(1) t(end)],[min_rounded min_rounded],'k--');
@@ -261,7 +261,7 @@ classdef Postprocess
                         xlabel('t');
                         legend('J_1','J_2','J_3');
                         ylabel('J_i^{n+1}-J_i^{n}');
-                        legend(strcat('std(J_1)=', num2str(std(J(:,1)))),strcat('std(J_2)=', num2str(std(J(:,2)))),strcat('std(J_3)=', num2str(std(J(:,3)))));
+                        legend(strcat('std(J_1)=', num2str(std(L(:,1)))),strcat('std(J_2)=', num2str(std(L(:,2)))),strcat('std(J_3)=', num2str(std(L(:,3)))));
 
                     case 'constraint_position'
 
