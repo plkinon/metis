@@ -165,7 +165,7 @@ classdef Postprocess
                         % in the matlab-path)
                         %cleanfigure('handle',figHandles(i));
                         warning('off')
-                        matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false,'floatformat','%.4g');
+                        matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false,'floatformat','%.5g');
                         warning('on')
                         title(gca,titlestring);
                         set(findall(gca, 'Type', 'Line'),'LineWidth',1.5);
@@ -259,9 +259,9 @@ classdef Postprocess
                         fig.Name = 'J_diff';
                         title(strcat(integrator_string, ': Ang. mom. - difference'));
                         xlabel('t');
-                        legend('J_1','J_2','J_3');
-                        ylabel('J_i^{n+1}-J_i^{n}');
-                        legend(strcat('std(J_1)=', num2str(std(L(:,1)))),strcat('std(J_2)=', num2str(std(L(:,2)))),strcat('std(J_3)=', num2str(std(L(:,3)))));
+                        legend('L_1','L_2','L_3');
+                        ylabel('L_i^{n+1}-L_i^{n}');
+                        legend(strcat('std(L_1)=', num2str(std(L(:,1)))),strcat('std(L_2)=', num2str(std(L(:,2)))),strcat('std(L_3)=', num2str(std(L(:,3)))));
 
                     case 'constraint_position'
 
