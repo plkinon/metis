@@ -18,7 +18,7 @@ classdef GGL_std < Integrator
 
     methods
         
-        function self = Ggl_std(this_simulation, this_problem)
+        function self = GGL_std(this_simulation, this_problem)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
