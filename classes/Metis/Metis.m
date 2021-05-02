@@ -10,6 +10,7 @@ classdef Metis
         DIM
         DT
         EXT_ACC
+        ALL_INTEGRATOR
         INTEGRATOR
         INT_PARA
         INDI_VELO
@@ -53,7 +54,7 @@ classdef Metis
     
     methods
         
-        function [self,this_system, this_integrator, this_solver] = Metis(INPUT_FILE)
+        function [self,this_system, this_integrator, this_solver] = Metis(INPUT_FILE,num_dt,num_int)
             %% Constructor: sets up the METIS workspace and loads all configurations
             % Author: Philipp
             % date: 02.12.2020
@@ -73,7 +74,7 @@ classdef Metis
             fprintf('  \n');
             
             %% Set attributes from config file           
-            self = self.get_config_input(INPUT_FILE);
+            self = self.get_config_input(INPUT_FILE,num_dt,num_int);
             
             %% Check if user input is valid
             self.check_user_input();
@@ -147,7 +148,7 @@ classdef Metis
             
         end
         
-        function self = get_config_input(self,INPUT_FILE)
+        function self = get_config_input(self,INPUT_FILE,num_dt,num_int)
             %% Function: reads input-file and stores it in the attributes
             
             % Define all the parameters that METIS needs to run a simulation in a
@@ -157,7 +158,7 @@ classdef Metis
             % Load input variables into CONFIG-struct and delete unnecessary .mat-File
             configstruct = load([INPUT_FILE,'.mat']);
             delete *.mat
-            configstruct = rmfield(configstruct,{'self','INPUT_FILE'});
+            configstruct = rmfield(configstruct,{'self','INPUT_FILE','num_dt','num_int'});
 
             % Converts structure s to an object of class classname.
             for fn = fieldnames(configstruct)'    %enumerat fields
@@ -168,6 +169,16 @@ classdef Metis
                end
             end
             
+            % Set current time step size
+            self.ALL_DT = self.DT;
+            self.DT = self.DT(num_dt);
+            
+            % Set current integrator
+            self.ALL_INTEGRATOR = self.INTEGRATOR;
+            if ~ischar(self.INTEGRATOR)
+                self.INTEGRATOR = self.INTEGRATOR{num_int};
+            end
+         
         end
         
         function [self, this_system, this_integrator, this_solver] = define_classes(self)
@@ -197,7 +208,7 @@ classdef Metis
         
         function self = set_solution_matrix(self,this_integrator,this_system)
            
-            self.z       = zeros(this_integrator.NT, this_integrator.nVARS);
+            self.z       = zeros(this_integrator.NT+1, this_integrator.nVARS);
             z0           = this_integrator.set_initial_condition(self,this_system);
             self.z(1, :) = z0;
             self.t       = this_integrator.t;

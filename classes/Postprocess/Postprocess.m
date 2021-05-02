@@ -53,7 +53,7 @@ classdef Postprocess
                 v = this_simulation.z(:,2*nDOF+1:3*nDOF);
             else
                 for j=1:NT
-                    v(j,:) = IM*p(j,:)';
+                    v(j,:) = (IM*p(j,:)')';
                 end
                
             end     
@@ -308,6 +308,31 @@ classdef Postprocess
                                 
             end
         
+        end
+        
+        function error = calculate_errors(~,quantity,num_A,num_B,reference)
+            error = zeros(num_A,num_B);
+            for i = 1:num_A
+                for j = 1:num_B
+                    error(i,j) = norm(quantity(:,i,j)-quantity(:,reference,j))/norm(quantity(:,reference,j));
+                end
+            end
+        end
+        
+        function convergence_plot(self,h_values,y_values,num_A,legend_entries)  
+            
+            figure()
+            for j = 1:num_A
+                loglog(h_values(1:end-1),y_values(1:end-1,j),'-o','Linewidth',1.5)
+                hold on
+            end
+            colororder(self.color_scheme);
+            legend(legend_entries)
+            title('relative error')
+            grid on
+            xlabel('h');
+            ylabel('relative error');
+            
         end
         
     end

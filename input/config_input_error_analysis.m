@@ -1,15 +1,14 @@
 %% System Parameters
-SYSTEM  = 'FourParticleSystem';
-EXT_ACC = [0; 0; 0];
-Q_0     = [0; 0; 0; 1; 0; 0; 0; 1; 0; 1; 1; 0];
-V_0     = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 20/1.7];
-MASS    = [1; 3; 2.3; 1.7];
+SYSTEM  = 'Pendulum';
+EXT_ACC = [0; 0; 9.81];
+Q_0     = [1; 0; 0];
+V_0     = [0; 1; 0];
+MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = 'EMS_ggl';
-ALL_DT = [0.05 0.02 0.01 0.005 0.002 0.001 0.0005 0.0002 0.0001];
-DT = 0.05;
+INTEGRATOR = {'GGL_std','GGL_VI'};
+DT = [0.01 0.005 0.001 0.0001];
 T_0   = 0;
 T_END = 1;
 
@@ -18,7 +17,11 @@ MAX_ITERATIONS = 40;
 TOLERANCE      = 1E-09;
 
 %% Postprocessing
-% no postprocessing
+shouldAnimate   = false;
+plot_quantities = {};
+should_export         = false;
+should_export_figures = false;
+export_path           = 'scratch/';
 
 %% Write variables into a .mat-File
 save(mfilename);
