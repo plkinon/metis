@@ -1,13 +1,13 @@
 %% System Parameters
 SYSTEM  = 'Pendulum';
-EXT_ACC = [0; 0; 9.81];
+EXT_ACC = [0; 0; 0];
 Q_0     = [1; 0; 0];
 V_0     = [0; 1; 0];
 MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = {'GGL_std','GGL_VI'};
+INTEGRATOR = {'Shake','GGL_std','GGL_VI'};
 DT = [0.01 0.005 0.001 0.0001];
 T_0   = 0;
 T_END = 1;
