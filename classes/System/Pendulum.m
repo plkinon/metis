@@ -170,6 +170,19 @@ classdef Pendulum < System
             end
         end  
         
+        function analyzed_quantity = hconvergence_set(self,this_simulation)
+            
+            analyzed_quantity  = this_simulation.z(end,1:self.DIM);   %position 
+        
+        end
+        
+        
+        function reference_solution = hconvergence_reference(~,~,analyzed_quantity)
+            
+            reference_solution  = analyzed_quantity(:,end,end);   %position 
+        
+        end
+        
         function give_animation(self,fig,this_simulation)
             
                 DIM = self.DIM;

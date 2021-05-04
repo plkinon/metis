@@ -3,7 +3,7 @@ classdef Postprocess
     properties
         
         % Color scheme also for colorblind readers
-        color_scheme = {'#EE6677', '#228833', '#4477AA', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB'};
+        color_scheme = {'#CCBB44', '#EE6677', '#228833', '#4477AA',  '#66CCEE', '#AA3377', '#BBBBBB'};
         
     end
     
@@ -42,7 +42,7 @@ classdef Postprocess
             DIM  = this_problem.DIM;
             d    = nDOF/DIM;
             
-            NT   = this_simulation.T_END/this_simulation.DT +1;
+            NT   = int32(this_simulation.T_END/this_simulation.DT) +1;
             M    = this_problem.MASS_MAT;
             IM   = M\eye(size(M));
             
@@ -310,11 +310,11 @@ classdef Postprocess
         
         end
         
-        function error = calculate_errors(~,quantity,num_A,num_B,reference)
+        function error = calculate_errors(~,quantity,quantity_ref,num_A,num_B)
             error = zeros(num_A,num_B);
             for i = 1:num_A
                 for j = 1:num_B
-                    error(i,j) = norm(quantity(:,i,j)-quantity(:,reference,j))/norm(quantity(:,reference,j));
+                    error(i,j) = norm(quantity(:,i,j)-quantity_ref)/norm(quantity_ref);
                 end
             end
         end
@@ -323,11 +323,18 @@ classdef Postprocess
             
             figure()
             for j = 1:num_A
-                loglog(h_values(1:end-1),y_values(1:end-1,j),'-o','Linewidth',1.5)
+                loglog(h_values(1:end-1),y_values(1:end-1,j),'-o','Linewidth',1.2)
+                %loglog(h_values(:),y_values(:,j),'-o','Linewidth',1.2)
                 hold on
             end
+            xlim([h_values(end-1)*0.8 h_values(1)*1.2]);
+            %xlim([h_values(end)*0.6 h_values(1)*1.4]);
+            ylim([min(min(y_values(1:end-1,:)))*0.8 max(max(y_values(1:end-1,:)))*1.2]);
+            %ylim([min(min(y_values(:,:)))*0.6 max(max(y_values(:,:)))*1.4]);
+            
             colororder(self.color_scheme);
             legend(legend_entries)
+            legend('Location','southeast')
             title('relative error')
             grid on
             xlabel('h');

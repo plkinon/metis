@@ -447,6 +447,19 @@ classdef HeavyTop < System
              
         end  
         
+        function analyzed_quantity = hconvergence_set(~,this_simulation)
+            
+            analyzed_quantity  = this_simulation.z(end,3);   %z-coordinate of center of mass 
+        
+        end
+        
+        
+        function reference_solution = hconvergence_reference(~,this_simulation,~)
+            
+            reference_solution  = this_simulation.Q_0(3);   %position 
+        
+        end
+        
         function give_animation(self,fig,this_simulation)
             
                 DIM = self.DIM;

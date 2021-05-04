@@ -169,6 +169,7 @@ classdef Metis
                end
             end
             
+            %% For multiple simulations at once, choose current configuration
             % Set current time step size
             self.ALL_DT = self.DT;
             self.DT = self.DT(num_dt);
@@ -178,6 +179,9 @@ classdef Metis
             if ~ischar(self.INTEGRATOR)
                 self.INTEGRATOR = self.INTEGRATOR{num_int};
             end
+            
+            % Set current integrator parameters
+            self.INT_PARA = self.INT_PARA(num_int,:);
          
         end
         
