@@ -1,10 +1,9 @@
 classdef GGL_VI < Integrator
 %% Variational integration scheme for GGL-like constrained DAE
 %
-% - based on constraint on position and velocity level 
-%   (GGL-stabilisation)
+% - based on constraint on position and momentum level 
 %
-% - independent momenta variables (Hamilton Potryagin approach)
+% - independent momenta variables (Livens approach)
 %
 % - derived from variational principle by Peter Betsch (1st attempt for
 %   new 'GGL-functional'

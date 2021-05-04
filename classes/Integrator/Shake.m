@@ -3,7 +3,7 @@ classdef Shake < Integrator
 %
 % - based on constraint on position level 
 %
-% - independent momenta variables 
+% - independent momentum variables 
 %
 % - constraints are enforced at t_{n+1}
 %

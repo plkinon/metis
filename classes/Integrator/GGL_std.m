@@ -1,17 +1,17 @@
 classdef GGL_std < Integrator
 %% GGL integration scheme for constrained DAE
 %
-% - based constraints on position and velocity level
+% - based constraints on position and momentum level
 %
-% - independent momenta variables (Hamilton-Potryagin approach)
+% - independent momenta variables (Livens approach)
 %
-% - standard stabilisation scheme by Gear, Gupta & Leimkuhler where
-%   lambda_n serves as an unknown
+% - standard stabilisation scheme by Gear, Gupta & Leimkuhler applied to
+%   SHAKE method
 %
 % - not derived from variational principle: constraints evaluated at
 %   t_{n+1} and ODE-RHS for q at t_{n+1} and for p at t_n
 %
-% - bad performance!
+% - rather bad performance
 %
 % Author: Philipp Kinon
 % Date  : 09.12.2020
