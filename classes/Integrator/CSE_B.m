@@ -1,7 +1,9 @@
-classdef Shake < Integrator
-%% Variational integration scheme for GGL-like constrained DAE
+classdef CSE_B < Integrator
+%% Variational integration scheme for constrained DAE
 %
 % - based on constraint on position level 
+%
+% - generalization of the symplectic Euler B method
 %
 % - independent momentum variables 
 %
@@ -12,7 +14,7 @@ classdef Shake < Integrator
 
     methods
         
-        function self = Shake(this_simulation,this_problem)
+        function self = CSE_B(this_simulation,this_problem)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
@@ -22,7 +24,7 @@ classdef Shake < Integrator
             self.INDI_VELO = false;
             self.LM0   = zeros(1*this_problem.mCONSTRAINTS,1);
             self.hasPARA = false;
-            self.NAME  = 'Shake (1st attempt) ';
+            self.NAME  = 'CSE-B';
         end
         
         function z0 = set_initial_condition(self,this_simulation,this_system)
