@@ -7,8 +7,9 @@ MASS    = 1;
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = {'Shake','GGL_std','GGL_VI'};
+INTEGRATOR = {'Shake','GGL_VI_theta_A','EMS_ggl'};
 DT = [0.01 0.005 0.001 0.0001];
+INT_PARA = [NaN NaN; 0.5 NaN; NaN NaN];
 T_0   = 0;
 T_END = 1;
 

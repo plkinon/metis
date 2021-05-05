@@ -403,7 +403,7 @@ classdef FourParticleSystem < System
         
         function analyzed_quantity = hconvergence_set(self,this_simulation)
             
-            analyzed_quantity  = this_simulation.z(end,3*self.DIM+1:4*self.DIM);   %position of 4th particle
+            analyzed_quantity  = this_simulation.z(end,7*self.DIM+1:8*self.DIM);   %position of 4th particle
         
         end
         

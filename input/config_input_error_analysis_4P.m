@@ -1,17 +1,17 @@
 %% System Parameters
 SYSTEM  = 'FourParticleSystem';
-EXT_ACC = [0; 0; 9.81];
+EXT_ACC = [0; 0; 0];
 Q_0     = [0; 0; 0; 1; 0; 0; 0; 1; 0; 1; 1; 0];
 V_0     = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 3/1.7; 2/1.7];
 MASS    = [1; 3; 2.3; 1.7];
 DIM     = 3;
 
 %% Integrator
-INTEGRATOR = {'Shake','GGL_VI','GGL_VI_theta_A','EMS_std','EMS_ggl'};
-DT    = [0.01 0.005 0.001 0.0001];
-INT_PARA = [NaN NaN; NaN NaN; 0.5 NaN; NaN NaN; NaN NaN];
+INTEGRATOR = {'EMS_std','EMS_ggl'};
+DT    = [0.1 0.01 0.001 0.0001];
+INT_PARA = [NaN NaN; NaN NaN];
 T_0   = 0;
-T_END = 0.1;
+T_END = 1;
 
 %% Solver Method
 MAX_ITERATIONS = 40;

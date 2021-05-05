@@ -3,7 +3,7 @@ classdef Postprocess
     properties
         
         % Color scheme also for colorblind readers
-        color_scheme = {'#CCBB44', '#EE6677', '#228833', '#4477AA',  '#66CCEE', '#AA3377', '#BBBBBB'};
+        color_scheme = {'#EE6677', '#228833', '#4477AA', '#CCBB44',  '#66CCEE', '#AA3377', '#BBBBBB'};
         
     end
     
