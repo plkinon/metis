@@ -7,7 +7,7 @@ addpath('~/git/matlab2tikz/src');
 
 %% METIS initialise
 % Load configuration parameters from file into Metis-object
-[dummy_simulation,system,~,solver] = Metis('config_input_error_analysis_4P',1,1);
+[dummy_simulation,system,~,solver] = Metis('config_input_error_analysis_pendulum',1,1);
 n_DT = numel(dummy_simulation.ALL_DT);
 n_INT = numel(dummy_simulation.ALL_INTEGRATOR);
 
@@ -23,7 +23,7 @@ for i = 1:n_DT
     for j = 1:n_INT
     
     % Load configuration parameters for current timestepsize
-    [current_simulation,~,current_integrator,~] = Metis('config_input_error_analysis_4P',i,j);
+    [current_simulation,~,current_integrator,~] = Metis('config_input_error_analysis_pendulum',i,j);
      
     %% METIS solver
     % Solve my System with my Solver and my Integration scheme
