@@ -52,7 +52,7 @@ clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_
 %% Integrator
 INTEGRATOR = 'GGL_theta_mod';
 INT_PARA = [0.5 NaN];
-DT    = 0.001;
+DT    = 0.025;
 T_0   = 0;
 T_END = 2;
 

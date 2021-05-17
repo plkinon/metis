@@ -8,7 +8,8 @@ DIM     = 3;
 
 %% Integrator
 INTEGRATOR = 'EMS_ggl';
-DT    = 0.05;
+INT_PARA =[NaN NaN];
+DT    = 1;
 T_0   = 0;
 T_END = 10;
 
