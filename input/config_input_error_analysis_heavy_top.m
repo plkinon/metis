@@ -50,8 +50,8 @@ V_0     = [v00; v10; v20; v30];
 clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_p omega_s
 
 %% Integrator
-INTEGRATOR = {'Shake','GGL_VI','GGL_VI_theta_A','GGL_VI_theta_B'};
-INT_PARA = [NaN NaN; NaN NaN; 0.5 NaN; 1 0.5];
+INTEGRATOR = {'CSE_B','GGL_VI','GGL_VI_theta_A','GGL_VI_theta_B','GGL_theta_mod'};
+INT_PARA = [NaN NaN; NaN NaN; 0.5 NaN; 1 0.5;0.5 NaN];
 DT = [0.0001 0.00005 0.00001];
 T_0   = 0;
 T_END = 0.001;
