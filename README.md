@@ -13,8 +13,8 @@ _a project by Philipp L. Kinon_
  **Supervisors:**
 
 -   Prof. Dr.-Ing. Peter Betsch
--   Simeon Schneider M.Sc.
--   Mark Schiebl M.Sc.
+-   Simeon Schneider M. Sc.
+-   Dr.-Ing. Mark Schiebl
 
-**Coding consultant:**
-Julian Bauer M.Sc.
+**Coding support by:**
+Julian Bauer M. Sc.
