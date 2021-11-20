@@ -44,4 +44,4 @@ error              = postprocess.calculate_errors(analyzed_quantity,reference_so
 
 %% Figure: positional error
 postprocess.convergence_plot(dummy_simulation.ALL_DT,error,n_INT,dummy_simulation.ALL_INTEGRATOR);
-%matlab2tikz('height','\figH','width','\figW','filename','hconvergence.tikz','showInfo', false,'floatformat','%.5g');
+matlab2tikz('height','\figH','width','\figW','filename','hconvergence.tikz','showInfo', false,'floatformat','%.5g');

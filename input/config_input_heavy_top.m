@@ -50,11 +50,11 @@ V_0     = [v00; v10; v20; v30];
 clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_p omega_s
 
 %% Integrator
-INTEGRATOR = 'GGL_VI_theta_B';
-INT_PARA = [1 0.5];
+INTEGRATOR = 'GGL_VI_mod';
+INT_PARA = [NaN NaN];
 DT    = 0.001;
 T_0   = 0;
-T_END = 2;
+T_END = 0.004;
 
 %% Solver Method
 MAX_ITERATIONS = 40;
@@ -63,8 +63,8 @@ TOLERANCE      = 1E-09;
 %% Postprocessing
 shouldAnimate   = false;
 plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
-should_export         = false;
-should_export_figures = false;
+should_export         = true;
+should_export_figures = true;
 export_path           = 'scratch/';
 
 %% Write variables into a .mat-File

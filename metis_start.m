@@ -1,4 +1,4 @@
-%% METIS: A code framework for constrained mechanical systems
+ %% METIS: A code framework for constrained mechanical systems
 % author: Philipp Kinon
 % date  : 02.12.2020
 clearvars;

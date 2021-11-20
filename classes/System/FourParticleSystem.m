@@ -433,11 +433,12 @@ classdef FourParticleSystem < System
                 NT = size(q1,1);
 
                 axis equal
-                axis([xmin, xmax, ymin, ymax, zmin, zmax]);
-                xlabel('x');
-                ylabel('y');
-                zlabel('z');
-                grid on;
+                %axis([xmin, xmax, ymin, ymax, zmin, zmax]);
+                %xlabel('x');
+                %ylabel('y');
+                %zlabel('z');
+                %grid on;
+                axis off
 
                 xa1 = q1(1, 1);
                 xa2 = q2(1, 1);
@@ -489,36 +490,42 @@ classdef FourParticleSystem < System
                     end
 
                     %% Reference sphere
-                    plot3(xa1, ya1, za1, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    hold on
-                    plot3(xa2, ya2, za2, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    hold on
-                    plot3(xa3, ya3, za3, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    hold on
-                    plot3(xa4, ya4, za4, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    hold on
+%                     plot3(xa1, ya1, za1, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
+%                     hold on
+%                     plot3(xa2, ya2, za2, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
+%                     hold on
+%                     plot3(xa3, ya3, za3, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
+%                     hold on
+%                     plot3(xa4, ya4, za4, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
+%                     hold on
 
                     %% Reference constraint
-                    xx3 = [xa1; xa2];
-                    yy3 = [ya1; ya2];
-                    zz3 = [za1; za2];
-                    xxx3 = [xa3; xa4];
-                    yyy3 = [ya3; ya4];
-                    zzz3 = [za3; za4];
-                    plot3(xx3, yy3, zz3, 'k', 'LineWidth', 2);
-                    hold on
-                    plot3(xxx3, yyy3, zzz3, 'k', 'LineWidth', 2);
+%                     xx3 = [xa1; xa2];
+%                     yy3 = [ya1; ya2];
+%                     zz3 = [za1; za2];
+%                     xxx3 = [xa3; xa4];
+%                     yyy3 = [ya3; ya4];
+%                     zzz3 = [za3; za4];
+%                     plot3(xx3, yy3, zz3, 'k', 'LineWidth', 2);
+%                     hold on
+%                     plot3(xxx3, yyy3, zzz3, 'k', 'LineWidth', 2);
                     
                     %% Reference position of the springs
-                    xx_3 = [xa1; xa3];
-                    yy_3 = [ya1; ya3];
-                    zz_3 = [za1; za3];
-                    xxxx_3 = [xa2; xa4];
-                    yyyy_3 = [ya2; ya4];
-                    zzzz_3 = [za2; za4];
-                    plot3(xx_3, yy_3, zz_3, 'k--');
-                    hold on
-                    plot3(xxxx_3, yyyy_3, zzzz_3, 'k--');
+%                     xx_3 = [xa1; xa3];
+%                     yy_3 = [ya1; ya3];
+%                     zz_3 = [za1; za3];
+%                     xxxx_3 = [xa2; xa4];
+%                     yyyy_3 = [ya2; ya4];
+%                     zzzz_3 = [za2; za4];
+%                     
+%                     tmp  = gfx_springelement([xa1,ya1,za1],[xa3,ya3,za3],1,0.1,5);
+%                     tmp2 = gfx_springelement([xa2,ya2,za2],[xa4,ya4,za4],1,0.1,5);
+%                     
+%                     %plot3(xx_3, yy_3, zz_3, 'k--');
+%                     plot3(tmp(1,:),tmp(2,:),tmp(3,:),'LineWidth',1.5);
+%                     hold on
+%                     %plot3(xxxx_3, yyyy_3, zzzz_3, 'k--');
+%                     plot3(tmp2(1,:),tmp2(2,:),tmp2(3,:),'LineWidth',1.5);
                     
 
                     %% current position of the mass
@@ -534,12 +541,12 @@ classdef FourParticleSystem < System
                     %    plot3(q3(1:j, 1), q3(1:j, 2), zeros(j, 1), 'k');
                     %    plot3(q4(1:j, 1), q4(1:j, 2), zeros(j, 1), 'k');
                     %end
-                    plot3(x1, y1, z1, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [1, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    plot3(x2, y2, z2, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [1, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    plot3(x3, y3, z3, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [1, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
-                    plot3(x4, y4, z4, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [1, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
+                    plot3(x1, y1, z1, 'mo', 'MarkerSize', 40, 'MarkerEdgeColor', '#4477AA', 'MarkerFaceColor', '#4477AA');
+                    plot3(x2, y2, z2, 'mo', 'MarkerSize', 40, 'MarkerEdgeColor', '#4477AA', 'MarkerFaceColor', '#4477AA');
+                    plot3(x3, y3, z3, 'mo', 'MarkerSize', 40, 'MarkerEdgeColor', '#4477AA', 'MarkerFaceColor', '#4477AA');
+                    plot3(x4, y4, z4, 'mo', 'MarkerSize', 40, 'MarkerEdgeColor', '#4477AA', 'MarkerFaceColor', '#4477AA');
                     
-                    grid on
+                    %grid on
 
                     %% current position of the constraint
                     x_3 = [x1; x2];
@@ -558,9 +565,15 @@ classdef FourParticleSystem < System
                     xxxx3 = [x2; x4];
                     yyyy3 = [y2; y4];
                     zzzz3 = [z2; z4];
-                    plot3(xx3, yy3, zz3, 'k--');
+                    
+                    tmp3  = gfx_springelement([x1,y1,z1],[x3,y3,z3],1,0.05,7);
+                    tmp4 = gfx_springelement([x2,y2,z2],[x4,y4,z4],1,0.05,7);
+                    
+                    %plot3(xx3, yy3, zz3, 'k--');
+                    plot3(tmp3(1,:),tmp3(2,:),tmp3(3,:), 'k','LineWidth',1.5);
                     hold on
-                    plot3(xxxx3, yyyy3, zzzz3, 'k--');
+                    plot3(tmp4(1,:),tmp4(2,:),tmp4(3,:), 'k','LineWidth',1.5);
+                    %plot3(xxxx3, yyyy3, zzzz3, 'k--');
                     
                     
                     if DIM == 2
@@ -570,6 +583,8 @@ classdef FourParticleSystem < System
                     end
 
                     drawnow
+                    
+                    print(gcf,strcat('snapshot_',num2str(j)), '-dpng')
                     
                 end
                 

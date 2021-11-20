@@ -13,7 +13,7 @@ classdef Postprocess
         function self = Postprocess()
             % Function to initialise the postprocessing
             
-            set(0, 'defaultfigureposition', [850, 450, 1200, 600])
+            set(0, 'defaultfigureposition', [850, 450, 1000, 1000])
             
         end
 
@@ -69,7 +69,7 @@ classdef Postprocess
 
             for j = 1:NT
                 %if strcmp(this_simulation.INTEGRATOR,'Ggl_rk')
-                %    T(j) = 1/2*v(j,:)*M*v(j,:)';
+                %     T(j) = 1/2*v(j,:)*M*v(j,:)';
                 %else
                     T(j) = 1 / 2 * p(j, :) * IM' * p(j, :)';
                 %end
@@ -165,7 +165,7 @@ classdef Postprocess
                         % in the matlab-path)
                         %cleanfigure('handle',figHandles(i));
                         warning('off')
-                        matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false,'floatformat','%.5g');
+                        matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false,'floatformat','%.7g');
                         warning('on')
                         title(gca,titlestring);
                         set(findall(gca, 'Type', 'Line'),'LineWidth',1.5);
