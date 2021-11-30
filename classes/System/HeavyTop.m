@@ -46,14 +46,14 @@ classdef HeavyTop < System
         
         function V_ext = external_potential(self, q)
             
-            V_ext = self.MASS*self.EXT_ACC(3)*q(3);
+            V_ext = -self.MASS*self.EXT_ACC(1:3)'*q(1:3);
 
         end
         
         function DV_ext = external_potential_gradient(self,~)
 
             DV_ext = zeros(12,1);
-            DV_ext(3,1) = self.MASS*self.EXT_ACC(3);
+            DV_ext(1:3,1) = -self.MASS*self.EXT_ACC(1:3);
             
         end
         

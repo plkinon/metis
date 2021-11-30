@@ -1,6 +1,7 @@
 %% System Parameters
 SYSTEM = 'HeavyTop';
-EXT_ACC = [0; 0; 9.81];
+g = 9.81;
+EXT_ACC = [0; 0; -g];
 DIM = 3;
 
 %% Geometric parameters
@@ -33,7 +34,7 @@ Q_0 = [phi0; d10; d20; d30];
 % precession rate (angular velocity about e3-axis)
 omega_p = 10;
 % spin rate (angular velocity about d3-axis) for steady precession
-omega_s = MASS*EXT_ACC(3)*l/(J3*omega_p) + ((J1+MASS*l^2-J3)/J3)*omega_p*cos(alpha0);
+omega_s = MASS*g*l/(J3*omega_p) + ((J1+MASS*l^2-J3)/J3)*omega_p*cos(alpha0);
 % inital angular velocity vector w.r.t. e_i-coordinate system
 OMEGA0 = (omega_p*eye(3) + omega_s*R0)*[0;0;1];
 
@@ -47,14 +48,14 @@ v30 = cross(OMEGA0,d30);
 V_0     = [v00; v10; v20; v30];
 
 % clear unnecessary variables
-clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_p omega_s
+clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_p omega_s g
 
 %% Integrator
 INTEGRATOR = 'GGL_VI_mod';
 INT_PARA = [NaN NaN];
-DT    = 0.001;
+DT    = 0.002;
 T_0   = 0;
-T_END = 0.004;
+T_END = 2;
 
 %% Solver Method
 MAX_ITERATIONS = 40;
