@@ -68,15 +68,12 @@ classdef Postprocess
             constraint_velocity = zeros(NT,m);
 
             for j = 1:NT
-                %if strcmp(this_simulation.INTEGRATOR,'Ggl_rk')
-                %     T(j) = 1/2*v(j,:)*M*v(j,:)';
-                %else
-                    T(j) = 1 / 2 * p(j, :) * IM' * p(j, :)';
-                %end
+                
+                T(j) = 1/2*v(j,:)*M*v(j,:)';           
                 V(j) = this_problem.internal_potential(q(j,:)') + this_problem.external_potential(q(j,:)');
                 H(j) = T(j) + V(j);
                 constraint_position(j,:) = this_problem.constraint(q(j,:)')';
-                constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*v(j,:)')';
+                constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)')';
                     
                 if DIM == 3
                     
@@ -206,7 +203,11 @@ classdef Postprocess
                     case 'energy'
 
                         %plots Energy quantities over time
-                        plotline = plot(t, T, t, V, t, H);
+                        if isnan(H(end))
+                            plotline = plot(t(1:end-1), T(1:end-1), t(1:end-1), V(1:end-1), t(1:end-1), H(1:end-1));
+                        else
+                            plotline = plot(t,T,t,V,t,H);
+                        end
                         fig.Name = 'energy';
                         Mmin     = min([min(V), min(T), min(H)]);
                         Mmax     = max([max(V), max(T), max(H)]);
@@ -233,7 +234,7 @@ classdef Postprocess
                         %plots the increments of Hamiltonian over time
                         plotline    = plot(t(1:end-1), diffH);
                         max_diff    = max(diffH);
-                        max_rounded = 10^(floor(log10(max_diff))+1);
+                        max_rounded = 10^(real(floor(log10(max_diff)))+1);
                         min_diff    = min(diffH);
                         min_rounded = -10^(real(floor(log10(min_diff)))+1);
                         hold on
@@ -243,7 +244,7 @@ classdef Postprocess
                         title(strcat(integrator_string, ': Energy difference'));
                         xlabel('t');
                         ylabel('H^{n+1}-H^{n}');
-                        legend(strcat('std(H)=', num2str(std(H))));
+                        legend(strcat('std(H)=', num2str(std(H(~isnan(H))))));
 
                     case 'angular_momentum_difference'
 

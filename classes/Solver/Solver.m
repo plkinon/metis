@@ -65,6 +65,11 @@ classdef Solver
             this_simulation.optime = stop_time;
             this_simulation.z = z;
             
+            % Rearrange Unknows if Integration schemes requires it
+            if ismethod(this_integrator,'rearrange_unknowns')
+                this_simulation.z = this_integrator.rearrange_unknowns(this_simulation,this_problem);
+            end
+            
             fprintf('----------------------------------------------------\n');
             fprintf('  \n');
             fprintf('     Computation suceeded.                  \n');
