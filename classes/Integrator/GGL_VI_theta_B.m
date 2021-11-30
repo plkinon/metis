@@ -10,6 +10,8 @@ classdef GGL_VI_theta_B < Integrator
 %
 % - from symplectic-theta-framework but equivalent to GGL-VI-RK from P.B.
 %   notes
+% - postprocessing with T(p) yields large oscillations, with T(v) gives
+%   error in 1st timestep, since v0 is unknown for given p0
 %
 % Author: Philipp Kinon
 % Date  : 28.01.2021
@@ -48,13 +50,14 @@ classdef GGL_VI_theta_B < Integrator
             for j = 1:m
                 t_0   = t_0 + this_system.constraint_hessian(q0,j)*gamma0(j);
             end
-            p0 = (M+h*(1-The)*t_0)*v0 + h*((1-The)*DV_0 + (1-theta)*G_0'*lambda0); 
-            % macht keinen Sinn, da p0 aufgegeben wird und v_0 erst später berrechnet
-            %p0 = M*v0;
+            % p0 = (M+h*(1-The)*t_0)*v0 + h*((1-The)*DV_0 + (1-theta)*G_0'*lambda0); 
+            % macht keinen Sinn, da p0 aufgegeben wird und v_0 nicht
+            % verwendet wird
+            p0 = M*v0;
             z0 = [q0', p0', v0' , self.LM0'];
             
         end
-            
+                   
         function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
             
             %% Abbreviations
