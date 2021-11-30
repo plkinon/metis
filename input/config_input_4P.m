@@ -8,10 +8,10 @@ DIM     = 3;
 
 %% Integrator
 INTEGRATOR = 'GGL_VI_mod';
-INT_PARA =[NaN NaN];
-DT    = 0.05;
+INT_PARA =[1 0.5];
+DT    = 0.005;
 T_0   = 0;
-T_END = 10;
+T_END = 1;
 
 %% Solver Method
 MAX_ITERATIONS = 40;

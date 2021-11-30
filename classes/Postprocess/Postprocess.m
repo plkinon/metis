@@ -73,8 +73,12 @@ classdef Postprocess
                 V(j) = this_problem.internal_potential(q(j,:)') + this_problem.external_potential(q(j,:)');
                 H(j) = T(j) + V(j);
                 constraint_position(j,:) = this_problem.constraint(q(j,:)')';
-                constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)')';
-                    
+                constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*v(j,:)')';
+                
+                if strcmp(this_simulation.INTEGRATOR,'GGL_VI_mod')
+                    constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)')';
+                end
+                
                 if DIM == 3
                     
                     for k = 1:d
@@ -286,7 +290,7 @@ classdef Postprocess
                         %plots the velocity constraint and their violations by integration
                         plotline    = plot(t,g_vel);
                         max_diff    = max(max(g_vel));
-                        max_rounded = 10^(floor(log10(max_diff))+1);
+                        max_rounded = 10^(real(floor(log10(max_diff))+1));
                         min_diff    = min(min(g_vel));
                         min_rounded = -10^(real(floor(log10(min_diff)))+1);
                         hold on

@@ -51,8 +51,8 @@ V_0     = [v00; v10; v20; v30];
 clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_p omega_s g
 
 %% Integrator
-INTEGRATOR = 'GGL_VI_mod';
-INT_PARA = [NaN NaN];
+INTEGRATOR = 'GGL_VI_theta_B';
+INT_PARA = [1 0.5];
 DT    = 0.002;
 T_0   = 0;
 T_END = 2;
