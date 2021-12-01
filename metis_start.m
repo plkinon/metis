@@ -1,6 +1,8 @@
 %% METIS: A code framework for constrained mechanical systems
 % author: Philipp Kinon
-% date  : 02.12.2020
+% date  : 01.12.2021
+
+% Clear present variables, add all subdirectories and matlab2tikz to the current path
 clearvars;
 addpath(genpath(fileparts(which(mfilename))));
 addpath('~/git/matlab2tikz/src');
