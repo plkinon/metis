@@ -35,11 +35,21 @@ Metis was a mythical Titaness who became the goddess of wisdom, prudence and ing
 
 Likewise, this project targets the efficient and aesthetically pleasing numerical computation of dynamical systems being subject to holonomic constraints: particle systems as well as rigid body systems.
 
+Metis is an object-oriented MATLAB code package - tested with the R2020b version.
+
+A startscript loads the desired input-file. This input-file includes all necessary parameters for the given mechanical problem (geometry, loads, initial values,...), the chosen numerical integration scheme (time-step size, method, simulation time), the Postprocessing routine (plot quantities, animation, export) and the solution technique (max. iterations, tolerance). Metis creates all necessary objects and computes the approximate solution based on the given parameters. Eventually, one can choose to have an animation of the solution, some plots are created and the results are being exported.
+
+#### Prerequisites
+
+-   [MATLAB](https://www.mathworks.com/products/matlab.html)
+-   [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) if wanted
+
 #### Features
 
 -   Coding Language: MATLAB
 -   Object-oriented
--   Postprocessing includes [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)
+-   Postprocessing includes the  package
+-   Functionality has been tested with MATLAB R2020b
 
 #### Theoretical Background
 
@@ -55,8 +65,8 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 
 ## How To Start
 
-1.  Clone this directory
-2.  Open the [MATLAB](https://www.mathworks.com/products/matlab.html) editor or run it with the shell script [metis.sh](metis.sh)
+1.  Clone this directory or download the .zip folder
+2.  Open the MATLAB editor or run it with the shell script [metis.sh](metis.sh)
 3.  Execute [metis_start.m](metis_start.m) for a first simulation (or [metis_error_analysis.m](metis_error_analysis.m) for an error analysis)
 4.  Edit or change input file in [/input](/input) or create a new one
 
