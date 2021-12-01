@@ -32,12 +32,6 @@ A startscript loads the desired input-file. This input-file includes all necessa
 -   [MATLAB](https://www.mathworks.com/products/matlab.html)
 -   [matlab2tikz][urlmatlab2tikz] (optional)
 
-#### Features
-
--   Coding Language: MATLAB
--   Object-oriented
--   Postprocessing includes the  package
--   Functionality has been tested with MATLAB R2020b
 
 #### Theoretical Background
 
