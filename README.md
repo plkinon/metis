@@ -2,7 +2,18 @@
 
 _a project by Philipp L. Kinon_
 
-See [license](LICENSE) and [acknowledgement](#acknowledgement) and [bibtex](citeas.bib) for citation.
+See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as
+
+```bibtex
+@misc{kinon_metis_2021,
+  author = {Kinon, Philipp Lothar},
+  title = {metis: computing constrained dynamical systems (GitHub repository)},
+  year = {2021},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/philipplk/metis}}
+}
+```
 
 ---
 
@@ -14,7 +25,7 @@ See [license](LICENSE) and [acknowledgement](#acknowledgement) and [bibtex](cite
 - [How To Start](#how-to-start)
 - [References](#references)
 - [Author Info](#author-info)
-- [Acknowledgement](#acknowledgement)
+- [Acknowledgements](#acknowledgements)
 
 ---
 
@@ -73,7 +84,7 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 
 ---
 
-## Acknowledgement
+## Acknowledgements
 
 Metis was mainly initialised by Philipp L. Kinon during his master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. This project would not have been possible without the support of others:
 
