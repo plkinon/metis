@@ -1,6 +1,6 @@
 # METIS: Computing Constrained Mechanical Systems
 
-_a project by Philipp L. Kinon, M.Sc._
+_a project by Philipp L. Kinon_
 
 ---
 
@@ -36,7 +36,7 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 - Particle Systems
 - Rigid Body Dynamics with Director Formulation
 
-[Back To The Top](#metis:-computing-constrained-mechanical-systems)
+[Back To The Top](#METIS:-Computing-Constrained-Mechanical-Systems)
 
 ---
 
