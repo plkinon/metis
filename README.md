@@ -15,19 +15,19 @@ See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
 }
 ```
 
----
+* * *
 
 ## Table of Contents
 
-- [Description](#description)
-    - [Features](#features)
-    - [Theoretical Background](#theoretical-background)
-- [How To Start](#how-to-start)
-- [References](#references)
-- [Author Info](#author-info)
-- [Acknowledgements](#acknowledgements)
+-   [Description](#description)
+    -   [Features](#features)
+    -   [Theoretical Background](#theoretical-background)
+-   [How To Start](#how-to-start)
+-   [References](#references)
+-   [Author Info](#author-info)
+-   [Acknowledgements](#acknowledgements)
 
----
+* * *
 
 ## Description
 
@@ -37,52 +37,47 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 
 #### Features
 
-- Coding Language: MATLAB
-- Object-oriented
-- Postprocessing includes [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)
+-   Coding Language: MATLAB
+-   Object-oriented
+-   Postprocessing includes [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)
 
 #### Theoretical Background
 
-- Initial Value Problems (IVP) of Constrained Dynamics leading to Differential-algebraic Equations (DAEs)
-- Numerical Integration (Direct Methods, Variational Integrators, Energy-Momentum Schemes)
-- Newton-Rhapson Method
-- Particle Systems
-- Rigid Body Dynamics with Director Formulation
+-   Initial Value Problems (IVP) of Constrained Dynamics leading to Differential-algebraic Equations (DAEs)
+-   Numerical Integration (Direct Methods, Variational Integrators, Energy-Momentum Schemes)
+-   Newton-Rhapson Method
+-   Particle Systems
+-   Rigid Body Dynamics with Director Formulation
 
 [Back To The Top](#table-of-contents)
 
----
+* * *
 
 ## How To Start
 
-1. Clone this directory
-2. Open the [MATLAB](https://www.mathworks.com/products/matlab.html) editor or run it with the shell script [metis.sh](metis.sh)
-2. Execute [metis_start.m](metis_start.m) for a first simulation (or [metis_error_analysis.m](metis_error_analysis.m) for an error analysis)
-3. Edit or change input file in [/input](/input) or create a new one
+1.  Clone this directory
+2.  Open the [MATLAB](https://www.mathworks.com/products/matlab.html) editor or run it with the shell script [metis.sh](metis.sh)
+3.  Execute [metis_start.m](metis_start.m) for a first simulation (or [metis_error_analysis.m](metis_error_analysis.m) for an error analysis)
+4.  Edit or change input file in [/input](/input) or create a new one
 
-
----
+* * *
 
 ## References
 
-
-
 [Back To The Top](#table-of-contents)
 
----
-
+* * *
 
 ## Author Info
 
-- GitHub - [philipplk](https://github.com/philipplk)
-- Website - [Philipp L. Kinon, Karlsruhe Institute of Technology (KIT)](https://www.ifm.kit.edu/english/14_5490.php)
-- ResearchGate - [Philipp L. Kinon](https://www.researchgate.net/profile/Philipp-Kinon)
-- LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/philipp-kinon-9092781b5/)
+-   GitHub - [philipplk](https://github.com/philipplk)
+-   Website - [Philipp L. Kinon, Karlsruhe Institute of Technology (KIT)](https://www.ifm.kit.edu/english/14_5490.php)
+-   ResearchGate - [Philipp L. Kinon](https://www.researchgate.net/profile/Philipp-Kinon)
+-   LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/philipp-kinon-9092781b5/)
 
 [Back To The Top](#table-of-contents)
 
-
----
+* * *
 
 ## Acknowledgements
 
@@ -99,6 +94,6 @@ Metis was mainly initialised by Philipp L. Kinon during his master thesis at the
 [Julian Bauer M. Sc.](https://www.ifm.kit.edu/english/14_5166.php)
 (GitHub: [JulianKarlBauer](https://github.com/JulianKarlBauer))
 
----
+* * *
 
 [Back To The Top](#table-of-contents)
