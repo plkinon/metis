@@ -2,7 +2,7 @@
 
 _a project by Philipp L. Kinon_
 
-See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as
+See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
 
 ```bibtex
 @misc{kinon_metis_2021,
