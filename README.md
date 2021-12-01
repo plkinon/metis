@@ -1,6 +1,6 @@
 # METIS - Computing constrained mechanical systems
 
-_a project by Philipp L. Kinon_
+_a project by Philipp L. Kinon, M.Sc._
 
 ## Background
 
@@ -8,7 +8,7 @@ _a project by Philipp L. Kinon_
 
  Likewise, this project targets the efficient and aesthetically pleasing numerical computation of dynamical systems being subject to holonomic constraints: particle systems as well as rigid body systems.
 
- Metis was mainly initialised by Philipp Kinon, B.Sc. during his master thesis at the _Institute of Mechanics (IFM)_ at _Karlsruhe Institute of Technology (KIT)_, Germany.
+ Metis was mainly initialised by Philipp Kinon during his master thesis at the _Institute of Mechanics (IFM)_ at _Karlsruhe Institute of Technology (KIT)_, Germany.
 
  **Supervisors:**
 
