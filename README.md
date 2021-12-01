@@ -1,4 +1,4 @@
-# METIS: Computing Constrained Mechanical Systems
+## METIS: Computing Constrained Mechanical Systems
 
 _a project by Philipp L. Kinon_
 
@@ -16,7 +16,7 @@ _a project by Philipp L. Kinon_
 
 ---
 
-## Description
+### Description
 
 Metis was a mythical Titaness who became the goddess of wisdom, prudence and ingenuity. Ingenuity being the "practical, complex and implicit" kind differs from the other types of wisdom.
 
@@ -40,7 +40,7 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 
 ---
 
-## How To Start
+### How To Start
 
 1. Clone this directory
 2. Open the [MATLAB](https://www.mathworks.com/products/matlab.html) editor or run it with the shell script [metis.sh](metis.sh)
@@ -50,7 +50,7 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 
 ---
 
-## References
+### References
 
 
 
@@ -59,7 +59,7 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 ---
 
 
-## Author Info
+### Author Info
 
 - GitHub - [philipplk](https://github.com/philipplk)
 - Website - [Philipp L. Kinon, Karlsruhe Institute of Technology (KIT)](https://www.ifm.kit.edu/english/14_5490.php)
@@ -71,7 +71,7 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 
 ---
 
-## Acknowledgement
+### Acknowledgement
 
 Metis was mainly initialised by Philipp L. Kinon during his master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. This project would not have been possible without the support of others:
 
