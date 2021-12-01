@@ -50,14 +50,19 @@ classdef Postprocess
             p    = this_simulation.z(:, nDOF+1:2*nDOF);
             v    = zeros(NT,nDOF);
             if this_simulation.INDI_VELO == true
+                % Check if integration scheme had independent velocity
+                % quantities
                 v = this_simulation.z(:,2*nDOF+1:3*nDOF);
+            
             else
+                % else: compute by means of momenta
                 for j=1:NT
                     v(j,:) = (IM*p(j,:)')';
                 end
                
             end     
-
+            
+            % Allocate space for postprocessing quantities
             T = zeros(NT, 1);
             V = zeros(NT, 1);
             H = zeros(NT, 1);
@@ -69,6 +74,7 @@ classdef Postprocess
 
             for j = 1:NT
                 
+                % Compute postprocessing quantities
                 T(j) = 1/2*v(j,:)*M*v(j,:)';           
                 V(j) = this_problem.internal_potential(q(j,:)') + this_problem.external_potential(q(j,:)');
                 H(j) = T(j) + V(j);
@@ -76,10 +82,14 @@ classdef Postprocess
                 constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*v(j,:)')';
                 
                 if strcmp(this_simulation.INTEGRATOR,'GGL_VI_mod')
+                    % this specific integration scheme relies upon
+                    % secondary constraints with momentum formulation and
+                    % has non-aligned velocites
                     constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)')';
                 end
                 
                 if DIM == 3
+                    % Compute angular momentum
                     
                     for k = 1:d
                         
@@ -91,13 +101,15 @@ classdef Postprocess
 
             end
             
+            % Compute time-increments in Hamiltonian and angular momentum
             for j = 1:(NT-1)
                 
                 diffH(j)    = H(j+1) - H(j);
                 diffL(j, :) = L(j+1, :) - L(j, :);
                 
             end
-                       
+              
+            % Save computed quantities to simulation-object
             this_simulation.T = T;
             this_simulation.V = V;
             this_simulation.H = H;
@@ -184,6 +196,7 @@ classdef Postprocess
         end
 
         function plot(self,this_simulation)
+            % Function for plotting postprocessing results
             
             H = this_simulation.H;
             V = this_simulation.V;
@@ -325,17 +338,17 @@ classdef Postprocess
         end
         
         function convergence_plot(self,h_values,y_values,num_A,legend_entries)  
+            % plots convergence-diagram y(h) except for last pair of values
+            % since last pair of values might be the reference value
+            % (smallest h)
             
             figure()
             for j = 1:num_A
                 loglog(h_values(1:end-1),y_values(1:end-1,j),'-o','Linewidth',1.2)
-                %loglog(h_values(:),y_values(:,j),'-o','Linewidth',1.2)
                 hold on
             end
             xlim([h_values(end-1)*0.8 h_values(1)*1.2]);
-            %xlim([h_values(end)*0.6 h_values(1)*1.4]);
             ylim([min(min(y_values(1:end-1,:)))*0.8 max(max(y_values(1:end-1,:)))*1.2]);
-            %ylim([min(min(y_values(:,:)))*0.6 max(max(y_values(:,:)))*1.4]);
             
             colororder(self.color_scheme);
             legend(legend_entries)
