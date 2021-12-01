@@ -17,18 +17,6 @@ See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
 
 * * *
 
-## Table of Contents
-
--   [Description](#description)
-    -   [Features](#features)
-    -   [Theoretical Background](#theoretical-background)
--   [How To Start](#how-to-start)
--   [References](#references)
--   [Author Info](#author-info)
--   [Acknowledgements](#acknowledgements)
-
-* * *
-
 ## Description
 
 Metis was a mythical Titaness who became the goddess of wisdom, prudence and ingenuity. Ingenuity being the "practical, complex and implicit" kind differs from the other types of wisdom.
