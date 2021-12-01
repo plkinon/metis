@@ -2,6 +2,8 @@
 
 _a project by Philipp L. Kinon_
 
+See [license](LICENSE) and [acknowledgement](#acknowledgement) and [bibtex](citeas.bib) for citation.
+
 ---
 
 ## Table of Contents
