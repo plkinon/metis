@@ -42,7 +42,7 @@ A startscript loads the desired input-file. This input-file includes all necessa
 #### Prerequisites
 
 -   [MATLAB](https://www.mathworks.com/products/matlab.html)
--   [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) if wanted
+-   [matlab2tikz][urlmatlab2tikz] (optional)
 
 #### Features
 
@@ -65,9 +65,9 @@ A startscript loads the desired input-file. This input-file includes all necessa
 
 ## How To Start
 
-1.  Clone this directory or download the .zip folder, get matlab2tikz
+1.  Clone this directory or download the .zip folder, get [matlab2tikz][urlmatlab2tikz]
 2.  Open the MATLAB editor or run it with the shell script [metis.sh](metis.sh)
-3.  Open [metis_start.m](metis_start.m), adjust path to matlab2tikz repository if needed, adjust `<input_file_name` corresponding to a file from [/input](/input)
+3.  Open [metis_start.m](metis_start.m), adjust the path to the matlab2tikz repository if needed, adjust `<input_file_name` corresponding to a file from [/input](/input)
 
 ```matlab
 [simulation, system, integrator, solver] = Metis('<input_file_name>',1,1);
@@ -115,3 +115,5 @@ Metis was mainly initialised by Philipp L. Kinon during his master thesis at the
 * * *
 
 [Back To The Top](#table-of-contents)
+
+[urlmatlab2tikz]: https://github.com/matlab2tikz/matlab2tikz
