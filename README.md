@@ -1,10 +1,10 @@
-## METIS: Computing Constrained Mechanical Systems
+# METIS: Computing Constrained Mechanical Systems
 
 _a project by Philipp L. Kinon_
 
 ---
 
-### Table of Contents
+## Table of Contents
 
 - [Description](#description)
     - [Features](#features)
@@ -16,7 +16,7 @@ _a project by Philipp L. Kinon_
 
 ---
 
-### Description
+## Description
 
 Metis was a mythical Titaness who became the goddess of wisdom, prudence and ingenuity. Ingenuity being the "practical, complex and implicit" kind differs from the other types of wisdom.
 
@@ -36,11 +36,11 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 - Particle Systems
 - Rigid Body Dynamics with Director Formulation
 
-[Back To The Top](#METIS:-Computing-Constrained-Mechanical-Systems)
+[Back To The Top](#table-of-contents)
 
 ---
 
-### How To Start
+## How To Start
 
 1. Clone this directory
 2. Open the [MATLAB](https://www.mathworks.com/products/matlab.html) editor or run it with the shell script [metis.sh](metis.sh)
@@ -50,28 +50,28 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 
 ---
 
-### References
+## References
 
 
 
-[Back To The Top](#metis:-computing-constrained-mechanical-systems)
+[Back To The Top](#table-of-contents)
 
 ---
 
 
-### Author Info
+## Author Info
 
 - GitHub - [philipplk](https://github.com/philipplk)
 - Website - [Philipp L. Kinon, Karlsruhe Institute of Technology (KIT)](https://www.ifm.kit.edu/english/14_5490.php)
 - ResearchGate - [Philipp L. Kinon](https://www.researchgate.net/profile/Philipp-Kinon)
 - LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/philipp-kinon-9092781b5/)
 
-[Back To The Top](#metis:-computing-constrained-mechanical-systems)
+[Back To The Top](#table-of-contents)
 
 
 ---
 
-### Acknowledgement
+## Acknowledgement
 
 Metis was mainly initialised by Philipp L. Kinon during his master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. This project would not have been possible without the support of others:
 
@@ -85,3 +85,7 @@ Metis was mainly initialised by Philipp L. Kinon during his master thesis at the
 
 [Julian Bauer M. Sc.](https://www.ifm.kit.edu/english/14_5166.php)
 (GitHub: [JulianKarlBauer](https://github.com/JulianKarlBauer))
+
+---
+
+[Back To The Top](#table-of-contents)
