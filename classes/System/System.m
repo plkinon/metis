@@ -3,7 +3,7 @@ classdef System
 
     %% Properties: generic ones inherited by child classes
     properties
-        MASS                      % total mass
+        MASS                      % total mass (for multiple bodies vectorvalued)
         MASS_MAT                  % mass matrix
         EXT_ACC                   % external acceleration vector
         DIM                       % spatial dimensions

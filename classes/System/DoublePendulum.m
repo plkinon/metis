@@ -1,3 +1,8 @@
+%% Class: Pendulum
+%
+% A double-pendulum: two point masses constrained by rigid bars.
+% Length of the bars are determined from initial configuration.
+
 classdef DoublePendulum < System
 
     %% Double Pendulum system in 2 or 3 dimensions
@@ -9,12 +14,15 @@ classdef DoublePendulum < System
             self.mCONSTRAINTS = 2;
             self.nBODIES      = 2;
             self.DIM          = CONFIG.DIM;
+            % both masses in a vector
             self.MASS         = CONFIG.MASS;
             self.nDOF         = self.nBODIES*CONFIG.DIM;
             self.MASS_MAT     = diag([repmat(self.MASS(1),self.DIM,1);repmat(self.MASS(2),self.DIM,1)]);
             self.EXT_ACC      = repmat(CONFIG.EXT_ACC,self.nBODIES,1);
-            self.GEOM(1)      = norm(CONFIG.Q_0(1:CONFIG.DIM));   %length of 1st rod
-            self.GEOM(2)      = norm(CONFIG.Q_0(CONFIG.DIM+1:2*CONFIG.DIM)-CONFIG.Q_0(1:CONFIG.DIM)); %length of 2nd rod
+            %length of 1st rod
+            self.GEOM(1)      = norm(CONFIG.Q_0(1:CONFIG.DIM));   
+            %length of 2nd rod
+            self.GEOM(2)      = norm(CONFIG.Q_0(CONFIG.DIM+1:2*CONFIG.DIM)-CONFIG.Q_0(1:CONFIG.DIM)); 
             self.nPotentialInvariants  = 0;
             self.nConstraintInvariants = 2;
             self.nVconstraintInvariants = 2;

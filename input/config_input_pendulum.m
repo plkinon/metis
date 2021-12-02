@@ -1,28 +1,47 @@
 %% System Parameters
+% Name of system in /classes/System
 SYSTEM = 'Pendulum';
+% External acceleration
 EXT_ACC = [0; 0; 9.81];
-Q_0     = [1; 0; 0];
-V_0     = [0; 1; 0];
-MASS    = 1;
-DIM     = 3;
+% Initial configuration
+Q_0 = [1; 0; 0];
+% Initial velocity
+V_0 = [0; 1; 0];
+% Total mass
+MASS = 1;
+% Number of spatial dimensions
+DIM = 3;
 
 %% Integrator
+% Name of routine in /classes/Integrator
 INTEGRATOR = 'GGL_VI_theta_B';
+% Parameters of the method
 INT_PARA = [1 0.5];
+% time step size
 DT    = 0.01;
+% starting time
 T_0   = 0;
+% end time
 T_END = 10;
 
 %% Solver Method
+% maximum number of iterations of Newton Rhapson method
 MAX_ITERATIONS = 40;
-TOLERANCE      = 1E-09;
+% tolerance of Newton Rhapson method
+TOLERANCE = 1E-09;
 
 %% Postprocessing
-shouldAnimate   = false;
+% Animation of trajectory [true/false]
+shouldAnimate = false;
+% List of desired quantities for plotting in postprocessing
 plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
-should_export         = false;
+% Export of simulation results in a .mat-file [true/false]
+should_export = false;
+% Export of figures in .eps- and .tikz-files
 should_export_figures = false;
-export_path           = 'scratch/';
+% Path where export-folder is created
+export_path = 'scratch/';
 
 %% Write variables into a .mat-File
+% for further processing by metis
 save(mfilename);

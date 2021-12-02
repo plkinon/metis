@@ -1,27 +1,49 @@
+%% Class: Rigid Body moving through space
+%
+% A rigid body moving through space. Makes use of director formulation,
+% e.g. described in [1,2]. Only internal constraints.
+% Subject to initial velocities and external acceleration.
+%
+%
+% References:
+% [1]: Betsch, P. and Steinmann, P. Constrained integration of rigid body dynamics.
+%      In: Computer Methods in Applied Mechanics and Engineering, 191(3-5): 467–488,
+%      2001. doi: 10.1016/S0045-7825(01)00283-3.
+%
+% [2]: Krenk, S. and Nielsen, M. B. Conservative rigid body dynamics by convected
+%      base vectors with implicit constraints. In: Computer Methods in Applied Mechanics
+%      and Engineering, 269: 437–453, 2014. doi: 10.1016/j.cma.2013.10.028.
+
 classdef RigidBodyMoving < System
 
-    %% Rigid Body moving through space
     methods
 
         function self = RigidBodyMoving(CONFIG)
             self.nBODIES      = 1;
             self.DIM          = CONFIG.DIM;
             self.MASS         = CONFIG.MASS;
+            % 3 coordinates of center of mass + 3*3 director coordinates
             self.nDOF         = 12;
-            self.EXT_ACC      = [CONFIG.EXT_ACC;
-                                 zeros(9,1)];
+            % ext. acceleration only acts on center of mass
+            self.EXT_ACC      = [CONFIG.EXT_ACC; zeros(9,1)];
+            % 3 constraints of orthogonality of directors, 3 constraints
+            % that directors are normalized to length 1
             self.mCONSTRAINTS = 6;
+            % no internal potential
             self.nPotentialInvariants   = 0;
             self.nConstraintInvariants  = 6;
             self.nVconstraintInvariants = 6;      
             
-            % Assume spheric shape
-            % I_i = 2/5*M*r^2 with r=1
+            % Assume spheric shape with principle inertia I_i = 2/5*M*r^2 
+            % with radius r=1
+            % Principle values of Euler tensor computed via
+            % E_i = 1/2*(J_j + J_k − J_i) for even permutations of (i,j,k)
             M     = self.MASS*eye(self.DIM);
             M01   = self.MASS/5*eye(self.DIM);
             M02   = self.MASS/5*eye(self.DIM);
             M03   = self.MASS/5*eye(self.DIM);
             
+            % Mass matrix has diagonal form
             self.MASS_MAT = [M          zeros(3,3) zeros(3,3) zeros(3,3);
                              zeros(3,3) M01        zeros(3,3) zeros(3,3);
                              zeros(3,3) zeros(3,3) M02        zeros(3,3);
@@ -35,12 +57,14 @@ classdef RigidBodyMoving < System
         end
         
         function V_ext = external_potential(self, q)
-            V_ext = (self.MASS_MAT*self.EXT_ACC)'*q;
+            % given by external acceleration acting on center of mass
+            V_ext = -self.MASS*self.EXT_ACC(1:3)'*q(1:3);
 
         end
         
         function DV_ext = external_potential_gradient(self,~)
-            DV_ext = self.MASS_MAT*self.EXT_ACC;
+            DV_ext = zeros(12,1);
+            DV_ext(1:3,1) = -self.MASS*self.EXT_ACC(1:3);
 
         end
         

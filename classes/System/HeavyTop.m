@@ -1,6 +1,21 @@
+%% Class: Gyroscopic Top with steady precession ('heavy top')
+%
+% A rigid gyroscopic top. Makes use of director formulation, e.g. described 
+% in [1,2]. Internal constraints plus a constraint which fixes the top to
+% the floor. Subject to initial velocities and external acceleration.
+%
+% References:
+% [1]: Betsch, P. and Steinmann, P. Constrained integration of rigid body dynamics.
+%      In: Computer Methods in Applied Mechanics and Engineering, 191(3-5): 467–488,
+%      2001. doi: 10.1016/S0045-7825(01)00283-3.
+%
+% [2]: Krenk, S. and Nielsen, M. B. Conservative rigid body dynamics by convected
+%      base vectors with implicit constraints. In: Computer Methods in Applied Mechanics
+%      and Engineering, 269: 437–453, 2014. doi: 10.1016/j.cma.2013.10.028.
+
 classdef HeavyTop < System
 
-    %% Gyroscopic Top with steady precession ('heavy top')
+    %% 
     methods
 
         function self = HeavyTop(CONFIG)
@@ -8,16 +23,17 @@ classdef HeavyTop < System
             self.nBODIES      = 1;
             self.DIM          = CONFIG.DIM;
             self.MASS         = CONFIG.MASS;
+            % 3 coordinates of center of mass + 3*3 director coordinates
             self.nDOF         = 12;
-            self.EXT_ACC      = [CONFIG.EXT_ACC;
-                                 zeros(9,1)];
+            % ext. acceleration only acts on center of mass
+            self.EXT_ACC      = [CONFIG.EXT_ACC; zeros(9,1)];
             
-            % Geometric parameters
-            a = 0.1;
-            r = a/2;
-            l = 3*a/4;
+            % Geometric parameters (correspond to symmetric cone)
+            a = 0.1;   % total height of the cone
+            r = a/2;   % top radius of the cone
+            l = 3*a/4; % location of center of mass along symmetry axis
             
-            % Moments of Inertia
+            % Principle moments of inertia
             J1 = 3/80*self.MASS*(4*r^2+a^2);
             J2 = J1;
             J3 = 3/10*self.MASS*r^2;
@@ -30,7 +46,11 @@ classdef HeavyTop < System
             
             self.MASS_MAT               = diag(mVec);
             self.GEOM                   = [J1 J2 J3 l];
+            % 3 constraints of orthogonality of directors, 3 constraints
+            % that directors are normalized to length 1, 3 constraints
+            % which fix the cones peak to the origin = 9 in total
             self.mCONSTRAINTS           = 9;
+            % no internal potential
             self.nPotentialInvariants   = 0;
             self.nConstraintInvariants  = 9;
             self.nVconstraintInvariants = 9;      
@@ -45,7 +65,7 @@ classdef HeavyTop < System
         end
         
         function V_ext = external_potential(self, q)
-            
+            % given by external acceleration acting on center of mass
             V_ext = -self.MASS*self.EXT_ACC(1:3)'*q(1:3);
 
         end

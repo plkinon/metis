@@ -1,9 +1,25 @@
+%% Class: Four-Particle-System
+%
+% Four masses, two of them connected via rigid bars (yields constraints), 
+% the other two with elastic springs (yields internal potential).
+%
+% Lengths of the bars and resting length of the springs determined from
+% initial configuration.
+%
+% Inspired by:
+% Gonzalez, O. Mechanical systems subject to holonomic constraints: 
+% Differential–algebraic formulations and conservative integration. 
+% In: Physica D: Nonlinear Phenomena, 132(1-2): 165–174, 1999. 
+% doi: 10.1016/S0167-2789(99)00054-8.
+
 classdef FourParticleSystem < System
 
     %% 4-particle system in 2 or 3 dimensions
     properties
+        % spring stiffnesses
         K1
         K2
+        % power of spring potential
         p
     end
         
@@ -18,10 +34,14 @@ classdef FourParticleSystem < System
             self.nDOF         = self.nBODIES*CONFIG.DIM;
             self.MASS_MAT     = diag([repmat(self.MASS(1),self.DIM,1);repmat(self.MASS(2),self.DIM,1);repmat(self.MASS(3),self.DIM,1);repmat(self.MASS(4),self.DIM,1)]);
             self.EXT_ACC      = repmat(CONFIG.EXT_ACC,self.nBODIES,1);
+           
+            % Length of the rigid bars
             self.GEOM(1)      = norm(CONFIG.Q_0(CONFIG.DIM+1:2*CONFIG.DIM)-CONFIG.Q_0(1:CONFIG.DIM)); %length of 1st rod 
             self.GEOM(2)      = norm(CONFIG.Q_0((3*CONFIG.DIM)+1:4*CONFIG.DIM)-CONFIG.Q_0((2*CONFIG.DIM)+1:3*CONFIG.DIM)); %length of 2nd rod
+            % Resting lengths of the springs
             self.GEOM(3)      = norm(CONFIG.Q_0((2*CONFIG.DIM)+1:3*CONFIG.DIM)-CONFIG.Q_0(1:CONFIG.DIM)); %length of 1st spring without strain
             self.GEOM(4)      = norm(CONFIG.Q_0((3*CONFIG.DIM)+1:4*CONFIG.DIM)-CONFIG.Q_0(CONFIG.DIM+1:2*CONFIG.DIM)); %length of 2nd spring without strain
+            
             self.K1           = 1;
             self.K2           = 10;
             self.p            = 2;
