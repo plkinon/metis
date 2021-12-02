@@ -1,28 +1,47 @@
 %% System Parameters
-SYSTEM  = 'FourParticleSystem';
+% Name of system in /classes/System
+SYSTEM = 'FourParticleSystem';
+% External acceleration
 EXT_ACC = [0; 0; 0];
+% Initial configuration [mass no.1; mass no.2; mass no.3, mass no.4]
 Q_0     = [0; 0; 0; 1; 0; 0; 0; 1; 0; 1; 1; 0];
+% Initial velocity [mass no.1; mass no.2; mass no.3, mass no.4]
 V_0     = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 3/1.7; 2/1.7];
+% Masses [mass no.1; mass no.2; mass no.3, mass no.4]
 MASS    = [1; 3; 2.3; 1.7];
+% Spatial dimensions
 DIM     = 3;
 
 %% Integrator
+% Name of routine in /classes/Integrator
 INTEGRATOR = 'GGL_VI_mod';
+% Parameters of the method
 INT_PARA =[1 0.5];
-DT    = 0.005;
-T_0   = 0;
+% time step size
+DT = 0.005;
+% starting time
+T_0 = 0;
+% end time
 T_END = 1;
 
 %% Solver Method
+% maximum number of iterations of Newton Rhapson method
 MAX_ITERATIONS = 40;
+% tolerance of Newton Rhapson method
 TOLERANCE      = 1E-09;
 
 %% Postprocessing
-shouldAnimate   = false;
+% Animation of trajectory [true/false]
+shouldAnimate = false;
+% List of desired quantities for plotting in postprocessing
 plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
-should_export         = false;
+% Export of simulation results in a .mat-file [true/false]
+should_export = false;
+% Export of figures in .eps- and .tikz-files
 should_export_figures = false;
-export_path           = 'scratch/EMS';
+% Path where export-folder is created
+export_path = 'scratch/';
 
 %% Write variables into a .mat-File
+% for further processing by metis
 save(mfilename);
