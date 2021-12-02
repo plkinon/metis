@@ -1,3 +1,5 @@
+%% Class: Postprocessing
+% Distributes animation, computation of postprocessing quantities and plots
 classdef Postprocess
 
     properties
@@ -9,22 +11,22 @@ classdef Postprocess
     
     
     methods
-
+        
+        %% Function: initialise the postprocessing
         function self = Postprocess()
-            % Function to initialise the postprocessing
-            
+            % set default position of figure windows
             set(0, 'defaultfigureposition', [850, 450, 1000, 1000])
             
         end
-
-        function animation(~, this_problem, this_simulation)
-            % Function which displays an animation of the trajectory if
-            % desired by user
+        
+        %% Function: displays an animation of the trajectory
+        function animation(~, this_system, this_simulation)
             
             if this_simulation.shouldAnimate == true
                 
                 fig = figure();
-                this_problem.give_animation(fig,this_simulation);
+                % accesses routine from system-object
+                this_system.give_animation(fig,this_simulation);
                 title(strcat(this_simulation.INTEGRATOR, ': Trajectory'))
                 current_fig = gcf;
                 current_fig.Name = 'final_conf';
@@ -32,10 +34,9 @@ classdef Postprocess
             end
 
         end
-
+        
+        %% Function: computes postprocessing quantities as function of time
         function this_simulation = compute(~, this_problem,this_simulation)
-            % Function which computes energetic quantities, ang. Mom. , ...
-            % as functions of time for a given q and p-vector
             
             nDOF = this_problem.nDOF;
             m    = this_problem.mCONSTRAINTS;
@@ -49,12 +50,15 @@ classdef Postprocess
             q    = this_simulation.z(:, 1:nDOF);
             p    = this_simulation.z(:, nDOF+1:2*nDOF);
             v    = zeros(NT,nDOF);
+            
+            % Check if integration scheme had independent velocity quantities
             if this_simulation.INDI_VELO == true
-                % Check if integration scheme had independent velocity
-                % quantities
+                
+                % set velocity vector directly
                 v = this_simulation.z(:,2*nDOF+1:3*nDOF);
             
             else
+                
                 % else: compute by means of momenta
                 for j=1:NT
                     v(j,:) = (IM*p(j,:)')';
@@ -71,13 +75,16 @@ classdef Postprocess
             diffL = zeros(NT-1, 3);
             constraint_position = zeros(NT,m);
             constraint_velocity = zeros(NT,m);
-
+            
+            % Compute quantities for every point in time
             for j = 1:NT
                 
-                % Compute postprocessing quantities
+                % Kinetic and potential energy, Hamiltonian
                 T(j) = 1/2*v(j,:)*M*v(j,:)';           
                 V(j) = this_problem.internal_potential(q(j,:)') + this_problem.external_potential(q(j,:)');
                 H(j) = T(j) + V(j);
+                
+                % Constraints on position and velocity level
                 constraint_position(j,:) = this_problem.constraint(q(j,:)')';
                 constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*v(j,:)')';
                 
@@ -88,9 +95,9 @@ classdef Postprocess
                     constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)')';
                 end
                 
+                % Compute angular momentum
                 if DIM == 3
-                    % Compute angular momentum
-                    
+                                        
                     for k = 1:d
                         
                         L(j, :) = L(j,:) + cross(q(j,(k-1)*DIM+1:k*DIM), p(j, (k-1)*DIM+1:k*DIM));
@@ -121,6 +128,7 @@ classdef Postprocess
 
         end
         
+        %% Function: save results
         function save(~,export_simulation)
             
             % convert timestep-size to string
@@ -130,9 +138,10 @@ classdef Postprocess
             % Set export-string-name
             export_folder = [export_simulation.export_path,export_simulation.SYSTEM,'_',integrator_string,'_DT',DT_string,'/'];
                 
-            
+            % Check if export is desired by user
             if export_simulation.should_export
                 
+                % Create new output folder
                 if ~exist(export_folder, 'dir')
                     
                     mkdir(export_folder)
@@ -151,12 +160,14 @@ classdef Postprocess
                 fprintf('     Exporting results...                 \n');
                 fprintf('  \n');
                                 
-                % Export
+                % Export as .mat file
                 save([export_folder,'results'],'export_simulation');
                 
+                % Check if plots should be exported as well
                 if export_simulation.should_export_figures
                     figHandles = findall(0,'Type','figure'); 
                     
+                    % go through existing figures
                     for i = 1:numel(figHandles)
                         
                         % Check if current figure has a name
@@ -176,7 +187,6 @@ classdef Postprocess
                         print(figHandles(i), [export_folder,export_name], '-depsc')
                         % Export to .tikz (requires matlab2tikz/src to be
                         % in the matlab-path)
-                        %cleanfigure('handle',figHandles(i));
                         warning('off')
                         matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false,'floatformat','%.7g');
                         warning('on')
@@ -194,7 +204,8 @@ classdef Postprocess
             end
             
         end
-
+        
+        %% Function: plot specific quantities
         function plot(self,this_simulation)
             % Function for plotting postprocessing results
             
@@ -208,8 +219,10 @@ classdef Postprocess
             g_pos = this_simulation.constraint_position;
             g_vel = this_simulation.constraint_velocity;
             
+            % go through desired output quantities
             for i = 1:length(this_simulation.plot_quantities)
                 
+                % get current quantity
                 fig = figure();
                 grid on;
                 quantity = this_simulation.plot_quantities{i};
@@ -320,7 +333,8 @@ classdef Postprocess
                         error(strcat('No plotting routine for ',quantity,'  this quantity defined'));
 
                 end
-            
+                
+                % set linewidth and colorscheme
                 set(plotline, 'linewidth', 1.5);
                 colororder(self.color_scheme);
                                 
@@ -328,6 +342,7 @@ classdef Postprocess
         
         end
         
+        %% Function: calculate error for error analysis
         function error = calculate_errors(~,quantity,quantity_ref,num_A,num_B)
             error = zeros(num_A,num_B);
             for i = 1:num_A
@@ -337,6 +352,7 @@ classdef Postprocess
             end
         end
         
+        %% Function: plots convergence-diagram
         function convergence_plot(self,h_values,y_values,num_A,legend_entries)  
             % plots convergence-diagram y(h) except for last pair of values
             % since last pair of values might be the reference value
