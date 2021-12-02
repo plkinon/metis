@@ -17,15 +17,15 @@ classdef GGL_LR_alpha < Integrator
 
     methods
         
-        function self = GGL_LR_alpha(this_simulation,this_problem)
+        function self = GGL_LR_alpha(this_simulation,this_system)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
-            self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.nVARS = 2*this_system.nDOF+2*this_system.mCONSTRAINTS;
             self.INDI_VELO = false;
-            self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.LM0   = zeros(2*this_system.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(1);
             self.NAME  = 'GGL-LR-alpha';
@@ -37,22 +37,22 @@ classdef GGL_LR_alpha < Integrator
             
         end
         
-        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
+        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_system)
             
             %% Abbreviations
-            M  = this_problem.MASS_MAT;
+            M  = this_system.MASS_MAT;
             IM = M\eye(size(M));
             h  = self.DT;
-            n  = this_problem.nDOF;
-            m  = this_problem.mCONSTRAINTS;
+            n  = this_system.nDOF;
+            m  = this_system.mCONSTRAINTS;
             
             %% Unknows which will be iterated
             qn1     = zn1(1:n);
             pn1     = zn1(n+1:2*n);
             lambdan = zn1(2*n+1:2*n+m);
             gamma_n1 = zn1(2*n+m+1:end);
-            G_n1    = this_problem.constraint_gradient(qn1);
-            g_n1    = this_problem.constraint(qn1);
+            G_n1    = this_system.constraint_gradient(qn1);
+            g_n1    = this_system.constraint(qn1);
             
             %% Known quantities from last time-step
             qn     = zn(1:n);
@@ -61,8 +61,8 @@ classdef GGL_LR_alpha < Integrator
             %% Alpha-eval. quantities
             al     = self.PARA;
             q_nal  = al*qn1+(1-al)*qn;
-            G_n    = this_problem.constraint_gradient(qn);
-            DV_nal   = this_problem.internal_potential_gradient(q_nal) + this_problem.external_potential_gradient(q_nal);
+            G_n    = this_system.constraint_gradient(qn);
+            DV_nal   = this_system.internal_potential_gradient(q_nal) + this_system.external_potential_gradient(q_nal);
 
             %% Residual vector 
             resi = [(qn1 - qn -(1-al)*h*IM*pn1 +(1-al)*(h^2)/2*IM*G_n1'*gamma_n1-al*h*IM*pn+al*(h^2)/2*IM*G_n'*lambdan);

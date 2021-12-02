@@ -36,15 +36,15 @@ classdef Postprocess
         end
         
         %% Function: computes postprocessing quantities as function of time
-        function this_simulation = compute(~, this_problem,this_simulation)
+        function this_simulation = compute(~, this_system,this_simulation)
             
-            nDOF = this_problem.nDOF;
-            m    = this_problem.mCONSTRAINTS;
-            DIM  = this_problem.DIM;
+            nDOF = this_system.nDOF;
+            m    = this_system.mCONSTRAINTS;
+            DIM  = this_system.DIM;
             d    = nDOF/DIM;
             
             NT   = int32(this_simulation.T_END/this_simulation.DT) +1;
-            M    = this_problem.MASS_MAT;
+            M    = this_system.MASS_MAT;
             IM   = M\eye(size(M));
             
             q    = this_simulation.z(:, 1:nDOF);
@@ -81,18 +81,18 @@ classdef Postprocess
                 
                 % Kinetic and potential energy, Hamiltonian
                 T(j) = 1/2*v(j,:)*M*v(j,:)';           
-                V(j) = this_problem.internal_potential(q(j,:)') + this_problem.external_potential(q(j,:)');
+                V(j) = this_system.internal_potential(q(j,:)') + this_system.external_potential(q(j,:)');
                 H(j) = T(j) + V(j);
                 
                 % Constraints on position and velocity level
-                constraint_position(j,:) = this_problem.constraint(q(j,:)')';
-                constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*v(j,:)')';
+                constraint_position(j,:) = this_system.constraint(q(j,:)')';
+                constraint_velocity(j,:) = (this_system.constraint_gradient(q(j,:)')*v(j,:)')';
                 
                 if strcmp(this_simulation.INTEGRATOR,'GGL_VI_mod')
                     % this specific integration scheme relies upon
                     % secondary constraints with momentum formulation and
                     % has non-aligned velocites
-                    constraint_velocity(j,:) = (this_problem.constraint_gradient(q(j,:)')*IM*p(j,:)')';
+                    constraint_velocity(j,:) = (this_system.constraint_gradient(q(j,:)')*IM*p(j,:)')';
                 end
                 
                 % Compute angular momentum

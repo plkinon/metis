@@ -67,13 +67,13 @@ classdef Pendulum < System
         
         function [] = potential_invariant(~,~,~)
             
-            error('Problem has only no invariants for the potential.');
+            error('system has only no invariants for the potential.');
 
         end
         
         function [] = potential_invariant_gradient(~,~,~)
             
-            error('Problem has only no invariants for the potential.');
+            error('system has only no invariants for the potential.');
             
         end
         
@@ -129,7 +129,7 @@ classdef Pendulum < System
             if i == 1
                 zeta = q'*q;
             else
-                error('Problem has only 1 invariant for the constraint.');
+                error('system has only 1 invariant for the constraint.');
             end
         end
         
@@ -138,7 +138,7 @@ classdef Pendulum < System
             if i == 1
                 DzetaDq = 2*q';
             else
-                error('Problem has only 1 invariant for the constraint.');
+                error('system has only 1 invariant for the constraint.');
             end
         end
         
@@ -148,7 +148,7 @@ classdef Pendulum < System
             if i == 1
                 D2zetaDq2 = 2*eye(self.DIM); 
             else
-                error('Problem has only 1 invariant for the constraint.');
+                error('system has only 1 invariant for the constraint.');
             end
         end
         
@@ -157,7 +157,7 @@ classdef Pendulum < System
             if i == 1
                 gs = 0.5 * (zeta - self.GEOM(1)^2);
             else
-                error('Problem has only 1 invariant for the constraint.');
+                error('system has only 1 invariant for the constraint.');
             end
         end
         
@@ -166,7 +166,7 @@ classdef Pendulum < System
             if i == 1
                 gs = 0.5 ;
             else
-                error('Problem has only 1 invariant for the constraint.');
+                error('system has only 1 invariant for the constraint.');
             end
         end  
         

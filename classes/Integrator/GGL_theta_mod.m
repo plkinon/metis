@@ -14,15 +14,15 @@ classdef GGL_theta_mod < Integrator
 
     methods
         
-        function self = GGL_theta_mod(this_simulation,this_problem)
+        function self = GGL_theta_mod(this_simulation,this_system)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
-            self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.nVARS = 2*this_system.nDOF+2*this_system.mCONSTRAINTS;
             self.INDI_VELO = false;
-            self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.LM0   = zeros(2*this_system.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(1);
             self.NAME  = 'GGL-theta';
@@ -34,22 +34,22 @@ classdef GGL_theta_mod < Integrator
             
         end
             
-        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
+        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_system)
             
             %% Abbreviations
-            M  = this_problem.MASS_MAT;
+            M  = this_system.MASS_MAT;
             IM = M\eye(size(M));
             h  = self.DT;
-            n  = this_problem.nDOF;
-            m  = this_problem.mCONSTRAINTS;
+            n  = this_system.nDOF;
+            m  = this_system.mCONSTRAINTS;
             
             %% Unknows which will be iterated
             qn1     = zn1(1:n);
             pn1     = zn1(n+1:2*n);
             lambdan = zn1(2*n+1:2*n+m);
             gamman  = zn1(2*n+m+1:end);
-            G_n1    = this_problem.constraint_gradient(qn1);
-            g_n1    = this_problem.constraint(qn1);
+            G_n1    = this_system.constraint_gradient(qn1);
+            g_n1    = this_system.constraint(qn1);
             
             %% Known quantities from last time-step
             qn     = zn(1:n);
@@ -59,9 +59,9 @@ classdef GGL_theta_mod < Integrator
             theta   = self.PARA(1);
             q_nt    = (1-theta)*qn + theta*qn1;
             p_n1mt  = theta*pn + (1-theta)*pn1;
-            DV_nt   = this_problem.internal_potential_gradient(q_nt) + this_problem.external_potential_gradient(q_nt);
-            G_nt    = this_problem.constraint_gradient(q_nt);
-            D2V_nt  = this_problem.internal_potential_hessian(q_nt) + this_problem.external_potential_hessian(q_nt);
+            DV_nt   = this_system.internal_potential_gradient(q_nt) + this_system.external_potential_gradient(q_nt);
+            G_nt    = this_system.constraint_gradient(q_nt);
+            D2V_nt  = this_system.internal_potential_hessian(q_nt) + this_system.external_potential_hessian(q_nt);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
@@ -70,10 +70,10 @@ classdef GGL_theta_mod < Integrator
             T_n1     = zeros(m,n);
             T_nt     = zeros(m,n);
             for j = 1:m
-                tmp_1 = this_problem.constraint_hessian(qn1,j);
-                tmp_nt = this_problem.constraint_hessian(q_nt,j);
-                t_nt_gam   = t_nt_gam + this_problem.constraint_hessian(q_nt,j)*gamman(j);
-                t_nt_lam   = t_nt_lam + this_problem.constraint_hessian(q_nt,j)*lambdan(j);
+                tmp_1 = this_system.constraint_hessian(qn1,j);
+                tmp_nt = this_system.constraint_hessian(q_nt,j);
+                t_nt_gam   = t_nt_gam + this_system.constraint_hessian(q_nt,j)*gamman(j);
+                t_nt_lam   = t_nt_lam + this_system.constraint_hessian(q_nt,j)*lambdan(j);
                 for k = 1:n
                     T_n1(j,k) = tmp_1(:,k)'*IM*pn1;
                     T_nt(j,k) = tmp_nt(:,k)'*IM*p_n1mt;

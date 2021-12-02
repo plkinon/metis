@@ -130,13 +130,13 @@ classdef RigidBodyMoving < System
         
         function [] = potential_invariant(~,~,~)
             
-            error('Problem has only no invariants for the potential.');
+            error('system has only no invariants for the potential.');
 
         end
         
         function [] = potential_invariant_gradient(~,~,~)
             
-            error('Problem has only no invariants for the potential.');
+            error('system has only no invariants for the potential.');
             
         end
         
@@ -167,7 +167,7 @@ classdef RigidBodyMoving < System
             elseif i==6
                 pi2 = d2'*v3 + d3'*v2;
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
             
         end
@@ -193,7 +193,7 @@ classdef RigidBodyMoving < System
             elseif i==6
                 Dpi2Dq = [zeros(3,1); zeros(3,1); v3; v2];
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
             
         end
@@ -221,7 +221,7 @@ classdef RigidBodyMoving < System
             elseif i==6
                 Dpi2Dp = [zeros(3,1); zeros(3,1); d3/m3; d2/m2];
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
             
         end
@@ -302,7 +302,7 @@ classdef RigidBodyMoving < System
             elseif i==6
                 zeta = d2'*d3;
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
         end
         
@@ -325,7 +325,7 @@ classdef RigidBodyMoving < System
             elseif i==6
                 DzetaDq = [zeros(3,1); zeros(3,1); d2; d3];
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
         end
         

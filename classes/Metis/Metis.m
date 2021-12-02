@@ -181,7 +181,7 @@ classdef Metis
          
         end
         
-        %% Function: Defines problem, integrator and solver objects
+        %% Function: Defines system, integrator and solver objects
         function [self, this_system, this_integrator, this_solver] = define_classes(self)
 
             % System: Takes user-defined string and evaluates it as the 

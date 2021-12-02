@@ -178,7 +178,7 @@ classdef FourParticleSystem < System
             elseif i == 2
                 pi = (q4-q2)'*(q4-q2);
             else
-                error('Problem has only 2 invariants for the potential.');
+                error('system has only 2 invariants for the potential.');
             end
         end
         
@@ -195,7 +195,7 @@ classdef FourParticleSystem < System
             elseif i == 2
                 DpiDq = [zeros(self.DIM,1);-2*(q4-q2);  zeros(self.DIM,1); 2*(q4-q2)];
             else
-                error('Problem has only 2 invariants for the potential.');
+                error('system has only 2 invariants for the potential.');
             end
         end
         
@@ -213,7 +213,7 @@ classdef FourParticleSystem < System
                           zeros(self.DIM) zeros(self.DIM)   zeros(self.DIM) zeros(self.DIM);
                           zeros(self.DIM) -2*eye(self.DIM) zeros(self.DIM) 2*eye(self.DIM)];
             else
-                error('Problem has only 2 invariants for the potential.');
+                error('system has only 2 invariants for the potential.');
             end
         end
         
@@ -346,7 +346,7 @@ classdef FourParticleSystem < System
             elseif i == 2
                 zeta = (q3-q4)'*(q3-q4);
             else
-                error('Problem has only 2 invariants for the constraint.');
+                error('system has only 2 invariants for the constraint.');
             end
         end
         
@@ -363,7 +363,7 @@ classdef FourParticleSystem < System
             elseif i == 2
                 DzetaDq = [zeros(self.DIM,1);  zeros(self.DIM,1); 2*(q3-q4); -2*(q3-q4)];
             else
-                error('Problem has only 2 invariants for the constraint.');
+                error('system has only 2 invariants for the constraint.');
             end
         end
         
@@ -377,7 +377,7 @@ classdef FourParticleSystem < System
             elseif i == 2
                 D2zetaDq2 = [zeros(2*self.DIM) zeros(2*self.DIM) ; zeros(2*self.DIM) 2*tmp];
             else
-                error('Problem has only 2 invariants for the constraint.');
+                error('system has only 2 invariants for the constraint.');
             end
         end
         

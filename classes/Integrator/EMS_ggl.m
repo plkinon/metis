@@ -18,15 +18,15 @@ classdef EMS_ggl < Integrator
 
     methods
         
-        function self = EMS_ggl(CONFIG,this_problem)
+        function self = EMS_ggl(CONFIG,this_system)
             self.DT    = CONFIG.DT;
             self.T_0   = CONFIG.T_0;
             self.T_END = CONFIG.T_END;
             self.t     = CONFIG.T_0:CONFIG.DT:CONFIG.T_END;
             self.NT    = size(self.t, 2) - 1;
-            self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.nVARS = 2*this_system.nDOF+2*this_system.mCONSTRAINTS;
             self.INDI_VELO = false;
-            self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.LM0   = zeros(2*this_system.mCONSTRAINTS,1);
             self.hasPARA = false;
             self.NAME  = 'EMS-GGL';
         end
@@ -37,23 +37,23 @@ classdef EMS_ggl < Integrator
             
         end
         
-        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
+        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_system)
             
             %% Abbreviations
-            M  = this_problem.MASS_MAT;
+            M  = this_system.MASS_MAT;
             IM = M\eye(size(M));
             h  = self.DT;
-            n  = this_problem.nDOF;
-            m  = this_problem.mCONSTRAINTS;
-            p  = this_problem.nPotentialInvariants;
+            n  = this_system.nDOF;
+            m  = this_system.mCONSTRAINTS;
+            p  = this_system.nPotentialInvariants;
             
             %% Unknows which will be iterated
             qn1       = zn1(1:n);
             pn1       = zn1(n+1:2*n);
             lambda_n1 = zn1(2*n+1:2*n+m);
             gamma_n1  = zn1(2*n+m+1:2*n+2*m);
-            G_n1      = this_problem.constraint_gradient(qn1);
-            g_n1      = this_problem.constraint(qn1);
+            G_n1      = this_system.constraint_gradient(qn1);
+            g_n1      = this_system.constraint(qn1);
             
             %% Known quantities from last time-step
             qn      = zn(1:n);
@@ -62,9 +62,9 @@ classdef EMS_ggl < Integrator
             %% MP evaluated quantities
             q_n05      = 0.5*(qn + qn1);
             p_n05      = 0.5*(pn + pn1);
-            DVext_n05  = this_problem.external_potential_gradient(q_n05);
-            D2Vext_n05 = this_problem.external_potential_hessian(q_n05);
-            D2Vint_n05 = this_problem.internal_potential_hessian(q_n05);
+            DVext_n05  = this_system.external_potential_gradient(q_n05);
+            D2Vext_n05 = this_system.external_potential_hessian(q_n05);
+            D2Vint_n05 = this_system.internal_potential_hessian(q_n05);
             t_n05l      = zeros(n);
             t_n05g      = zeros(n);
             
@@ -77,18 +77,18 @@ classdef EMS_ggl < Integrator
             V_invariants_difference_too_small = false;
             for i = 1:p
                 %compute i-th invariants 
-                pi_n     = this_problem.potential_invariant(qn,i);
-                pi_n1    = this_problem.potential_invariant(qn1,i);
+                pi_n     = this_system.potential_invariant(qn,i);
+                pi_n1    = this_system.potential_invariant(qn1,i);
                 % evaluate internal potential depending on invariants
-                Vs_n     = this_problem.potential_from_invariant(pi_n,i);
-                Vs_n1    = this_problem.potential_from_invariant(pi_n1,i);
+                Vs_n     = this_system.potential_from_invariant(pi_n,i);
+                Vs_n1    = this_system.potential_from_invariant(pi_n1,i);
                 % derivative of invariant w.r.t. q_n05
-                DPiq_n05 = this_problem.potential_invariant_gradient(q_n05,i);
+                DPiq_n05 = this_system.potential_invariant_gradient(q_n05,i);
                 
                 %for the tangent matrix
-                D2PiDq2   = this_problem.potential_invariant_hessian(q_n05,i);
-                DPiDq_n1  = this_problem.potential_invariant_gradient(qn1,i);
-                DVsDpi_n1 = this_problem.potential_gradient_from_invariant(pi_n1,i);
+                D2PiDq2   = this_system.potential_invariant_hessian(q_n05,i);
+                DPiDq_n1  = this_system.potential_invariant_gradient(qn1,i);
+                DVsDpi_n1 = this_system.potential_gradient_from_invariant(pi_n1,i);
                 
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
@@ -107,7 +107,7 @@ classdef EMS_ggl < Integrator
             
             if V_invariants_difference_too_small
                  % else use MP evaluation of gradient
-                    DG_Vint = this_problem.internal_potential_gradient(q_n05);
+                    DG_Vint = this_system.internal_potential_gradient(q_n05);
                     K21_DG_V  = K21_DG_V  + 1/2*D2Vint_n05;
             end
             
@@ -116,20 +116,20 @@ classdef EMS_ggl < Integrator
             K21_DG_g = zeros(n,n);
             
             % for every invariant individually
-            for j = 1:this_problem.nConstraintInvariants
+            for j = 1:this_system.nConstraintInvariants
                 %compute i-th invariants 
-                zeta_n  = this_problem.constraint_invariant(qn,j);
-                zeta_n1 = this_problem.constraint_invariant(qn1,j);
+                zeta_n  = this_system.constraint_invariant(qn,j);
+                zeta_n1 = this_system.constraint_invariant(qn1,j);
                 % evaluate constraints depending on invariants
-                gs_n = this_problem.constraint_from_invariant(zeta_n,j);
-                gs_n1 = this_problem.constraint_from_invariant(zeta_n1,j);
+                gs_n = this_system.constraint_from_invariant(zeta_n,j);
+                gs_n1 = this_system.constraint_from_invariant(zeta_n1,j);
                 % derivative of invariant w.r.t. q_n05
-                DzetaDq_n05 = this_problem.constraint_invariant_gradient(q_n05,j);
+                DzetaDq_n05 = this_system.constraint_invariant_gradient(q_n05,j);
                 
                 % tangent matrix terms
-                D2zetaDq2   = this_problem.constraint_invariant_hessian(qn1,j);
-                DgsDzeta_n1 = this_problem.constraint_gradient_from_invariant(qn1,j);
-                DzetaDq_n1  = this_problem.constraint_invariant_gradient(qn1,j);
+                D2zetaDq2   = this_system.constraint_invariant_hessian(qn1,j);
+                DgsDzeta_n1 = this_system.constraint_gradient_from_invariant(qn1,j);
+                DzetaDq_n1  = this_system.constraint_invariant_gradient(qn1,j);
                 
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
@@ -149,10 +149,10 @@ classdef EMS_ggl < Integrator
             
             if g_invariants_difference_too_small
                 % else use MP evaluation of gradient
-                G_n05 = this_problem.constraint_gradient(q_n05);
+                G_n05 = this_system.constraint_gradient(q_n05);
                 DG_g  = G_n05;
-                for j=1:this_problem.nConstraintInvariants
-                    D2g_Dq_n05 = this_problem.constraint_hessian(q_n05,j);
+                for j=1:this_system.nConstraintInvariants
+                    D2g_Dq_n05 = this_system.constraint_hessian(q_n05,j);
                     K21_DG_g  = K21_DG_g  + 1/2*lambda_n1(j)*D2g_Dq_n05;
                 end
             end
@@ -166,23 +166,23 @@ classdef EMS_ggl < Integrator
             K22_DG_gv = zeros(n,n);
             
             % for every invariant individually
-            for k = 1:this_problem.nVconstraintInvariants
+            for k = 1:this_system.nVconstraintInvariants
                 
                 %compute k-th invariants 
-                pi_n = this_problem.vConstraint_invariant(qn,pn,k);
-                pi_n1 = this_problem.vConstraint_invariant(qn1,pn1,k);
+                pi_n = this_system.vConstraint_invariant(qn,pn,k);
+                pi_n1 = this_system.vConstraint_invariant(qn1,pn1,k);
                 % evaluate constraints depending on invariants
-                gv_n1 = this_problem.Vconstraint_from_invariant(pi_n1,k);
-                gv_n  = this_problem.Vconstraint_from_invariant(pi_n,k);
+                gv_n1 = this_system.Vconstraint_from_invariant(pi_n1,k);
+                gv_n  = this_system.Vconstraint_from_invariant(pi_n,k);
                 % derivative of invariant w.r.t. q_n05
-                DpiDqn05 = this_problem.vConstraint_invariant_gradient_q(q_n05,p_n05,k);
-                DpiDpn05 = this_problem.vConstraint_invariant_gradient_p(q_n05,p_n05,k);
+                DpiDqn05 = this_system.vConstraint_invariant_gradient_q(q_n05,p_n05,k);
+                DpiDpn05 = this_system.vConstraint_invariant_gradient_p(q_n05,p_n05,k);
                 
                 % tangent matrix terms
-                DgvDpi_n1 = this_problem.Vconstraint_gradient_from_invariant(pi_n1,k);
-                DpiDq_n1 = this_problem.vConstraint_invariant_gradient_q(qn1,pn1,k);
-                DpiDp_n1 = this_problem.vConstraint_invariant_gradient_p(qn1,pn1,k);
-                D2piDqDp = this_problem.vConstraint_invariant_hessian_qp(q_n05,p_n05,k);
+                DgvDpi_n1 = this_system.Vconstraint_gradient_from_invariant(pi_n1,k);
+                DpiDq_n1 = this_system.vConstraint_invariant_gradient_q(qn1,pn1,k);
+                DpiDp_n1 = this_system.vConstraint_invariant_gradient_p(qn1,pn1,k);
+                D2piDqDp = this_system.vConstraint_invariant_hessian_qp(q_n05,p_n05,k);
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
                 if abs(pi_n1 - pi_n) > 1e-09
@@ -206,12 +206,12 @@ classdef EMS_ggl < Integrator
             
             if gv_invariants_difference_too_small
                 % else use MP evaluation of gradient
-                for k = 1:this_problem.nVconstraintInvariants
-                    D2g_qq_tmp   = this_problem.constraint_hessian(q_n05,k);
-                    G_n05        = this_problem.constraint_gradient(q_n05);
+                for k = 1:this_system.nVconstraintInvariants
+                    D2g_qq_tmp   = this_system.constraint_hessian(q_n05,k);
+                    G_n05        = this_system.constraint_gradient(q_n05);
                     DG_gv_q(k,:) = D2g_qq_tmp*IM*p_n05;
                     DG_gv_p(k,:) = G_n05(k,:)*IM;
-                    K11_DG_gv    = K11_DG_gv + gamma_n1(k)*1/2*this_problem.constraint_hessian(q_n05,k)*IM;
+                    K11_DG_gv    = K11_DG_gv + gamma_n1(k)*1/2*this_system.constraint_hessian(q_n05,k)*IM;
                     K22_DG_gv    = K22_DG_gv + gamma_n1(k)*1/2*D2g_qq_tmp*IM;
                 end
                 K12_DG_gv = zeros(n);
@@ -222,15 +222,15 @@ classdef EMS_ggl < Integrator
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
             for i = 1:m
-                t_n05l   = t_n05l + this_problem.constraint_hessian(q_n05,m)*lambda_n1(m);
-                t_n05g   = t_n05g + this_problem.constraint_hessian(q_n05,m)*gamma_n1(m);
+                t_n05l   = t_n05l + this_system.constraint_hessian(q_n05,m)*lambda_n1(m);
+                t_n05g   = t_n05g + this_system.constraint_hessian(q_n05,m)*gamma_n1(m);
             end
             
             % Hessian of constraints are multiplied by inverse MassMat and
             % pn1 for each constraint to avoid 3rd order tensors
             T_n1 = zeros(m,n);
             for i = 1:m
-                tmp = this_problem.constraint_hessian(qn1,i);
+                tmp = this_system.constraint_hessian(qn1,i);
                 for k = 1:n
                     T_n1(i,k) = tmp(:,k)'*IM*pn1;
                 end

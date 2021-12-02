@@ -18,15 +18,15 @@ classdef GGL_VI_theta_B < Integrator
 
     methods
         
-        function self = GGL_VI_theta_B(this_simulation,this_problem)
+        function self = GGL_VI_theta_B(this_simulation,this_system)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
-            self.nVARS = 3*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.nVARS = 3*this_system.nDOF+2*this_system.mCONSTRAINTS;
             self.INDI_VELO = true;
-            self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.LM0   = zeros(2*this_system.mCONSTRAINTS,1);
             self.hasPARA = true;
             self.PARA  = this_simulation.INT_PARA(:); %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [1 0.5]: exact constraint vel. level
             self.NAME  = 'GGL-VI-theta-B';
@@ -58,14 +58,14 @@ classdef GGL_VI_theta_B < Integrator
             
         end
                    
-        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
+        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_system)
             
             %% Abbreviations
-            M  = this_problem.MASS_MAT;
+            M  = this_system.MASS_MAT;
             IM = M\eye(size(M));
             h  = self.DT;
-            n  = this_problem.nDOF;
-            m  = this_problem.mCONSTRAINTS;
+            n  = this_system.nDOF;
+            m  = this_system.mCONSTRAINTS;
             
             %% Unknows which will be iterated
             qn1     = zn1(1:n);
@@ -73,16 +73,16 @@ classdef GGL_VI_theta_B < Integrator
             vn1     = zn1(2*n+1:3*n);
             lambdan = zn1(3*n+1:3*n+m);
             gamman  = zn1(3*n+m+1:end);
-            G_n1    = this_problem.constraint_gradient(qn1);
-            g_n1    = this_problem.constraint(qn1);
+            G_n1    = this_system.constraint_gradient(qn1);
+            g_n1    = this_system.constraint(qn1);
             
             % Hessian of constraints are multiplied by inverse MassMat and
             % pn1 for each constraint to avoid 3rd order tensors
             T_n1 = zeros(m,n);
             t_n1 = zeros(n);
             for l = 1:m
-                tmp = this_problem.constraint_hessian(qn1,l);
-                t_n1   = t_n1 + this_problem.constraint_hessian(qn1,l)*lambdan(l);
+                tmp = this_system.constraint_hessian(qn1,l);
+                t_n1   = t_n1 + this_system.constraint_hessian(qn1,l)*lambdan(l);
                 for k = 1:n
                     T_n1(l,k) = tmp(:,k)'*IM*pn1;
                 end
@@ -91,25 +91,25 @@ classdef GGL_VI_theta_B < Integrator
             %% Known quantities from last time-step
             qn     = zn(1:n);
             pn     = zn(n+1:2*n);
-            G_n    = this_problem.constraint_gradient(qn);
-            g_n    = this_problem.constraint(qn);
+            G_n    = this_system.constraint_gradient(qn);
+            g_n    = this_system.constraint(qn);
             
             %% Quantities at t_n+theta
             theta   = self.PARA(2);
             The     = self.PARA(1);
             q_nt    = (1-The)*qn + The*qn1;
             p_n1mt  = The*pn + (1-The)*pn1;
-            DV_nt   = this_problem.internal_potential_gradient(q_nt) + this_problem.external_potential_gradient(q_nt);
-            G_nt    = this_problem.constraint_gradient(q_nt);
-            D2V_nt  = this_problem.internal_potential_hessian(q_nt) + this_problem.external_potential_hessian(q_nt);
+            DV_nt   = this_system.internal_potential_gradient(q_nt) + this_system.external_potential_gradient(q_nt);
+            G_nt    = this_system.constraint_gradient(q_nt);
+            D2V_nt  = this_system.internal_potential_hessian(q_nt) + this_system.external_potential_hessian(q_nt);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
             t_nt    = zeros(n);
             T_nt    = zeros(m,n);
             for j = 1:m
-                tmp2 = this_problem.constraint_hessian(q_nt,j);
-                t_nt   = t_nt + this_problem.constraint_hessian(q_nt,j)*gamman(j);
+                tmp2 = this_system.constraint_hessian(q_nt,j);
+                t_nt   = t_nt + this_system.constraint_hessian(q_nt,j)*gamman(j);
                 for k = 1:n
                     T_nt(j,k) = tmp2(:,k)'*vn1;
                 end

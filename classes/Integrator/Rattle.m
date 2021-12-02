@@ -11,15 +11,15 @@ classdef Rattle < Integrator
 
     methods
         
-        function self = Rattle(this_simulation,this_problem)
+        function self = Rattle(this_simulation,this_system)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
-            self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.nVARS = 2*this_system.nDOF+2*this_system.mCONSTRAINTS;
             self.INDI_VELO = false;
-            self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.LM0   = zeros(2*this_system.mCONSTRAINTS,1);
             self.hasPARA = false;
             self.NAME  = 'Rattle';
         end
@@ -30,36 +30,36 @@ classdef Rattle < Integrator
             
         end
         
-        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
+        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_system)
             
             %% Abbreviations
-            M  = this_problem.MASS_MAT;
+            M  = this_system.MASS_MAT;
             IM = M\eye(size(M));
             h  = self.DT;
-            n  = this_problem.nDOF;
-            m  = this_problem.mCONSTRAINTS;
+            n  = this_system.nDOF;
+            m  = this_system.mCONSTRAINTS;
             
             %% Unknows which will be iterated
             qn1     = zn1(1:n);
             pn1     = zn1(n+1:2*n);
             lambdan = zn1(2*n+1:2*n+m);
             gamman1 = zn1(2*n+m+1:end);
-            G_n1    = this_problem.constraint_gradient(qn1);
-            g_n1    = this_problem.constraint(qn1);
-            DV_n1   = this_problem.internal_potential_gradient(qn1) + this_problem.external_potential_gradient(qn1);
+            G_n1    = this_system.constraint_gradient(qn1);
+            g_n1    = this_system.constraint(qn1);
+            DV_n1   = this_system.internal_potential_gradient(qn1) + this_system.external_potential_gradient(qn1);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
             t_n1    = zeros(n);
             for i = 1:m
-                t_n1   = t_n1 + this_problem.constraint_hessian(qn1,i)*gamman1(i);
+                t_n1   = t_n1 + this_system.constraint_hessian(qn1,i)*gamman1(i);
             end
             
             % Hessian of constraints are multiplied by inverse MassMat and
             % pn1 for each constraint to avoid 3rd order tensors
             T_n1 = zeros(m,n);
             for l = 1:m
-                tmp = this_problem.constraint_hessian(qn1,l);
+                tmp = this_system.constraint_hessian(qn1,l);
                 for k = 1:n
                     T_n1(l,k) = tmp(:,k)'*IM*pn1;
                 end
@@ -69,14 +69,14 @@ classdef Rattle < Integrator
             qn     = zn(1:n);
             pn     = zn(n+1:2*n);
             gamman = zn(2*n+m+1:end);
-            G_n    = this_problem.constraint_gradient(qn);
-            DV_n   = this_problem.internal_potential_gradient(qn) + this_problem.external_potential_gradient(qn);
+            G_n    = this_system.constraint_gradient(qn);
+            DV_n   = this_system.internal_potential_gradient(qn) + this_system.external_potential_gradient(qn);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
             t_n    = zeros(n);
             for j = 1:m
-                t_n   = t_n + this_problem.constraint_hessian(qn,j)*gamman(j);
+                t_n   = t_n + this_system.constraint_hessian(qn,j)*gamman(j);
             end
             
             %% Residual vector 

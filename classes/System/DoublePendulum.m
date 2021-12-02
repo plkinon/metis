@@ -82,13 +82,13 @@ classdef DoublePendulum < System
         
         function [] = potential_invariant(~,~,~)
             
-            error('Problem has only no invariants for the potential.');
+            error('system has only no invariants for the potential.');
 
         end
         
         function [] = potential_invariant_gradient(~,~,~)
             
-            error('Problem has only no invariants for the potential.');
+            error('system has only no invariants for the potential.');
             
         end
         
@@ -102,7 +102,7 @@ classdef DoublePendulum < System
             elseif i == 2
                 zeta = (q2-q1)'*(q2-q1);
             else
-                error('Problem has only 2 invariants for the constraint.');
+                error('system has only 2 invariants for the constraint.');
             end
         end
         
@@ -116,7 +116,7 @@ classdef DoublePendulum < System
             elseif i == 2
                 DzetaDq = [-2*(q2-q1); 2*(q2-q1)];
             else
-                error('Problem has only 2 invariants for the constraint.');
+                error('system has only 2 invariants for the constraint.');
             end
         end
         
@@ -132,7 +132,7 @@ classdef DoublePendulum < System
                 D2zetaDq2 = [2*eye(self.DIM) -2*eye(self.DIM);
                              -2*eye(self.DIM) 2*eye(self.DIM)  ];
             else
-                error('Problem has only 2 invariants for the constraint.');
+                error('system has only 2 invariants for the constraint.');
             end
         end
         

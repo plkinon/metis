@@ -118,7 +118,7 @@ classdef Solver
         
         %% Function: numerical tangent
         % Computes numerical tangent matrix for a given residual defined by
-        % integrator and problem zn1 and zn
+        % integrator and system zn1 and zn
         function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn1, zn)
 
             % Pre-allocate tangent matrix, initialized with zeros:

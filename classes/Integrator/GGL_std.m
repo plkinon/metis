@@ -18,15 +18,15 @@ classdef GGL_std < Integrator
 
     methods
         
-        function self = GGL_std(this_simulation, this_problem)
+        function self = GGL_std(this_simulation, this_system)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
-            self.nVARS = 2*this_problem.nDOF+2*this_problem.mCONSTRAINTS;
+            self.nVARS = 2*this_system.nDOF+2*this_system.mCONSTRAINTS;
             self.INDI_VELO = false;
-            self.LM0   = zeros(2*this_problem.mCONSTRAINTS,1);
+            self.LM0   = zeros(2*this_system.mCONSTRAINTS,1);
             self.hasPARA = false;
             self.NAME  = 'GGL-std ';
         end
@@ -37,35 +37,35 @@ classdef GGL_std < Integrator
             
         end
         
-        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
+        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_system)
             
             %% Abbreviations
-            M  = this_problem.MASS_MAT;
+            M  = this_system.MASS_MAT;
             IM = M\eye(size(M));
             h  = self.DT;
-            n  = this_problem.nDOF;
-            m  = this_problem.mCONSTRAINTS;
+            n  = this_system.nDOF;
+            m  = this_system.mCONSTRAINTS;
             
             %% Unknows which will be iterated
             qn1     = zn1(1:n);
             pn1     = zn1(n+1:2*n);
             lambdan = zn1(2*n+1:2*n+m);
             gamman  = zn1(2*n+m+1:end);
-            G_n1    = this_problem.constraint_gradient(qn1);
-            g_n1    = this_problem.constraint(qn1);
+            G_n1    = this_system.constraint_gradient(qn1);
+            g_n1    = this_system.constraint(qn1);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
             t_n    = zeros(n);
             for i = 1:m
-                t_n   = t_n + this_problem.constraint_hessian(qn1,i)*gamman(i);
+                t_n   = t_n + this_system.constraint_hessian(qn1,i)*gamman(i);
             end
             
             % Hessian of constraints are multiplied by inverse MassMat and
             % pn1 for each constraint to avoid 3rd order tensors
             T_n1 = zeros(m,n);
             for i = 1:m
-                tmp = this_problem.constraint_hessian(qn1,i);
+                tmp = this_system.constraint_hessian(qn1,i);
                 for k = 1:n
                     T_n1(i,k) = tmp(:,k)'*IM*pn1;
                 end
@@ -74,8 +74,8 @@ classdef GGL_std < Integrator
             %% Known quantities from last time-step
             qn     = zn(1:n);
             pn     = zn(n+1:2*n);
-            G_n    = this_problem.constraint_gradient(qn);
-            DV_n   = this_problem.internal_potential_gradient(qn) + this_problem.external_potential_gradient(qn);
+            G_n    = this_system.constraint_gradient(qn);
+            DV_n   = this_system.internal_potential_gradient(qn) + this_system.external_potential_gradient(qn);
             
             %% Residual vector 
             resi = [qn1 - qn - h*IM*pn1 + h*G_n'*gamman ;

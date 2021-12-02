@@ -154,13 +154,13 @@ classdef HeavyTop < System
         
         function [] = potential_invariant(~,~,~)
             
-            error('Problem has only no invariants for the potential.');
+            error('system has only no invariants for the potential.');
 
         end
         
         function [] = potential_invariant_gradient(~,~,~)
             
-            error('Problem has only no invariants for the potential.');
+            error('system has only no invariants for the potential.');
             
         end
         
@@ -199,7 +199,7 @@ classdef HeavyTop < System
             elseif i==9
                 pi2 = v0(3) - L*v3(3);
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
             
         end
@@ -227,7 +227,7 @@ classdef HeavyTop < System
             elseif i==7 || i==8 || i==9
                 Dpi2Dq = zeros(12,1);
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
             
         end
@@ -263,7 +263,7 @@ classdef HeavyTop < System
             elseif i==9 
                 Dpi2Dp = [0; 0; 1/m; zeros(3,1); zeros(3,1); 0; 0; -L/m3];
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
             
         end
@@ -353,7 +353,7 @@ classdef HeavyTop < System
             elseif i==9
                 zeta = phi(3)-L*d3(3);
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
         end
         
@@ -382,7 +382,7 @@ classdef HeavyTop < System
             elseif i==9 
                 DzetaDq = [0; 0; 1; zeros(3,1); zeros(3,1); 0; 0; -L];
             else
-                error('Problem has only 6 invariants for the constraint.');
+                error('system has only 6 invariants for the constraint.');
             end
         end
         

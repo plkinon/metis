@@ -13,15 +13,15 @@ classdef MP_std < Integrator
 
     methods
         
-        function self = MP_std(this_simulation, this_problem)
+        function self = MP_std(this_simulation, this_system)
             self.DT    = this_simulation.DT;
             self.T_0   = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
             self.t     = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT    = size(self.t, 2) - 1;
-            self.nVARS = 2*this_problem.nDOF+this_problem.mCONSTRAINTS;
+            self.nVARS = 2*this_system.nDOF+this_system.mCONSTRAINTS;
             self.INDI_VELO = false;
-            self.LM0   = zeros(this_problem.mCONSTRAINTS,1);
+            self.LM0   = zeros(this_system.mCONSTRAINTS,1);
             self.hasPARA = false;
             self.NAME  = 'MP-std';
         end
@@ -32,21 +32,21 @@ classdef MP_std < Integrator
             
         end
         
-        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_problem)
+        function [resi,tang] = compute_resi_tang(self,zn1,zn,this_system)
             
             %% Abbreviations
-            M  = this_problem.MASS_MAT;
+            M  = this_system.MASS_MAT;
             IM = M\eye(size(M));
             h  = self.DT;
-            n  = this_problem.nDOF;
-            m  = this_problem.mCONSTRAINTS;
+            n  = this_system.nDOF;
+            m  = this_system.mCONSTRAINTS;
             
             %% Unknows which will be iterated
             qn1       = zn1(1:n);
             pn1       = zn1(n+1:2*n);
             lambda_n1 = zn1(2*n+1:2*n+m);
-            G_n1      = this_problem.constraint_gradient(qn1);
-            g_n1      = this_problem.constraint(qn1);
+            G_n1      = this_system.constraint_gradient(qn1);
+            g_n1      = this_system.constraint(qn1);
             
             %% Known quantities from last time-step
             qn      = zn(1:n);
@@ -57,15 +57,15 @@ classdef MP_std < Integrator
             q_n05      = 0.5*qn + 0.5*qn1;
             p_n05      = 0.5*pn + 0.5*pn1;
             lambda_n05 = 0.5*lambdan + 0.5*lambda_n1;
-            DV_n05     = this_problem.internal_potential_gradient(q_n05)+ this_problem.external_potential_gradient(q_n05);
-            D2V_n05    = this_problem.internal_potential_hessian(q_n05) + this_problem.external_potential_hessian(q_n05);
-            G_n05      = this_problem.constraint_gradient(q_n05);
+            DV_n05     = this_system.internal_potential_gradient(q_n05)+ this_system.external_potential_gradient(q_n05);
+            D2V_n05    = this_system.internal_potential_hessian(q_n05) + this_system.external_potential_hessian(q_n05);
+            G_n05      = this_system.constraint_gradient(q_n05);
             t_n05      = zeros(n);
             
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
             for i = 1:m
-                t_n05   = t_n05 + this_problem.constraint_hessian(q_n05,m)*lambda_n05(m);
+                t_n05   = t_n05 + this_system.constraint_hessian(q_n05,m)*lambda_n05(m);
             end
             
             %% Residual vector 
