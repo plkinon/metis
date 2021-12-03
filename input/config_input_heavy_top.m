@@ -61,7 +61,7 @@ INTEGRATOR = 'GGL_VI_theta_B';
 % Parameters of the method
 INT_PARA = [1 0.5];
 % time step size
-DT    = 0.002;
+DT    = 0.001;
 % starting time
 T_0   = 0;
 % end time
@@ -79,9 +79,9 @@ shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
 plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
 % Export of simulation results in a .mat-file [true/false]
-should_export = false;
+should_export = true;
 % Export of figures in .eps- and .tikz-files
-should_export_figures = false;
+should_export_figures = true;
 % Path where export-folder is created
 export_path = 'scratch/';
 
