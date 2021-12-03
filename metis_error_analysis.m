@@ -24,7 +24,7 @@ addpath(genpath(fileparts(which(mfilename))));
 addpath('~/git/matlab2tikz/src');
 
 % Metis creates a dummy simulation object, the system and solver from input-file 
-[dummy_simulation,system,~,solver] = Metis('config_input_error_analysis_heavy_top',1,1);
+[dummy_simulation,system,~,solver] = Metis('input/nody_2021_kinon_betsch/ggl_onestage_error_analysis_input',1,1);
 % Check how many different timestepsizes and integrators are analyzed
 n_DT = numel(dummy_simulation.ALL_DT);
 n_INT = numel(dummy_simulation.ALL_INTEGRATOR);
