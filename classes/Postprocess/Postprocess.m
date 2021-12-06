@@ -178,10 +178,11 @@ classdef Postprocess
                             export_name = num2str(i);
                         end
                         
-                        % Clear current figures title
+                        % Clear current figures title for export
                         set(0, 'currentfigure', figHandles(i));
                         titlestring = get(gca,'title').String;
-                        title(gca,'');
+                        title('');
+                        % Reduce linewidth
                         set(findall(gca, 'Type', 'Line'),'LineWidth',1.2);
                         
                         % Export to .eps
@@ -191,7 +192,10 @@ classdef Postprocess
                         warning('off')
                         matlab2tikz('figurehandle',figHandles(i),'height','\figH','width','\figW','filename',[export_folder,export_name,'.tikz'],'showInfo', false,'floatformat','%.7g');
                         warning('on')
-                        title(gca,titlestring);
+                        
+                        %Reset Title and enlarge linewidth
+                        set(0, 'currentfigure', figHandles(i));
+                        title(titlestring);
                         set(findall(gca, 'Type', 'Line'),'LineWidth',1.5);
                         
                     end
@@ -244,8 +248,9 @@ classdef Postprocess
                         Mmax     = max([max(V), max(T), max(H)]);
                         ylim([Mmin - 0.1 * abs(Mmax-Mmin), Mmax + 0.1 * abs(Mmax-Mmin)]);
                         title(strcat(integrator_string, ': Energy'));
-                        legend('T', 'V', 'H')
-                        xlabel('t');
+                        legend('$T$', '$V$', '$H$','interpreter','latex')
+                        xlabel('$t$','interpreter','latex')
+                        ylabel('$\mathrm{[J]}$','interpreter','latex')
                         
                     case 'angular_momentum'
 
@@ -256,9 +261,9 @@ classdef Postprocess
                         ylim([Lmin - 0.1 * abs(Lmax-Lmin), Lmax + 0.1 * abs(Lmax-Lmin)]);
                         fig.Name = 'ang_mom';
                         title(strcat(integrator_string, ': Angular Momentum'));
-                        legend('L_1','L_2','L_3');
-                        xlabel('t');
-                        ylabel('L_i(t)');
+                        legend('$L_1$','$L_2$','$L_3$','interpreter','latex');
+                        xlabel('$t$','interpreter','latex');
+                        ylabel('$L_i(t)$','interpreter','latex');
 
                     case 'energy_difference'
 
@@ -273,9 +278,8 @@ classdef Postprocess
                         ylim([2*min_rounded 2*max_rounded]);
                         fig.Name = 'H_diff';
                         title(strcat(integrator_string, ': Energy difference'));
-                        xlabel('t');
-                        ylabel('H^{n+1}-H^{n}');
-                        legend(strcat('std(H)=', num2str(std(H(~isnan(H))))));
+                        xlabel('$t$','interpreter','latex');
+                        ylabel('$H^\mathrm{n+1}-H^\mathrm{n}$','interpreter','latex');
 
                     case 'angular_momentum_difference'
 
@@ -290,11 +294,10 @@ classdef Postprocess
                         ylim([2*min_rounded 2*max_rounded]);
                         fig.Name = 'J_diff';
                         title(strcat(integrator_string, ': Ang. mom. - difference'));
-                        xlabel('t');
-                        legend('L_1','L_2','L_3');
-                        ylabel('L_i^{n+1}-L_i^{n}');
-                        legend(strcat('std(L_1)=', num2str(std(L(:,1)))),strcat('std(L_2)=', num2str(std(L(:,2)))),strcat('std(L_3)=', num2str(std(L(:,3)))));
-
+                        xlabel('$t$','interpreter','latex');
+                        legend('$L_1$','$L_2$','$L_3$','interpreter','latex');
+                        ylabel('$L_i^\mathrm{n+1}-L_i^\mathrm{n}$','interpreter','latex');
+                        
                     case 'constraint_position'
 
                         %plots the position constraint and their violations by integration
@@ -309,8 +312,8 @@ classdef Postprocess
                         
                         fig.Name = 'g_pos';
                         title(strcat(integrator_string, ': Constraint on position level'));
-                        xlabel('t');
-                        ylabel('g^q_k(t)');
+                        xlabel('$t$','interpreter','latex');
+                        ylabel('$g^\mathbf{q}_k(t)$','interpreter','latex');
 
                     case 'constraint_velocity'
 
@@ -326,8 +329,8 @@ classdef Postprocess
                         
                         fig.Name = 'g_vel';
                         title(strcat(integrator_string, ': Constraint on velocity level'));
-                        xlabel('t');
-                        ylabel('g^v_k(t)');    
+                        xlabel('$t$','interpreter','latex');
+                        ylabel('$g^\mathbf{v}_k(t)$','interpreter','latex');    
 
                     otherwise
 
