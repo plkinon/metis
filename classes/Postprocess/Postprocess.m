@@ -263,12 +263,12 @@ classdef Postprocess
                         title(strcat(integrator_string, ': Angular Momentum'));
                         legend('$L_1$','$L_2$','$L_3$','interpreter','latex');
                         xlabel('$t$','interpreter','latex');
-                        ylabel('$L_i(t)$','interpreter','latex');
+                        ylabel('$L_i(t) \ \mathrm{[J\,s]}$','interpreter','latex');
 
                     case 'energy_difference'
 
                         %plots the increments of Hamiltonian over time
-                        plotline    = plot(t(1:end-1), diffH);
+                        plotline    = plot(t(1:end-1), diffH,'color',self.color_scheme{3});
                         max_diff    = max(diffH);
                         max_rounded = 10^(real(floor(log10(max_diff)))+1);
                         min_diff    = min(diffH);
@@ -279,7 +279,7 @@ classdef Postprocess
                         fig.Name = 'H_diff';
                         title(strcat(integrator_string, ': Energy difference'));
                         xlabel('$t$','interpreter','latex');
-                        ylabel('$H^\mathrm{n+1}-H^\mathrm{n}$','interpreter','latex');
+                        ylabel('$H^\mathrm{n+1}-H^\mathrm{n} \ \mathrm{[J]}$','interpreter','latex');
 
                     case 'angular_momentum_difference'
 
@@ -296,7 +296,7 @@ classdef Postprocess
                         title(strcat(integrator_string, ': Ang. mom. - difference'));
                         xlabel('$t$','interpreter','latex');
                         legend('$L_1$','$L_2$','$L_3$','interpreter','latex');
-                        ylabel('$L_i^\mathrm{n+1}-L_i^\mathrm{n}$','interpreter','latex');
+                        ylabel('$L_i^\mathrm{n+1}-L_i^\mathrm{n} \ \mathrm{[J\,s]}$','interpreter','latex');
                         
                     case 'constraint_position'
 
