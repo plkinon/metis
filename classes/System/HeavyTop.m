@@ -108,7 +108,7 @@ classdef HeavyTop < System
             g4 = 0.5 * (d1' * d2);
             g5 = 0.5 * (d1' * d3);
             g6 = 0.5 * (d2' * d3);
-            g_cg = phi-L*d3;
+            g_cg = phi/L-d3;
             g  = [g1 ; g2; g3; g4; g5; g6; g_cg];
             
         end
@@ -127,7 +127,7 @@ classdef HeavyTop < System
                       null  d2'   d1'    null;
                       null  d3'   null   d1';
                       null  null  d3'    d2';
-                      2*eye(3) zeros(3,3) zeros(3,3) -2*L*eye(3)];
+                      2*eye(3)/L zeros(3,3) zeros(3,3) -2*eye(3)];
                   
         end
 
@@ -213,11 +213,11 @@ classdef HeavyTop < System
             elseif i==6
                 pi2 = d2'*v3 + d3'*v2;
             elseif i==7
-                pi2 = v0(1) - L*v3(1);
+                pi2 = v0(1)/L - v3(1);
             elseif i==8
-                pi2 = v0(2) - L*v3(2);
+                pi2 = v0(2)/L - v3(2);
             elseif i==9
-                pi2 = v0(3) - L*v3(3);
+                pi2 = v0(3)/L - v3(3);
             else
                 error('system has only 6 invariants for the constraint.');
             end
@@ -277,11 +277,11 @@ classdef HeavyTop < System
             elseif i==6
                 Dpi2Dp = [zeros(3,1); zeros(3,1); d3/m3; d2/m2];
             elseif i==7 
-                Dpi2Dp = [1/m; 0; 0; zeros(3,1); zeros(3,1); -L/m3; 0; 0];
+                Dpi2Dp = [1/(L*m); 0; 0; zeros(3,1); zeros(3,1); -1/m3; 0; 0];
             elseif i==8 
-                Dpi2Dp = [0; 1/m; 0; zeros(3,1); zeros(3,1); 0; -L/m3; 0];
+                Dpi2Dp = [0; 1/(L*m); 0; zeros(3,1); zeros(3,1); 0; -1/m3; 0];
             elseif i==9 
-                Dpi2Dp = [0; 0; 1/m; zeros(3,1); zeros(3,1); 0; 0; -L/m3];
+                Dpi2Dp = [0; 0; 1/(L*m); zeros(3,1); zeros(3,1); 0; 0; -1/m3];
             else
                 error('system has only 6 invariants for the constraint.');
             end
@@ -367,11 +367,11 @@ classdef HeavyTop < System
             elseif i==6
                 zeta = d2'*d3;
             elseif i==7
-                zeta = phi(1)-L*d3(1);
+                zeta = phi(1)/L-d3(1);
             elseif i==8
-                zeta = phi(2)-L*d3(2);
+                zeta = phi(2)/L-d3(2);
             elseif i==9
-                zeta = phi(3)-L*d3(3);
+                zeta = phi(3)/L-d3(3);
             else
                 error('system has only 6 invariants for the constraint.');
             end
@@ -396,11 +396,11 @@ classdef HeavyTop < System
             elseif i==6
                 DzetaDq = [zeros(3,1); zeros(3,1); d2; d3];
             elseif i==7 
-                DzetaDq = [1; 0; 0; zeros(3,1); zeros(3,1); -L; 0; 0];
+                DzetaDq = [1/L; 0; 0; zeros(3,1); zeros(3,1); -1; 0; 0];
             elseif i==8 
-                DzetaDq = [0; 1; 0; zeros(3,1); zeros(3,1); 0; -L; 0];
+                DzetaDq = [0; 1/L; 0; zeros(3,1); zeros(3,1); 0; -1; 0];
             elseif i==9 
-                DzetaDq = [0; 0; 1; zeros(3,1); zeros(3,1); 0; 0; -L];
+                DzetaDq = [0; 0; 1/L; zeros(3,1); zeros(3,1); 0; 0; -1];
             else
                 error('system has only 6 invariants for the constraint.');
             end
