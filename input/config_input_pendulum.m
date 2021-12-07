@@ -16,11 +16,11 @@ DIM = 3;
 % Name of routine in /classes/Integrator
 INTEGRATOR = 'GGL_VI_theta_B';
 % Parameters of the method
-INT_PARA = [1 0.5];
+INT_PARA = [1, 0.5];
 % time step size
-DT    = 0.01;
+DT = 0.01;
 % starting time
-T_0   = 0;
+T_0 = 0;
 % end time
 T_END = 10;
 
@@ -34,7 +34,7 @@ TOLERANCE = 1E-09;
 % Animation of trajectory [true/false]
 shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
-plot_quantities = {'energy','energy_difference','angular_momentum','angular_momentum_difference','constraint_position','constraint_velocity'};
+plot_quantities = {'energy', 'energy_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'};
 % Export of simulation results in a .mat-file [true/false]
 should_export = false;
 % Export of figures in .eps- and .tikz-files

@@ -14,13 +14,13 @@ DIM = 3;
 
 %% Integrator
 % Name of routines in /classes/Integrator to be analyzed
-INTEGRATOR = {'CSE_B','GGL_std','GGL_VI'};
+INTEGRATOR = {'CSE_B', 'GGL_std', 'GGL_VI'};
 % corresponding parameters
-INT_PARA = [NaN NaN; NaN NaN; NaN NaN];
+INT_PARA = [NaN, NaN; NaN, NaN; NaN, NaN];
 % time step sizes to be analyzed
-DT = [0.05 0.01 0.005 0.001 0.0005 0.0001];
+DT = [0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001];
 % starting time
-T_0   = 0;
+T_0 = 0;
 % end time
 T_END = 1;
 

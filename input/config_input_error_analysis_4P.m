@@ -4,23 +4,23 @@ SYSTEM = 'FourParticleSystem';
 % External acceleration
 EXT_ACC = [0; 0; 0];
 % Initial configuration [mass no.1; mass no.2; mass no.3, mass no.4]
-Q_0     = [0; 0; 0; 1; 0; 0; 0; 1; 0; 1; 1; 0];
+Q_0 = [0; 0; 0; 1; 0; 0; 0; 1; 0; 1; 1; 0];
 % Initial velocity [mass no.1; mass no.2; mass no.3, mass no.4]
-V_0     = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 3/1.7; 2/1.7];
+V_0 = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 3 / 1.7; 2 / 1.7];
 % Masses [mass no.1; mass no.2; mass no.3, mass no.4]
-MASS    = [1; 3; 2.3; 1.7];
+MASS = [1; 3; 2.3; 1.7];
 % Spatial dimensions
-DIM     = 3;
+DIM = 3;
 
 %% Integrator
 % Name of routines in /classes/Integrator to be analyzed
-INTEGRATOR = {'EMS_std','EMS_ggl'};
+INTEGRATOR = {'EMS_std', 'EMS_ggl'};
 % corresponding parameters
-INT_PARA = [NaN NaN; NaN NaN];
+INT_PARA = [NaN, NaN; NaN, NaN];
 % time step sizes to be analyzed
-DT    = [0.1 0.01 0.001 0.0001];
+DT = [0.1, 0.01, 0.001, 0.0001];
 % starting time
-T_0   = 0;
+T_0 = 0;
 % end time
 T_END = 1;
 

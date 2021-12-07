@@ -2,7 +2,7 @@
 %
 % Metis is an object-oriented MATLAB code package for the simulation of
 % constrained mechanical systems under the usage of numerical
-% time-integration methods and Newton-Rhapson method. 
+% time-integration methods and Newton-Rhapson method.
 %
 % This startscript provides single simulations. For error analyses see:
 % metis_error_analysis.m
@@ -25,8 +25,8 @@ clearvars;
 % Add all subdirectories and matlab2tikz to the current path
 addpath(genpath(fileparts(which(mfilename))));
 addpath('~/git/matlab2tikz/src');
-% Metis creates objects from input-file 
-[simulation, system, integrator, solver] = Metis('input/nody_2021_kinon_betsch/ggl_onestage_input',1,1);
+% Metis creates objects from input-file
+[simulation, system, integrator, solver] = Metis('input/nody_2021_kinon_betsch/ggl_onestage_input', 1, 1);
 
 %% METIS solver
 % Solve system with chosen solver and integration scheme

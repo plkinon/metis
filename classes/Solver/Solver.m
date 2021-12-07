@@ -1,23 +1,23 @@
 %% Class: Solver that conducts the computation
 % Time-stepping, Newton Rhapson method and numerical tangent if needed
 classdef Solver
-    
+
     properties
         MAX_ITERATIONS
         TOLERANCE
     end
 
     methods
-        
+
         %% Function: Initialise the solver
         function self = Solver(this_simulation)
-            
+
             % Set Newton tolerance and max. iterations from simulation
             self.TOLERANCE = this_simulation.TOLERANCE;
             self.MAX_ITERATIONS = this_simulation.MAX_ITERATIONS;
 
         end
-        
+
         %% Function: Procedure of time-stepping
         function this_simulation = solve(self, this_simulation, this_system, this_integrator)
 
@@ -29,16 +29,16 @@ classdef Solver
             fprintf('  \n');
             fprintf('     Starting computation ... \n');
             fprintf('  \n');
-            
+
             % analysis of computation time
             n_eval = 1; % number of computations
-            stop_time = zeros(n_eval,1); % allocate space for simulation times
-            
+            stop_time = zeros(n_eval, 1); % allocate space for simulation times
+
             for j = 1:n_eval
-                
+
                 % Start to count time
                 init_time = tic();
-                
+
                 % Actual time-stepping
                 for i = 1:this_integrator.NT
 
@@ -56,21 +56,21 @@ classdef Solver
                     z(i+1, :) = zn1;
 
                 end
-                
+
                 % Stop counting time and save
                 stop_time(j) = toc(init_time);
-                
+
             end
-            
+
             % Store solution
             this_simulation.optime = stop_time;
             this_simulation.z = z;
-            
+
             % Rearrange unknows if integration schemes requires it
-            if ismethod(this_integrator,'rearrange_unknowns')
-                this_simulation.z = this_integrator.rearrange_unknowns(this_simulation,this_system);
+            if ismethod(this_integrator, 'rearrange_unknowns')
+                this_simulation.z = this_integrator.rearrange_unknowns(this_simulation, this_system);
             end
-            
+
             fprintf('---------------------------------------------------- \n');
             fprintf('  \n');
             fprintf('     Computation suceeded.                           \n');
@@ -79,14 +79,14 @@ classdef Solver
             fprintf('  \n');
 
         end
-        
+
         %% Function: Conducts Newton-Rhapson-method to iterate z-vector
         function zn1 = newton_iterate(self, this_integrator, this_system, zn, zn1)
 
             % Set iteration-index to zero and residual above tolerance
             k = 0;
-            residual = self.TOLERANCE*10;
-            
+            residual = self.TOLERANCE * 10;
+
             % Newton-Rhapson-Method
             while (residual > self.TOLERANCE) && (k <= self.MAX_ITERATIONS)
 
@@ -101,12 +101,12 @@ classdef Solver
                 if isempty(tang)
                     % if not, compute a numerical one
                     tang_num = self.compute_numerical_tangent(this_integrator, this_system, zn1, zn);
-                    tang     = tang_num;
+                    tang = tang_num;
                 end
-            
+
                 % Incrementation of the solution vector
                 delta_z = -tang \ resi;
-                zn1     = zn1 + delta_z;
+                zn1 = zn1 + delta_z;
 
                 % Compute the residual norm and print current iteration
                 residual = max(max(abs(resi)), max(delta_z));
@@ -115,7 +115,7 @@ classdef Solver
             end
 
         end
-        
+
         %% Function: numerical tangent
         % Computes numerical tangent matrix for a given residual defined by
         % integrator and system zn1 and zn
