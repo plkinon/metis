@@ -154,7 +154,7 @@ classdef Metis
 
             % Load input variables into CONFIG-struct and delete unnecessary .mat-File
             configstruct = load([INPUT_FILE,'.mat']);
-            delete *.mat
+            delete([INPUT_FILE,'.mat']);
             configstruct = rmfield(configstruct,{'self','INPUT_FILE','num_dt','num_int'});
 
             % Converts structure s to an object of class classname.
