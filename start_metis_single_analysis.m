@@ -22,9 +22,8 @@
 %% METIS initialise
 % Clear present variables
 clearvars;
-% Add all subdirectories and matlab2tikz to the current path
+% Add all subdirectories and to the current path
 addpath(genpath(fileparts(which(mfilename))));
-addpath('~/git/matlab2tikz/src');
 % Metis creates objects from input-file
 [simulation, system, integrator, solver] = Metis('input/single_analysis_4P', 1, 1);
 

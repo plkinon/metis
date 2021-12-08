@@ -81,6 +81,9 @@ should_export = true;
 should_export_figures = true;
 % Path where export-folder is created
 export_path = 'scratch/';
+% Matlab2Tikz (metis searches for matlab2tikz here. if not available, it
+% clones the matlab2tikz repository there)
+matlab2tikz_directory = '~/git/matlab2tikz';
 
 %% Write variables into a .mat-File
 % for further processing by metis

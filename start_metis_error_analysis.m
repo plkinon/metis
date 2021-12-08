@@ -21,10 +21,9 @@
 clearvars;
 % Add all subdirectories and matlab2tikz to the current path
 addpath(genpath(fileparts(which(mfilename))));
-addpath('~/git/matlab2tikz/src');
 
 % Metis creates a dummy simulation object, the system and solver from input-file
-[dummy_simulation, system, ~, solver] = Metis('input/nody_2021_kinon_betsch/ggl_onestage_error_analysis_input', 1, 1);
+[dummy_simulation, system, ~, solver] = Metis('input/error_analysis_heavy_top', 1, 1);
 % Check how many different timestepsizes and integrators are analyzed
 n_DT = numel(dummy_simulation.ALL_DT);
 n_INT = numel(dummy_simulation.ALL_INTEGRATOR);
@@ -41,7 +40,7 @@ for i = 1:n_DT
     for j = 1:n_INT
 
         % Metis creates objects for current timestepsize and integrator
-        [current_simulation, ~, current_integrator, ~] = Metis('config_input_error_analysis_heavy_top', i, j);
+        [current_simulation, ~, current_integrator, ~] = Metis('input/error_analysis_heavy_top', i, j);
 
         %% METIS solver
         % Solve system with solver and current integrator

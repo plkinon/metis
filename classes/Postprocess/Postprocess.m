@@ -153,12 +153,12 @@ classdef Postprocess
                     rmdir(export_folder, 's')
                     mkdir(export_folder)
                     warning('on')
-                    fprintf('     Removed existing output folder.                 \n');
+                    fprintf('     Overwriting existing output folder.            \n');
                     fprintf('  \n');
 
                 end
 
-                fprintf('     Exporting results...                 \n');
+                fprintf('     Exporting results.                 \n');
                 fprintf('  \n');
 
                 % Export as .mat file
@@ -187,10 +187,26 @@ classdef Postprocess
 
                         % Export to .eps
                         print(figHandles(i), [export_folder, export_name], '-depsc')
-                        % Export to .tikz (requires matlab2tikz/src to be
-                        % in the matlab-path)
+                                        
+                        % Export to .tikz
                         warning('off')
-                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
+                        try
+                            % add chosen matlab2tikz directory
+                            addpath([export_simulation.matlab2tikz_directory,'/src']);
+                            % tries to export via matlab2tikz if available
+                            matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
+                        catch
+                            % if chosen directory is wrong or not existing
+                            fprintf(['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           \n']);
+                            fprintf('  \n');
+                            % clone current matlab2tikz repository 
+                            [~, ~] = system(['git clone git@github.com:matlab2tikz/matlab2tikz.git ',export_simulation.matlab2tikz_directory]);
+                            fprintf(['     Cloning Matlab2Tikz to ',export_simulation.matlab2tikz_directory,'                 \n']);
+                            fprintf('  \n');
+                            addpath([export_simulation.matlab2tikz_directory,'/src']);
+                            % Export to .tikz now
+                            matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
+                        end
                         warning('on')
 
                         %Reset Title and enlarge linewidth
@@ -202,7 +218,7 @@ classdef Postprocess
 
                 end
 
-                fprintf('     ...finished.                 \n');
+                fprintf(' Exporting succesful.                 \n');
                 fprintf('  \n');
                 fprintf('**************************************************** \n');
 

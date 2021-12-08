@@ -32,6 +32,7 @@ classdef Metis
         should_export
         export_path
         should_export_figures
+        matlab2tikz_directory
 
         %% Solution quantities
         % Will be filled by Metis
