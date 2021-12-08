@@ -48,19 +48,20 @@ A startscript loads the desired input-file. This input-file includes all necessa
 
 ## How To Start
 
-1.  Clone this directory or download the .zip folder, get [matlab2tikz][urlmatlab2tikz]
-2.  Open the MATLAB editor or run it with the shell script [metis.sh](metis.sh)
-3.  Open [start_metis_single_analysis.m](start_metis_single_analysis.m), adjust the path to the matlab2tikz repository if needed
-4. adjust `<input_file_name>` corresponding to a file from [/input](/input), for more info look at [README_input](/input/README_input.md)
+1.  Clone this directory or download the .zip folder
+2.  Get [matlab2tikz][urlmatlab2tikz] (optional)
+3.  Open the MATLAB editor or run it with the shell script [metis.sh](metis.sh)
+4.  Open [start_metis_single_analysis.m](start_metis_single_analysis.m)
+5. Adjust `<input_file_name>` corresponding to a file from [/input](/input), for more info look at [README_input](/input/README_input.md)
 
 ```matlab
 [simulation, system, integrator, solver] = Metis('input/<input_file_name>',1,1);
 ```
-
-5.  Execute [start_metis_single_analysis.m](start_metis_single_analysis.m) for a first simulation
-6.  Edit or change input file or create a new one in [/input](/input)
-7.  For error analyses run [start_metis_error_analysis.m](start_metis_error_analysis.m) with corresponding input-file
-8.  Have fun!
+6. Adjust the path to the matlab2tikz directory in the chosen input-file
+7.  Execute [start_metis_single_analysis.m](start_metis_single_analysis.m) for a first simulation
+8.  Edit or change input file or create a new one in [/input](/input)
+9.  For error analyses run [start_metis_error_analysis.m](start_metis_error_analysis.m) with corresponding input-file
+10.  Have fun!
 
 * * *
 
