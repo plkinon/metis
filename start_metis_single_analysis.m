@@ -26,7 +26,7 @@ clearvars;
 addpath(genpath(fileparts(which(mfilename))));
 addpath('~/git/matlab2tikz/src');
 % Metis creates objects from input-file
-[simulation, system, integrator, solver] = Metis('input/nody_2021_kinon_betsch/ggl_onestage_input', 1, 1);
+[simulation, system, integrator, solver] = Metis('input/single_analysis_4P', 1, 1);
 
 %% METIS solver
 % Solve system with chosen solver and integration scheme
