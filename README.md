@@ -1,6 +1,7 @@
-# METIS: Computing Constrained Mechanical Systems
-
-_a project by Philipp L. Kinon_
+<p align="center">
+  <a href="https://github.com/philipplk/metis"><img alt="metis" src="logo.svg" width="100%"></a>
+  <p align="center">Computing Constrained Mechanical Systems.</p>
+</p>
 
 See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
 
