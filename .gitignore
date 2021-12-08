@@ -1,2 +1,4 @@
 # Ignore the scratch-folder
 scratch/
+
+*.svg
