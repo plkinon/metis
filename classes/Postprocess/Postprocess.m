@@ -153,11 +153,15 @@ classdef Postprocess
                     rmdir(export_folder, 's')
                     mkdir(export_folder)
                     warning('on')
+                    fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Overwriting existing output folder.           ');
+                    fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
                     fprintf('     Overwriting existing output folder.            \n');
                     fprintf('  \n');
 
                 end
 
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting results.                 ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
                 fprintf('     Exporting results.                 \n');
                 fprintf('  \n');
 
@@ -197,10 +201,14 @@ classdef Postprocess
                             matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
                         catch
                             % if chosen directory is wrong or not existing
+                            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           ']);
+                            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
                             fprintf(['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           \n']);
                             fprintf('  \n');
                             % clone current matlab2tikz repository 
                             [~, ~] = system(['git clone git@github.com:matlab2tikz/matlab2tikz.git ',export_simulation.matlab2tikz_directory]);
+                            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Cloning Matlab2Tikz to ',export_simulation.matlab2tikz_directory,'                 ']);
+                            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
                             fprintf(['     Cloning Matlab2Tikz to ',export_simulation.matlab2tikz_directory,'                 \n']);
                             fprintf('  \n');
                             addpath([export_simulation.matlab2tikz_directory,'/src']);
@@ -218,9 +226,14 @@ classdef Postprocess
 
                 end
 
-                fprintf(' Exporting succesful.                 \n');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting succesful.                 ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
+                fprintf('     Exporting succesful.                 \n');
                 fprintf('  \n');
                 fprintf('**************************************************** \n');
+                % Close log-file
+                fclose(export_simulation.log_file_ID);
 
             end
 

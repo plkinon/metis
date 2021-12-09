@@ -33,6 +33,7 @@ classdef Metis
         export_path
         should_export_figures
         matlab2tikz_directory
+        log_file_ID
 
         %% Solution quantities
         % Will be filled by Metis
@@ -62,19 +63,33 @@ classdef Metis
             % Clear workspace, close all windows and clear command window
             close all;
             clc;
-
-            % Start visual output to command window
+            
             fprintf('**************************************************** \n');
             fprintf('  \n');
             fprintf(' METIS - Computing constrained mechanical systems  \n');
             fprintf(' ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  \n');
             fprintf('     by: Philipp Kinon, M.Sc. \n');
-            fprintf('         Institute of Mechanics (IFM) \n')
-            fprintf('         Karlsruhe Institute of Technology (KIT) \n')
+            fprintf('         Institute of Mechanics (IFM) \n');
+            fprintf('         Karlsruhe Institute of Technology (KIT) \n');
             fprintf('  \n');
             fprintf('**************************************************** \n');
             fprintf('  \n');
+            
+            %Create log-file
+            self = self.create_log_file();       
 
+            % Start visual output to command window
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),' METIS - Computing constrained mechanical systems  ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),' ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'     by: Philipp Kinon, M.Sc. ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'         Institute of Mechanics (IFM) ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'         Karlsruhe Institute of Technology (KIT) ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),' ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
+            fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+              
             % Set attributes from config file
             self = self.get_config_input(INPUT_FILE, num_dt, num_int);
 
@@ -88,7 +103,38 @@ classdef Metis
             self = self.set_solution_matrix(this_integrator, this_system);
 
         end
+        
+        %% Function: Create log-file
+        function self = create_log_file(self)
+            
+            % Create new log file
+                if ~exist('metis.log', 'file')
 
+                    self.log_file_ID = fopen(fullfile(self.export_path, 'metis.log'), 'a');
+
+                else
+                    
+                    %if there already is one, overwrite it                    
+                    fprintf('     Overwriting existing log file.            \n');
+                    fprintf('  \n');
+                    fprintf('**************************************************** \n');
+                    fprintf('  \n');
+                    warning('off')
+                    delete('metis.log');
+                    self.log_file_ID = fopen(fullfile(self.export_path, 'metis.log'), 'a');
+                    warning('on')
+
+                end
+            
+            % Start logging into the log file
+            self.log_file_ID = fopen(fullfile(self.export_path, 'metis.log'), 'a');
+            % Check if log-file can be opened/edited
+            if self.log_file_ID == -1
+              error('Cannot open log file.');
+            end
+            
+        end
+        
         %% Function: Check if user input is valid
         function check_user_input(self)
 
@@ -105,12 +151,16 @@ classdef Metis
             % Throw error if necessary input quantity is missing
             if ~is_user_input_complete
                 error('User input is incomplete. Check for missing input values.');
-                else
-                    fprintf('     Complete user input.                            \n');
-                    fprintf('  \n');
-                    fprintf('**************************************************** \n');
-                    fprintf('  \n');
-                end
+            else
+                fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'     Complete user input.                           ');
+                fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'****************************************************');
+                fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                fprintf('     Complete user input.                            \n');
+                fprintf('  \n');
+                fprintf('**************************************************** \n');
+                fprintf('  \n');
+            end
 
                 % Check validity of given integrator and system
                 is_correct_integrator = self.is_class_available('classes/Integrator', self.INTEGRATOR);
@@ -118,17 +168,21 @@ classdef Metis
 
                 if ~is_correct_integrator
                     error('User input for integrator not available.');
-                    elseif ~is_correct_system
-                        error('User input for system not available.');
-                        else
-                            fprintf(['     System: ', self.SYSTEM, ' \n']);
-                            fprintf(['     Integrator: ', self.INTEGRATOR, '\n']);
-                            fprintf('  \n');
-                            fprintf('**************************************************** \n');
+                elseif ~is_correct_system
+                    error('User input for system not available.');
+                else
+                    fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),['     System: ', self.SYSTEM, ' ']);
+                    fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),['     Integrator: ', self.INTEGRATOR, '']);
+                    fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                    fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
+                    fprintf(['     System: ', self.SYSTEM, ' \n']);
+                    fprintf(['     Integrator: ', self.INTEGRATOR, '\n']);
+                    fprintf('  \n');
+                    fprintf('**************************************************** \n');
 
-                        end
+                end
 
-                    end
+        end
 
                     %% Function: Check if a class is available
                     function is_avaiable = is_class_available(~, directory, this_class)

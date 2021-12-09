@@ -29,6 +29,9 @@ classdef Solver
             fprintf('  \n');
             fprintf('     Starting computation ... \n');
             fprintf('  \n');
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Starting computation ... ');
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
 
             % analysis of computation time
             n_eval = 1; % number of computations
@@ -46,11 +49,11 @@ classdef Solver
                     zn = zn1;
 
                     % Print current time-step
-                    fprintf('----------------------------------------------------\n');
-                    fprintf('     Time: t = %.3f, dt = %.3f, step no. %.0f \n', i*this_integrator.DT, this_integrator.DT, i);
+                    fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'----------------------------------------------------');
+                    fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Time: t = ',num2str(i*this_integrator.DT),', dt = ', num2str(this_integrator.DT),', step no. ',num2str(i)]);
 
                     % Conduct iteration
-                    zn1 = self.newton_iterate(this_integrator, this_system, zn, zn1);
+                    zn1 = self.newton_iterate(this_integrator, this_system, this_simulation, zn, zn1);
 
                     % Save update solution for current timestep
                     z(i+1, :) = zn1;
@@ -71,6 +74,12 @@ classdef Solver
                 this_simulation.z = this_integrator.rearrange_unknowns(this_simulation, this_system);
             end
 
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'---------------------------------------------------- ');
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Computation suceeded.                           ');
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
+            fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
             fprintf('---------------------------------------------------- \n');
             fprintf('  \n');
             fprintf('     Computation suceeded.                           \n');
@@ -81,7 +90,7 @@ classdef Solver
         end
 
         %% Function: Conducts Newton-Rhapson-method to iterate z-vector
-        function zn1 = newton_iterate(self, this_integrator, this_system, zn, zn1)
+        function zn1 = newton_iterate(self, this_integrator, this_system, this_simulation, zn, zn1)
 
             % Set iteration-index to zero and residual above tolerance
             k = 0;
@@ -110,7 +119,7 @@ classdef Solver
 
                 % Compute the residual norm and print current iteration
                 residual = max(max(abs(resi)), max(delta_z));
-                fprintf('     Iteration %.0f) residual = %.4d \n', k, residual);
+                fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Iteration ',num2str(k),', residual = ',num2str(residual)]);
 
             end
 
