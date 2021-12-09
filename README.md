@@ -27,6 +27,7 @@ Likewise, this project targets the efficient and aesthetically pleasing numerica
 Metis is an object-oriented MATLAB code package - tested with the R2020b version.
 
 A startscript loads the desired input-file. This input-file includes all necessary parameters for the given mechanical problem (geometry, loads, initial values,...), the chosen numerical integration scheme (time-step size, method, simulation time), the Postprocessing routine (plot quantities, animation, export) and the solution technique (max. iterations, tolerance). Metis creates all necessary objects and computes the approximate solution based on the given parameters. Eventually, one can choose to have an animation of the solution, some plots are created and the results are being exported.
+The simulation is will be tracked by a log-file `./metis.log`.
 
 #### Prerequisites
 
