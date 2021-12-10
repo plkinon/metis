@@ -36,9 +36,9 @@ shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
 plot_quantities = {};
 % Export of simulation results in a .mat-file [true/false]
-should_export = false;
+should_export = true;
 % Export of figures in .eps- and .tikz-files
-should_export_figures = false;
+should_export_figures = true;
 % Path where export-folder is created
 export_path = 'scratch/';
 % Matlab2Tikz (metis searches for matlab2tikz here. if not available, it
