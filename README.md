@@ -70,7 +70,7 @@ The simulation is will be tracked by a log-file `./metis.log`.
 
 ## References
 
-Hamiltonian Dynamics:
+Hamiltonian Dynamics and Constraints:
 - [Leimkuhler, Reich: Simulating Hamiltonian Dynamics, 2005](https://doi.org/10.1016/S0167-2789(99)00054-8)
 
 Differential-Algebraic Equations:
