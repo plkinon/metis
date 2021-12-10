@@ -43,7 +43,7 @@ The simulation is will be tracked by a log-file `./metis.log`.
 -   Particle Systems
 -   Rigid Body Dynamics with Director Formulation
 
-[Back To The Top](#table-of-contents)
+[Back To The Top](#description)
 
 * * *
 
@@ -64,11 +64,29 @@ The simulation is will be tracked by a log-file `./metis.log`.
 9.  For error analyses run [start_metis_error_analysis.m](start_metis_error_analysis.m) with corresponding input-file
 10.  Have fun!
 
+[Back To The Top](#description)
+
 * * *
 
 ## References
 
-[Back To The Top](#table-of-contents)
+Hamiltonian Dynamics:
+- [Leimkuhler, Reich: Simulating Hamiltonian Dynamics, 2005](https://doi.org/10.1016/S0167-2789(99)00054-8)
+
+Differential-Algebraic Equations:
+- [Kunkel, Mehrmann: Differential-algebraic equations: analysis and numerical solution, 2006](https://doi.org/10.4171/017)
+
+Numerical Integration:
+- [Hairer, Lubich, Wanner: Geometric numerical integration: structure-preserving algorithms for ordinary differential equations, 2006](https://doi.org/10.1007/3-540-30666-8)
+- [Lew, Mata: A Brief Introduction to Variational Integrators, 2016](https://doi.org/10.1007/978-3-319-31879-0_5)
+- [Marsden, West: Discrete mechanics and variational integrators, 2001](https://doi.org/10.1017/S096249290100006X)
+- [Leyendecker, Marsden, Ortiz: Variational integrators for constrained dynamical systems, 2008](https://doi.org/10.1002/zamm.200700173)
+- [Gonzalez: Time integration and discrete Hamiltonian systems, 1996](https://doi.org/10.1007/BF02440162)
+
+Rigid Body Dynamics with Directors:
+- [Betsch, Steinmann: Constrained integration of rigid body dynamics, 2001](https://doi.org/10.1016/S0045-7825(01)00283-3)
+
+[Back To The Top](#description)
 
 * * *
 
@@ -79,7 +97,7 @@ The simulation is will be tracked by a log-file `./metis.log`.
 -   ResearchGate - [Philipp L. Kinon](https://www.researchgate.net/profile/Philipp-Kinon)
 -   LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/philipp-kinon-9092781b5/)
 
-[Back To The Top](#table-of-contents)
+[Back To The Top](#description)
 
 * * *
 
@@ -100,6 +118,6 @@ Metis was mainly initialised by Philipp L. Kinon during his master thesis at the
 
 * * *
 
-[Back To The Top](#table-of-contents)
+[Back To The Top](#description)
 
 [urlmatlab2tikz]: https://github.com/matlab2tikz/matlab2tikz
