@@ -167,77 +167,77 @@ classdef Postprocess
 
                 % Export as .mat file
                 save([export_folder, 'results'], 'export_simulation');
+                
+            end
 
-                % Check if plots should be exported as well
-                if export_simulation.should_export_figures
-                    figHandles = findall(0, 'Type', 'figure');
+            % Check if plots should be exported as well
+            if export_simulation.should_export_figures
+                figHandles = findall(0, 'Type', 'figure');
 
-                    % go through existing figures
-                    for i = 1:numel(figHandles)
+                % go through existing figures
+                for i = 1:numel(figHandles)
 
-                        % Check if current figure has a name
-                        if ~isempty(figHandles(i).Name)
-                            export_name = figHandles(i).Name;
-                        else
-                            export_name = num2str(i);
-                        end
-
-                        % Clear current figures title for export
-                        set(0, 'currentfigure', figHandles(i));
-                        titlestring = get(gca, 'title').String;
-                        title('');
-                        % Reduce linewidth
-                        set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.2);
-
-                        % Export to .eps
-                        print(figHandles(i), [export_folder, export_name], '-depsc')
-                                        
-                        % Export to .tikz
-                        warning('off')
-                        try
-                            % add chosen matlab2tikz directory
-                            addpath([export_simulation.matlab2tikz_directory,'/src']);
-                            % tries to export via matlab2tikz if available
-                            matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
-                        catch
-                            % if chosen directory is wrong or not existing
-                            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           ']);
-                            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
-                            fprintf(['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           \n']);
-                            fprintf('  \n');
-                            % clone current matlab2tikz repository 
-                            [~, ~] = system(['git clone git@github.com:matlab2tikz/matlab2tikz.git ',export_simulation.matlab2tikz_directory]);
-                            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Cloning Matlab2Tikz to ',export_simulation.matlab2tikz_directory,'                 ']);
-                            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
-                            fprintf(['     Cloning Matlab2Tikz to ',export_simulation.matlab2tikz_directory,'                 \n']);
-                            fprintf('  \n');
-                            addpath([export_simulation.matlab2tikz_directory,'/src']);
-                            % Export to .tikz now
-                            matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
-                        end
-                        warning('on')
-
-                        %Reset Title and enlarge linewidth
-                        set(0, 'currentfigure', figHandles(i));
-                        title(titlestring);
-                        set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
-
+                    % Check if current figure has a name
+                    if ~isempty(figHandles(i).Name)
+                        export_name = figHandles(i).Name;
+                    else
+                        export_name = num2str(i);
                     end
+
+                    % Clear current figures title for export
+                    set(0, 'currentfigure', figHandles(i));
+                    titlestring = get(gca, 'title').String;
+                    title('');
+                    % Reduce linewidth
+                    set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.2);
+
+                    % Export to .eps
+                    print(figHandles(i), [export_folder, export_name], '-depsc')
+
+                    % Export to .tikz
+                    warning('off')
+                    try
+                        % add chosen matlab2tikz directory
+                        addpath([export_simulation.matlab2tikz_directory,'/src']);
+                        % tries to export via matlab2tikz if available
+                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
+                    catch
+                        % if chosen directory is wrong or not existing
+                        fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           ']);
+                        fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                        fprintf(['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           \n']);
+                        fprintf('  \n');
+                        % clone current matlab2tikz repository 
+                        [~, ~] = system(['git clone git@github.com:matlab2tikz/matlab2tikz.git ',export_simulation.matlab2tikz_directory]);
+                        fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Cloning Matlab2Tikz to ',export_simulation.matlab2tikz_directory,'                 ']);
+                        fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                        fprintf(['     Cloning Matlab2Tikz to ',export_simulation.matlab2tikz_directory,'                 \n']);
+                        fprintf('  \n');
+                        addpath([export_simulation.matlab2tikz_directory,'/src']);
+                        % Export to .tikz now
+                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
+                    end
+                    warning('on')
+
+                    %Reset Title and enlarge linewidth
+                    set(0, 'currentfigure', figHandles(i));
+                    title(titlestring);
+                    set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 
                 end
 
-                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting succesful.                 ');
-                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
-                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
-                fprintf('     Exporting succesful.                 \n');
-                fprintf('  \n');
-                fprintf('**************************************************** \n');
-                % Close log-file
-                fclose(export_simulation.log_file_ID);
-                % Copy log-file to export folder
-                copyfile('metis.log',exportfolder)
-
             end
+
+            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting succesful.                 ');
+            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
+            fprintf('     Exporting succesful.                 \n');
+            fprintf('  \n');
+            fprintf('**************************************************** \n');
+            % Close log-file
+            fclose(export_simulation.log_file_ID);
+            % Copy log-file to export folder
+            copyfile('metis.log',export_folder)
 
         end
 
