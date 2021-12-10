@@ -11,9 +11,9 @@
 
 
 #### Publications-Folder
-- [/published](/published) folder contains input-files which are related to a certain publication
+- [/published](./published) folder contains input-files which are related to a certain publication
 - subfolders are named like
 ```
 <publication_type>_<first_author>_<second_author>_<year>
 ```
-e.g. [`paper_kinon_betsch_2021`](/published/paper_kinon_betsch_2021)
+e.g. [`paper_kinon_betsch_2021`](./published/paper_kinon_betsch_2021)
