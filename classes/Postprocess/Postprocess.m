@@ -234,6 +234,8 @@ classdef Postprocess
                 fprintf('**************************************************** \n');
                 % Close log-file
                 fclose(export_simulation.log_file_ID);
+                % Copy log-file to export folder
+                copyfile('metis.log',exportfolder)
 
             end
 
