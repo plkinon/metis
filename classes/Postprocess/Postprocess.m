@@ -367,15 +367,15 @@ classdef Postprocess
 
                         error(strcat('No plotting routine for ', quantity, '  this quantity defined'));
 
-                        end
+                    end
 
                         % set linewidth and colorscheme
                         set(plotline, 'linewidth', 1.5);
                         colororder(self.color_scheme);
 
-                end
-
             end
+
+        end
 
             %% Function: calculate error for error analysis
                 function error = calculate_errors(~, quantity, quantity_ref, num_A, num_B)
