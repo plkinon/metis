@@ -15,7 +15,7 @@ classdef Postprocess
         %% Function: initialise the postprocessing
         function self = Postprocess()
             % set default position of figure windows
-            set(0, 'defaultfigureposition', [850, 450, 1000, 1000])
+            set(0, 'defaultfigureposition', [0, 450, 1000, 1000])
 
         end
 
@@ -160,18 +160,33 @@ classdef Postprocess
 
                 end
 
-                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting results.                 ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting results to .mat.                 ');
                 fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
-                fprintf('     Exporting results.                 \n');
+                fprintf('     Exporting results to .mat .                 \n');
                 fprintf('  \n');
 
                 % Export as .mat file
                 save([export_folder, 'results'], 'export_simulation');
                 
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting succesful.                 ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
+                fprintf('     Exporting succesful.                 \n');
+                fprintf('  \n');
+                fprintf('**************************************************** \n');
+
             end
 
             % Check if plots should be exported as well
             if export_simulation.should_export_figures
+                
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting figures.                 ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                fprintf('  \n');
+                fprintf('     Exporting figures.                 \n');
+                fprintf('  \n');
+
                 figHandles = findall(0, 'Type', 'figure');
 
                 % go through existing figures
@@ -225,15 +240,16 @@ classdef Postprocess
                     set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.5);
 
                 end
+                
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting succesful.                 ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
+                fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
+                fprintf('     Exporting succesful.                 \n');
+                fprintf('  \n');
+                fprintf('**************************************************** \n');
 
             end
 
-            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'     Exporting succesful.                 ');
-            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
-            fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
-            fprintf('     Exporting succesful.                 \n');
-            fprintf('  \n');
-            fprintf('**************************************************** \n');
             % Close log-file
             fclose(export_simulation.log_file_ID);
             % Copy log-file to export folder
