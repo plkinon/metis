@@ -3,3 +3,4 @@ scratch/
 
 *.svg
 *.log
+*.DS_Store
