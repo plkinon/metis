@@ -7,7 +7,7 @@
 % This startscript provides single simulations. For error analyses see:
 % metis_error_analysis.m
 %
-% Usage:
+% Usage :
 %       metis_start()
 %
 % Other .m-files required: input-file in /input
