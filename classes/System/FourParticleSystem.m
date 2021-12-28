@@ -144,8 +144,8 @@ classdef FourParticleSystem < System
             q3 = q(2*self.DIM+1:3*self.DIM);
             q4 = q(3*self.DIM+1:4*self.DIM);
 
-            g1 = 0.5 * ((q2 - q1)' * (q2 - q1) - self.GEOM(1)^2);
-            g2 = 0.5 * ((q4 - q3)' * (q4 - q3) - self.GEOM(2)^2);
+            g1 = 0.5 * ((q2 - q1)' * (q2 - q1) / self.GEOM(1)^2 - 1);
+            g2 = 0.5 * ((q4 - q3)' * (q4 - q3) / self.GEOM(2)^2 - 1 );
             g = [g1; g2];
 
         end
@@ -157,20 +157,21 @@ classdef FourParticleSystem < System
             q3 = q(2*self.DIM+1:3*self.DIM);
             q4 = q(3*self.DIM+1:4*self.DIM);
 
-            Dg = [-(q2 - q1)', (q2 - q1)', zeros(self.DIM, 1)', zeros(self.DIM, 1)'; zeros(self.DIM, 1)', zeros(self.DIM, 1)', -(q4 - q3)', (q4 - q3)'];
+            Dg = [-(q2 - q1)'/ self.GEOM(1)^2, (q2 - q1)'/ self.GEOM(1)^2, zeros(self.DIM, 1)', zeros(self.DIM, 1)'; zeros(self.DIM, 1)', zeros(self.DIM, 1)', -(q4 - q3)'/ self.GEOM(2)^2, (q4 - q3)'/ self.GEOM(2)^2];
 
         end
 
         function D2g = constraint_hessian(self, ~, m)
 
-            tmp = [eye(self.DIM), -eye(self.DIM); -eye(self.DIM), eye(self.DIM)];
-
+            tmp1 = [eye(self.DIM), -eye(self.DIM); -eye(self.DIM), eye(self.DIM)]/ self.GEOM(1)^2;
+            tmp2 = [eye(self.DIM), -eye(self.DIM); -eye(self.DIM), eye(self.DIM)]/ self.GEOM(2)^2;
+            
             if m == 1
                 % Hessian of g_1 w.r.t. q
-                D2g = [tmp, zeros(2*self.DIM); zeros(2*self.DIM), zeros(2*self.DIM)];
+                D2g = [tmp1, zeros(2*self.DIM); zeros(2*self.DIM), zeros(2*self.DIM)];
             elseif m == 2
                 % Hessian of g_2 w.r.t. q
-                D2g = [zeros(2*self.DIM), zeros(2*self.DIM); zeros(2*self.DIM), tmp];
+                D2g = [zeros(2*self.DIM), zeros(2*self.DIM); zeros(2*self.DIM), tmp2];
             end
 
         end
@@ -192,8 +193,9 @@ classdef FourParticleSystem < System
                 pi = (q4 - q2)' * (q4 - q2);
             else
                 error('system has only 2 invariants for the potential.');
-                end
             end
+
+        end
 
             % gradient of potential invariants w.r.t. q
                 function DpiDq = potential_invariant_gradient(self, q, i)
@@ -324,14 +326,27 @@ classdef FourParticleSystem < System
                                                 end
 
                                                     % velocity constraint computed with its invariant
-                                                        function gv = Vconstraint_from_invariant(~, pi2, ~)
+                                                        function gv = Vconstraint_from_invariant(self, pi2, i)
 
-                                                            gv = pi2;
+                                                            if i == 1
+                                                                gv = pi2/ self.GEOM(1)^2;
+                                                            elseif i == 2
+                                                                gv = pi2/ self.GEOM(2)^2;
+                                                            else
+                                                                error('system has only 2 invariants for the constraint.');
+                                                            end
 
-                                                    end
+                                                        end
 
-                                                            function DgvDpi = Vconstraint_gradient_from_invariant(~, ~, ~)
-                                                                DgvDpi = 1;
+                                                            function DgvDpi = Vconstraint_gradient_from_invariant(self, ~, i)
+
+                                                                if i == 1
+                                                                    DgvDpi = 1/ self.GEOM(1)^2;
+                                                                elseif i == 2
+                                                                    DgvDpi = 1/ self.GEOM(2)^2;
+                                                                else
+                                                                    error('system has only 2 invariants for the constraint.');
+                                                                end
                                                         end
 
                                                             % invariant of the position constraint
@@ -348,8 +363,8 @@ classdef FourParticleSystem < System
                                                                         zeta = (q3 - q4)' * (q3 - q4);
                                                                     else
                                                                         error('system has only 2 invariants for the constraint.');
-                                                                        end
                                                                     end
+                                                                end
 
                                                                     % gradient of the invariant of the position constraint w.r.t. q
                                                                         function DzetaDq = constraint_invariant_gradient(self, q, i)
@@ -386,19 +401,19 @@ classdef FourParticleSystem < System
                                                                                         function gs = constraint_from_invariant(self, zeta, i)
 
                                                                                             if i == 1
-                                                                                                gs = 0.5 * (zeta - self.GEOM(1)^2);
+                                                                                                gs = 0.5 * (zeta / self.GEOM(1)^2 - 1);
                                                                                             elseif i == 2
-                                                                                                gs = 0.5 * (zeta - self.GEOM(2)^2);
+                                                                                                gs = 0.5 * (zeta / self.GEOM(2)^2 - 1);
                                                                                             end
                                                                                     end
 
                                                                                         % gradient of position constrained w.r.t. its invariant
-                                                                                            function gs = constraint_gradient_from_invariant(~, ~, i)
+                                                                                            function gs = constraint_gradient_from_invariant(self, ~, i)
 
                                                                                                 if i == 1
-                                                                                                    gs = 0.5;
+                                                                                                    gs = 0.5 / self.GEOM(1)^2;
                                                                                                 elseif i == 2
-                                                                                                    gs = 0.5;
+                                                                                                    gs = 0.5 / self.GEOM(2)^2;
                                                                                                 end
                                                                                         end
 

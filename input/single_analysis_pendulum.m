@@ -14,9 +14,9 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'GGL_VI_theta_B';
+INTEGRATOR = 'EMS_ggl';
 % Parameters of the method
-INT_PARA = [1, 0.5];
+INT_PARA = [NaN, NaN];
 % time step size
 DT = 0.01;
 % starting time

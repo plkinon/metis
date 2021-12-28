@@ -57,17 +57,17 @@ classdef Pendulum < System
 
         function g = constraint(self, q)
             % Constraint on position level
-            g = 0.5 * (q' * q - self.GEOM(1)^2);
+            g = 0.5 * (q' * q / self.GEOM(1)^2 - 1);
         end
 
-        function Dg = constraint_gradient(~, q)
+        function Dg = constraint_gradient(self, q)
             % Gradient of constraint w.r.t q
-            Dg = q';
+            Dg = q'/ self.GEOM(1)^2 ;
         end
 
-        function D2g = constraint_hessian(~, q, ~)
+        function D2g = constraint_hessian(self, q, ~)
             % Hessian of g_1 w.r.t. q
-            D2g = eye(size(q, 1));
+            D2g = eye(size(q, 1))/ self.GEOM(1)^2;
         end
 
         function [] = potential_invariant(~, ~, ~)
@@ -117,14 +117,14 @@ classdef Pendulum < System
                                 end
 
                                     % velocity constraint computed with its invariant
-                                        function gv = Vconstraint_from_invariant(~, pi2, ~)
+                                        function gv = Vconstraint_from_invariant(self, pi2, ~)
 
-                                            gv = pi2;
+                                            gv = pi2/ self.GEOM(1)^2;
 
                                     end
 
-                                            function DgvDpi = Vconstraint_gradient_from_invariant(~, ~, ~)
-                                                DgvDpi = 1;
+                                            function DgvDpi = Vconstraint_gradient_from_invariant(self, ~, ~)
+                                                DgvDpi = 1/ self.GEOM(1)^2;
                                         end
 
                                             %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -160,16 +160,16 @@ classdef Pendulum < System
                                                                         function gs = constraint_from_invariant(self, zeta, i)
 
                                                                             if i == 1
-                                                                                gs = 0.5 * (zeta - self.GEOM(1)^2);
+                                                                                gs = 0.5 * (zeta / self.GEOM(1)^2 - 1);
                                                                             else
                                                                                 error('system has only 1 invariant for the constraint.');
                                                                                 end
                                                                             end
 
-                                                                                function gs = constraint_gradient_from_invariant(~, ~, i)
+                                                                                function gs = constraint_gradient_from_invariant(self, ~, i)
 
                                                                                     if i == 1
-                                                                                        gs = 0.5;
+                                                                                        gs = 0.5/ self.GEOM(1)^2;
                                                                                     else
                                                                                         error('system has only 1 invariant for the constraint.');
                                                                                         end
