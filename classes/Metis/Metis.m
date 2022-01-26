@@ -24,6 +24,8 @@ classdef Metis
         T_END
         V_0
         optime
+        NUM_ITER
+        MEAN_ITER
 
         %% Postprocessing parameters
         % Can be given in an input-file (not necessary for computing)

@@ -16,7 +16,7 @@ DIM = 3;
 % Name of routine in /classes/Integrator
 INTEGRATOR = 'EMS_ggl';
 % Parameters of the method
-INT_PARA = [NaN, NaN];
+INT_PARA = [1, 0.5];
 % time step size
 DT = 0.05;
 % starting time

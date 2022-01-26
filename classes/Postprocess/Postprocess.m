@@ -207,7 +207,7 @@ classdef Postprocess
                     set(findall(gca, 'Type', 'Line'), 'LineWidth', 1.2);
 
                     % Export to .eps
-                    print(figHandles(i), [export_folder, export_name], '-depsc')
+                    print(figHandles(i), [export_folder, export_name], '-dpng')
 
                     % Export to .tikz
                     warning('off')
@@ -275,7 +275,7 @@ classdef Postprocess
             for i = 1:length(this_simulation.plot_quantities)
 
                 % get current quantity
-                fig = figure();
+                fig = figure('Visible', 'off');
                 grid on;
                 quantity = this_simulation.plot_quantities{i};
                 integrator_string = strrep(this_simulation.INTEGRATOR, '_', '-');
@@ -383,11 +383,11 @@ classdef Postprocess
 
                         error(strcat('No plotting routine for ', quantity, '  this quantity defined'));
 
-                    end
+                end
 
-                        % set linewidth and colorscheme
-                        set(plotline, 'linewidth', 1.5);
-                        colororder(self.color_scheme);
+                % set linewidth and colorscheme
+                set(plotline, 'linewidth', 1.5);
+                colororder(self.color_scheme);
 
             end
 

@@ -225,7 +225,7 @@ classdef Pendulum < System
                                                                                                     end
 
                                                                                                     %% Reference sphere
-                                                                                                    plot3(xa, ya, za, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [0.75, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
+                                                                                                    plot3(xa, ya, za, 'mo', 'MarkerSize', 40, 'MarkerEdgeColor', '#4477AA', 'MarkerFaceColor', '#4477AA');
                                                                                                     hold on
 
                                                                                                     %% Reference constraint
@@ -241,7 +241,7 @@ classdef Pendulum < System
                                                                                                     else
                                                                                                         plot3(q(1:j, 1), q(1:j, 2), zeros(j, 1), 'k');
                                                                                                     end
-                                                                                                    plot3(x, y, z, 'mo', 'MarkerSize', 10, 'MarkerEdgeColor', [1, 0, 0], 'MarkerFaceColor', [0.75, 0, 0]);
+                                                                                                    plot3(x, y, z, 'mo', 'MarkerSize', 40, 'MarkerEdgeColor', '#4477AA', 'MarkerFaceColor', '#4477AA');
                                                                                                     grid on
 
                                                                                                     %% current position of the constraint

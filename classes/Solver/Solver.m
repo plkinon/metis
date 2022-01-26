@@ -41,19 +41,23 @@ classdef Solver
 
                 % Start to count time
                 init_time = tic();
-
+                this_simulation.NUM_ITER = zeros(this_integrator.NT,1);
+                
                 % Actual time-stepping
                 for i = 1:this_integrator.NT
 
                     % Update solution vector from previous iteration
                     zn = zn1;
 
+                    % Initial Guess
+                    %zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
+
                     % Print current time-step
                     fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'----------------------------------------------------');
                     fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Time: t = ',num2str(i*this_integrator.DT),', dt = ', num2str(this_integrator.DT),', step no. ',num2str(i)]);
 
                     % Conduct iteration
-                    zn1 = self.newton_iterate(this_integrator, this_system, this_simulation, zn, zn1);
+                    [zn1, this_simulation.NUM_ITER(i,1)] = self.newton_iterate(this_integrator, this_system, this_simulation, zn, zn1);
 
                     % Save update solution for current timestep
                     z(i+1, :) = zn1;
@@ -68,6 +72,7 @@ classdef Solver
             % Store solution
             this_simulation.optime = stop_time;
             this_simulation.z = z;
+            this_simulation.MEAN_ITER = mean(this_simulation.NUM_ITER);
 
             % Rearrange unknows if integration schemes requires it
             if ismethod(this_integrator, 'rearrange_unknowns')
@@ -89,18 +94,47 @@ classdef Solver
 
         end
 
+        %% Funxtion: Initial Guess for Newton-Rhapson-method
+        function zn1_guess = newton_initial_guess(~, zn1, this_system, this_simulation, DT)
+            
+            nDOF = this_system.nDOF;
+            M = this_system.MASS_MAT;
+            IM = M \ eye(size(M));
+
+            qn1 = zn1(1:nDOF);
+            pn1 = zn1(nDOF+1:2*nDOF);
+
+            % Check if integration scheme had independent velocity quantities
+            if this_simulation.INDI_VELO == true
+
+                % set velocity vector directly
+                vn1 = zn1(2*nDOF+1:3*nDOF);
+
+            else
+
+                % else: compute by means of momenta
+                vn1 = IM * pn1;
+
+            end
+
+            qn1_guess = qn1 + DT*vn1;
+            zn1_guess = zn1;
+            zn1_guess(1:nDOF) = qn1_guess;
+
+        end
+
         %% Function: Conducts Newton-Rhapson-method to iterate z-vector
-        function zn1 = newton_iterate(self, this_integrator, this_system, this_simulation, zn, zn1)
+        function [zn1, num_iter] = newton_iterate(self, this_integrator, this_system, this_simulation, zn, zn1)
 
             % Set iteration-index to zero and residual above tolerance
-            k = 0;
+            num_iter = 0;
             residual = self.TOLERANCE * 10;
 
             % Newton-Rhapson-Method
-            while (residual > self.TOLERANCE) && (k <= self.MAX_ITERATIONS)
+            while (residual > self.TOLERANCE) && (num_iter <= self.MAX_ITERATIONS)
 
                 % increment iteration index
-                k = k + 1;
+                num_iter = num_iter + 1;
 
                 % Calculate residual and tangent matrix of present integrator
                 % for present system
@@ -119,7 +153,7 @@ classdef Solver
 
                 % Compute the residual norm and print current iteration
                 residual = max(max(abs(resi)), max(delta_z));
-                fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Iteration ',num2str(k),', residual = ',num2str(residual)]);
+                fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Iteration ',num2str(num_iter),', residual = ',num2str(residual)]);
 
             end
 

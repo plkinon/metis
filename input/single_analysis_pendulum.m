@@ -18,7 +18,7 @@ INTEGRATOR = 'EMS_ggl';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.01;
+DT = 0.05;
 % starting time
 T_0 = 0;
 % end time
