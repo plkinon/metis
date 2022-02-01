@@ -441,20 +441,32 @@ classdef HeavyTop < System
                                                                                             gs = 1;
                                                                                         end
 
-                                                                                end
-
-                                                                                        function analyzed_quantity = hconvergence_set(~, this_simulation)
-
-                                                                                            analyzed_quantity = this_simulation.z(end, 3); %z-coordinate of center of mass
-
                                                                                     end
 
-
-                                                                                            function reference_solution = hconvergence_reference(~, this_simulation, ~)
-
-                                                                                                reference_solution = this_simulation.Q_0(3); %position
+                                                                                    function analyzed_quantity = hconvergence_set(~, this_simulation)
+                                                                                            if strcmp(this_simulation.CONV_QUANTITY,'q')
+                                                                                                analyzed_quantity = this_simulation.z(end, 3); %z-coordinate of center of mass
+                                                                                            elseif strcmp(this_simulation.CONV_QUANTITY,'p')
+                                                                                                analyzed_quantity = this_simulation.z(end, 15); %z-coordinate of momentum of center of mass
+                                                                                            else
+                                                                                                error('quantity not yet implement for convergence analysis.')
+                                                                                            end
 
                                                                                         end
+
+
+                                                                                        function reference_solution = hconvergence_reference(~, this_simulation, ~)
+
+                                                                                            if strcmp(this_simulation.CONV_QUANTITY,'q')    
+                                                                                                reference_solution = this_simulation.Q_0(3); %position
+                                                                                                
+                                                                                            elseif strcmp(this_simulation.CONV_QUANTITY,'p')
+                                                                                                reference_solution = 0; %velocity
+                                                                                            else
+                                                                                                error('quantity not yet implemented for convergence analysis.')
+                                                                                            end
+
+                                                                                             end
 
                                                                                                 function give_animation(self, fig, this_simulation)
 

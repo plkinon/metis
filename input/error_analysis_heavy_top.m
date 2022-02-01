@@ -54,11 +54,13 @@ clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_
 
 %% Integrator
 % Name of routines in /classes/Integrator to be analyzed
-INTEGRATOR = {'GGL_VI_mod', 'GGL_VI_theta_A', 'GGL_VI_theta_B', 'GGL_theta_mod'};
+INTEGRATOR = {'GGL_VI_mod', 'GGL_VI_theta_A', 'GGL_VI_theta_B', 'GGL_theta_mod', 'EMS_ggl'};
 % corresponding parameters
-INT_PARA = [NaN, NaN; 0.5, NaN; 1, 0.5; 0.5, NaN];
+INT_PARA = [NaN, NaN; 0.5, NaN; 1, 0.5; 0.5, NaN; NaN, NaN];
 % time step sizes to be analyzed
 DT = [0.0001, 0.00005, 0.00001, 0.000005];
+% Quantity which is to be analyzed
+CONV_QUANTITY = 'q';
 % starting time
 T_0 = 0;
 % end time

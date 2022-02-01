@@ -14,11 +14,13 @@ DIM = 3;
 
 %% Integrator
 % Name of routines in /classes/Integrator to be analyzed
-INTEGRATOR = {'EMS_std', 'EMS_ggl'};
+INTEGRATOR = {'GGL_theta_mod', 'EMS_ggl', 'EMS_std'};
 % corresponding parameters
-INT_PARA = [NaN, NaN; NaN, NaN];
+INT_PARA = [0.5, NaN; NaN, NaN; NaN, NaN];
 % time step sizes to be analyzed
 DT = [0.1, 0.01, 0.001, 0.0001];
+% quantity which is to be analyzed
+CONV_QUANTITY = 'p';
 % starting time
 T_0 = 0;
 % end time

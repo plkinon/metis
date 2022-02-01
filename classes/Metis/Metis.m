@@ -54,6 +54,7 @@ classdef Metis
         % Only necessary if you want to conduct an error analysis for
         % several timestep-sizes
         ALL_DT
+        CONV_QUANTITY
 
     end
 
