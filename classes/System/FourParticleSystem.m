@@ -419,17 +419,23 @@ classdef FourParticleSystem < System
                                                                                                 end
                                                                                         end
 
-                                                                                                function analyzed_quantity = hconvergence_set(self, this_simulation)
+                                                                                        function analyzed_quantity = hconvergence_set(self, this_simulation)
 
-                                                                                                    analyzed_quantity = this_simulation.z(end, 7*self.DIM+1:8*self.DIM); %position of 4th particle
+                                                                                                    if strcmp(this_simulation.CONV_QUANTITY,'q')
+                                                                                                        analyzed_quantity = this_simulation.z(end, 3*self.DIM+1:4*self.DIM); %position of 4th particle
+                                                                                                    elseif strcmp(this_simulation.CONV_QUANTITY,'p')
+                                                                                                        analyzed_quantity = this_simulation.z(end, 7*self.DIM+1:8*self.DIM); %momentum of 4th particle
+                                                                                                    else
+                                                                                                        error('quantity not yet implemented for convergence analysis.')
+                                                                                                    end
 
                                                                                             end
 
 
-                                                                                                    function reference_solution = hconvergence_reference(~, ~, analyzed_quantity)
+                                                                                            function reference_solution = hconvergence_reference(~, this_simulation, analyzed_quantity)
 
-                                                                                                    reference_solution = analyzed_quantity(:, end, end); %position
-
+                                                                                                reference_solution = analyzed_quantity(:, end, end); %position
+                                                                                              
                                                                                             end
 
                                                                                                 %% Animation method
