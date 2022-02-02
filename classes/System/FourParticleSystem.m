@@ -42,10 +42,10 @@ classdef FourParticleSystem < System
             self.GEOM(3) = norm(CONFIG.Q_0((2 * CONFIG.DIM)+1:3*CONFIG.DIM)-CONFIG.Q_0(1:CONFIG.DIM)); %length of 1st spring without strain
             self.GEOM(4) = norm(CONFIG.Q_0((3 * CONFIG.DIM)+1:4*CONFIG.DIM)-CONFIG.Q_0(CONFIG.DIM+1:2*CONFIG.DIM)); %length of 2nd spring without strain
 
-            %self.K1 = 1;
-            self.K1 = 100;
-            %self.K2 = 10;
-            self.K2 = 300;
+            self.K1 = 1;
+            %self.K1 = 100;
+            self.K2 = 10;
+            %self.K2 = 500;
             self.p = 2;
             self.nPotentialInvariants = 2;
             self.nConstraintInvariants = 2;
