@@ -6,10 +6,11 @@
 See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
 
 ```bibtex
-@software{kinon_meits_2022,
+@software{kinon_metis_2022,
   author       = {Philipp L. Kinon and
                   Julian K. Bauer},
-  title        = {metis: computing constrained dynamical systems, version 1.0.0},
+  title        = {{metis: computing constrained dynamical systems, 
+                   version 1.0.0}},
   month        = feb,
   year         = 2022,
   publisher    = {Zenodo},
