@@ -6,13 +6,16 @@
 See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
 
 ```bibtex
-@misc{kinon_metis_2021,
-  author = {Kinon, Philipp Lothar},
-  title = {metis: computing constrained dynamical systems (GitHub repository)},
-  year = {2021},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/philipplk/metis}}
+@software{philipp_l_kinon_2022_6044910,
+  author       = {Philipp L. Kinon and
+                  Julian K. Bauer},
+  title        = {philipplk/metis: Version 1.0.0},
+  month        = feb,
+  year         = 2022,
+  publisher    = {Zenodo},
+  version      = {v1.0.0},
+  doi          = {10.5281/zenodo.6044910},
+  url          = {https://doi.org/10.5281/zenodo.6044910}
 }
 ```
 
