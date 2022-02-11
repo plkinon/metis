@@ -1,7 +1,10 @@
 %% System Parameters
+% Name of system in /classes/System
 SYSTEM = 'HeavyTop';
+% External acceleration
 g = 9.81;
 EXT_ACC = [0; 0; -g];
+% Number of spatial dimensions
 DIM = 3;
 
 %% Geometric parameters
@@ -25,6 +28,7 @@ d10 = R0 * [1; 0; 0];
 d20 = R0 * [0; 1; 0];
 d30 = R0 * [0; 0; 1];
 phi0 = R0 * [0; 0; l];
+% Initial configuration [center of mass; director no.1; no.2; no.3]
 Q_0 = [phi0; d10; d20; d30];
 
 %% Initial angular velocity
@@ -42,27 +46,42 @@ v00 = cross(OMEGA0, phi0);
 v10 = cross(OMEGA0, d10);
 v20 = cross(OMEGA0, d20);
 v30 = cross(OMEGA0, d30);
+% Initial velocity [center of mass; director no.1; no.2; no.3]
 V_0 = [v00; v10; v20; v30];
 
-% clear unnecessary variables
+% clear unnecessary variables (crucial for further processing!)
 clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_p omega_s g
 
 %% Integrator
-INTEGRATOR = 'GGL_VI_mod';
+% Name of routines in /classes/Integrator to be analyzed
+INTEGRATOR = {'GGL_VI_mod'};
+% corresponding parameters
 INT_PARA = [NaN, NaN];
-DT = 0.002;
+% time step sizes to be analyzed
+DT = [0.0001, 0.00005, 0.00001, 0.000005];
+% Quantity which is to be analyzed
+CONV_QUANTITY = 'q';
+% starting time
 T_0 = 0;
-T_END = 2;
+% end time
+T_END = 0.001;
 
 %% Solver Method
+% maximum number of iterations of Newton Rhapson method
 MAX_ITERATIONS = 40;
+% tolerance of Newton Rhapson method
 TOLERANCE = 1E-09;
 
 %% Postprocessing
+% Animation of trajectory [true/false]
 shouldAnimate = false;
-plot_quantities = {'energy', 'energy_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'};
-should_export = true;
-should_export_figures = true;
+% List of desired quantities for plotting in postprocessing
+plot_quantities = {};
+% Export of simulation results in a .mat-file [true/false]
+should_export = false;
+% Export of figures in .eps- and .tikz-files
+should_export_figures = false;
+% Path where export-folder is created
 export_path = 'scratch/';
 % Matlab2Tikz (metis searches for matlab2tikz here. if not available, it
 % clones the matlab2tikz repository there)

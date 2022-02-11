@@ -54,9 +54,9 @@ clear rho a r l d J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'GGL_VI_theta_B';
+INTEGRATOR = 'GGL_VI_mod';
 % Parameters of the method
-INT_PARA = [1, 0.5];
+INT_PARA = [NaN, NaN];
 % time step size
 DT = 0.002;
 % starting time
