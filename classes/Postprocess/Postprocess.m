@@ -80,9 +80,7 @@ classdef Postprocess
             for j = 1:NT
 
                 % Kinetic and potential energy, Hamiltonian
-                %T(j) = 1 / 2 * v(j, :) * M * v(j, :)'; %in rare cases,
-                %compute T with the velocity quantities
-                T(j) = 1/2*p(j,:)*IM*p(j,:)';
+                T(j) = 1 / 2 * v(j, :) * M * v(j, :)'; 
                 V(j) = this_system.internal_potential(q(j, :)') + this_system.external_potential(q(j, :)');
                 H(j) = T(j) + V(j);
 
