@@ -103,7 +103,7 @@ Rigid Body Dynamics with Directors:
 
 ## Acknowledgements
 
-Metis was mainly initialised by Philipp L. Kinon during his master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. This project would not have been possible without the support of others:
+Metis was mainly initialised by Philipp L. Kinon during their master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. This project would not have been possible without the support of others:
 
 **Academic Supervisors:**
 
