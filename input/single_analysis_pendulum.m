@@ -2,7 +2,7 @@
 % Name of system in /classes/System
 SYSTEM = 'Pendulum';
 % External acceleration
-EXT_ACC = [0; 0; 9.81];
+EXT_ACC = [0; 0; -9.81];
 % Initial configuration
 Q_0 = [1; 0; 0];
 % Initial velocity

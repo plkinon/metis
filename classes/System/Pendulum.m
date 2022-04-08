@@ -31,11 +31,11 @@ classdef Pendulum < System
         end
 
         function V_ext = external_potential(self, q)
-            V_ext = (self.MASS_MAT * self.EXT_ACC)' * q;
+            V_ext = -(self.MASS_MAT * self.EXT_ACC)' * q;
         end
 
         function DV_ext = external_potential_gradient(self, ~)
-            DV_ext = self.MASS_MAT * self.EXT_ACC;
+            DV_ext = -self.MASS_MAT * self.EXT_ACC;
         end
 
         function D2V_ext = external_potential_hessian(~, q)
