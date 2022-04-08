@@ -49,6 +49,8 @@ classdef Metis
         Ldiff
         constraint_position
         constraint_velocity
+        constraint_forces
+        external_torque
 
         %% Error analysis parameters
         % Only necessary if you want to conduct an error analysis for
@@ -66,7 +68,7 @@ classdef Metis
             % Clear workspace, close all windows and clear command window
             close all;
             clc;
-            
+
             fprintf('**************************************************** \n');
             fprintf('  \n');
             fprintf(' METIS - Computing constrained mechanical systems  \n');
@@ -77,9 +79,9 @@ classdef Metis
             fprintf('  \n');
             fprintf('**************************************************** \n');
             fprintf('  \n');
-            
+
             %Create log-file
-            self = self.create_log_file();       
+            self = self.create_log_file();
 
             % Start visual output to command window
             fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
@@ -92,7 +94,7 @@ classdef Metis
             fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),' ');
             fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'**************************************************** ');
             fprintf(self.log_file_ID, '%s: %s\n', datestr(now, 0),'  ');
-              
+
             % Set attributes from config file
             self = self.get_config_input(INPUT_FILE, num_dt, num_int);
 
@@ -106,18 +108,18 @@ classdef Metis
             self = self.set_solution_matrix(this_integrator, this_system);
 
         end
-        
+
         %% Function: Create log-file
         function self = create_log_file(self)
-            
+
             % Create new log file
                 if ~exist('metis.log', 'file')
 
                     self.log_file_ID = fopen(fullfile(self.export_path, 'metis.log'), 'a');
 
                 else
-                    
-                    %if there already is one, overwrite it                    
+
+                    %if there already is one, overwrite it
                     fprintf('     Overwriting existing log file.            \n');
                     fprintf('  \n');
                     fprintf('**************************************************** \n');
@@ -128,16 +130,16 @@ classdef Metis
                     warning('on')
 
                 end
-            
+
             % Start logging into the log file
             self.log_file_ID = fopen(fullfile(self.export_path, 'metis.log'), 'a');
             % Check if log-file can be opened/edited
             if self.log_file_ID == -1
               error('Cannot open log file.');
             end
-            
+
         end
-        
+
         %% Function: Check if user input is valid
         function check_user_input(self)
 

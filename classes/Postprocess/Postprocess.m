@@ -44,8 +44,8 @@ classdef Postprocess
             d = nDOF / DIM;
 
             NT = int32(this_simulation.T_END/this_simulation.DT) + 1;
-            M = this_system.MASS_MAT;
-            IM = M \ eye(size(M));
+            external_torque = this_system.MASS_MAT;
+            IM = external_torque \ eye(size(external_torque));
 
             q = this_simulation.z(:, 1:nDOF);
             p = this_simulation.z(:, nDOF+1:2*nDOF);
@@ -56,6 +56,8 @@ classdef Postprocess
 
                 % set velocity vector directly
                 v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
+                lambda = this_simulation.z(:,3*nDOF+1:3*nDOF+m);
+                gamma = this_simulation.z(:,3*nDOF+m+1:3*nDOF+2*m);
 
             else
 
@@ -63,6 +65,8 @@ classdef Postprocess
                 for j = 1:NT
                     v(j, :) = (IM * p(j, :)')';
                 end
+                lambda = this_simulation.z(:,2*nDOF+1:2*nDOF+m);
+                gamma = this_simulation.z(:,2*nDOF+m+1:2*nDOF+2*m);
 
             end
 
@@ -75,18 +79,24 @@ classdef Postprocess
             diffL = zeros(NT-1, 3);
             constraint_position = zeros(NT, m);
             constraint_velocity = zeros(NT, m);
+            constraint_forces = zeros(NT-1,nDOF);
+            external_torque = zeros(NT,3);
 
             % Compute quantities for every point in time
             for j = 1:NT
 
                 % Kinetic and potential energy, Hamiltonian
-                T(j) = 1 / 2 * v(j, :) * M * v(j, :)'; 
+                %T(j) = 1 / 2 * v(j, :) * M * v(j, :)'; %in rare cases,
+                %compute T with the velocity quantities
+                T(j) = 1/2*p(j,:)*IM*p(j,:)';
                 V(j) = this_system.internal_potential(q(j, :)') + this_system.external_potential(q(j, :)');
                 H(j) = T(j) + V(j);
+                F_ext = -this_system.external_potential_gradient(q(j, :)');
 
                 % Constraints on position and velocity level
                 constraint_position(j, :) = this_system.constraint(q(j, :)')';
                 constraint_velocity(j, :) = (this_system.constraint_gradient(q(j, :)') * v(j, :)')';
+            
 
                 if strcmp(this_simulation.INTEGRATOR, 'GGL_VI_mod')
                     % this specific integration scheme relies upon
@@ -101,7 +111,7 @@ classdef Postprocess
                     for k = 1:d
 
                         L(j, :) = L(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), p(j, (k - 1)*DIM+1:k*DIM));
-
+                        external_torque(j, :) = external_torque(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), F_ext((k - 1)*DIM+1:k*DIM));
                     end
 
                 end
@@ -125,6 +135,8 @@ classdef Postprocess
             this_simulation.Ldiff = diffL;
             this_simulation.constraint_position = constraint_position;
             this_simulation.constraint_velocity = constraint_velocity;
+            this_simulation.constraint_forces = constraint_forces;
+            this_simulation.external_torque = external_torque;
 
         end
 
