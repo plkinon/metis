@@ -31,6 +31,7 @@ classdef GGL_VI_theta_B < Integrator
             self.hasPARA = true;
             self.PARA = this_simulation.INT_PARA(:); %[The:round theta  theta: vartheta]; [0.5 0.5]: more stable, [1 0.5]: exact constraint vel. level
             self.NAME = 'GGL-VI-theta-B';
+            self.has_enhanced_constraint_force = true;
         end
 
         function z0 = set_initial_condition(self, this_simulation, this_system)

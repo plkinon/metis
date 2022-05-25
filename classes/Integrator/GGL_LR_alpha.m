@@ -30,6 +30,7 @@ classdef GGL_LR_alpha < Integrator
             self.hasPARA = true;
             self.PARA = this_simulation.INT_PARA(1);
             self.NAME = 'GGL-LR-alpha';
+            self.has_enhanced_constraint_force = true;
         end
 
         function z0 = set_initial_condition(self, this_simulation, this_system)

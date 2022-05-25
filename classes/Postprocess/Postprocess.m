@@ -36,7 +36,7 @@ classdef Postprocess
         end
 
         %% Function: computes postprocessing quantities as function of time
-        function this_simulation = compute(~, this_system, this_simulation)
+        function this_simulation = compute(~, this_system, this_simulation, this_integrator)
 
             nDOF = this_system.nDOF;
             m = this_system.mCONSTRAINTS;
@@ -57,7 +57,10 @@ classdef Postprocess
                 % set velocity vector directly
                 v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
                 lambda = this_simulation.z(:,3*nDOF+1:3*nDOF+m);
-                gamma = this_simulation.z(:,3*nDOF+m+1:3*nDOF+2*m);
+                if this_integrator.has_enhanced_constraint_force
+
+                    gamma = this_simulation.z(:,3*nDOF+m+1:3*nDOF+2*m);
+                end
 
             else
 
@@ -66,7 +69,12 @@ classdef Postprocess
                     v(j, :) = (IM * p(j, :)')';
                 end
                 lambda = this_simulation.z(:,2*nDOF+1:2*nDOF+m);
-                gamma = this_simulation.z(:,2*nDOF+m+1:2*nDOF+2*m);
+
+                if this_integrator.has_enhanced_constraint_force
+                     gamma = this_simulation.z(:,2*nDOF+m+1:2*nDOF+2*m);
+                end
+
+               
 
             end
 
@@ -119,10 +127,26 @@ classdef Postprocess
             end
 
             % Compute time-increments in Hamiltonian and angular momentum
-            for j = 1:(NT - 1)
+            for j = 2:(NT - 1)
 
                 diffH(j) = H(j+1) - H(j);
-                diffL(j, :) = L(j+1, :) - L(j, :);
+                diffL(j, :) = L(j+1, :) - L(j-1, :);
+                % constraint_forces(j,:) = (p(j+1,:)-p(j,:))'/this_simulation.DT - (this_system.external_potential_gradient(q(j, :)')+this_system.internal_potential_gradient(q(j, :)'));
+                
+
+                if strcmp(this_simulation.INTEGRATOR, 'EMS_std')
+
+                    constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
+                    
+                else 
+                    t_bar = zeros(nDOF);
+                    for l = 1:m
+                        t_bar = t_bar + this_system.constraint_hessian(q(j,:), l) * gamma(j,l);
+                    end
+                    constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')'  + (t_bar * IM * p(j,:)')' ;
+                end
+                
+                
 
             end
 

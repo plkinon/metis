@@ -29,6 +29,7 @@ classdef GGL_VI_mod < Integrator
             self.LM0 = zeros(2*this_system.mCONSTRAINTS, 1);
             self.hasPARA = false;
             self.NAME = 'GGL-VI (modified) ';
+            self.has_enhanced_constraint_force = true;
         end
 
         function z0 = set_initial_condition(self, this_simulation, this_system)

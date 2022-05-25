@@ -28,6 +28,7 @@ classdef GGL_VI_theta_A < Integrator
             self.hasPARA = true;
             self.PARA = this_simulation.INT_PARA(1);
             self.NAME = 'GGL-VI-theta-A';
+            self.has_enhanced_constraint_force = true;
         end
 
         function z0 = set_initial_condition(self, this_simulation, this_system)

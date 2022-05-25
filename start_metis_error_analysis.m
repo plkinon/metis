@@ -23,14 +23,14 @@ clearvars;
 addpath(genpath(fileparts(which(mfilename))));
 
 % Metis creates a dummy simulation object, the system and solver from input-file
-[dummy_simulation, system, ~, solver] = Metis('input/published/paper_kinon_betsch_schneider_2022/error_analysis_heavy_top', 1, 1);
+[dummy_simulation, system, dummy_integrator, solver] = Metis('input/published/paper_kinon_betsch_schneider_2022/error_analysis_heavy_top', 1, 1);
 % Check how many different timestepsizes and integrators are analyzed
 n_DT = numel(dummy_simulation.ALL_DT);
 n_INT = numel(dummy_simulation.ALL_INTEGRATOR);
 
 % Define Postprocessing from class
 postprocess = Postprocess();
-dummy_simulation = postprocess.compute(system, dummy_simulation);
+dummy_simulation = postprocess.compute(system, dummy_simulation, dummy_integrator);
 
 % Analysis quantity allocation
 analyzed_quantity = zeros(system.DIM, n_DT, n_INT);
@@ -47,7 +47,7 @@ for i = 1:n_DT
         current_simulation = solver.solve(current_simulation, system, current_integrator);
 
         % Compute various postprocessing quantities
-        current_simulation = postprocess.compute(system, current_simulation);
+        current_simulation = postprocess.compute(system, current_simulation, current_integrator);
 
         % Compute position error and velocity constraint violation
         analyzed_quantity(:, i, j) = system.hconvergence_set(current_simulation);

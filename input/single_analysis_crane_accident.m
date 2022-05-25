@@ -9,7 +9,7 @@ Q_0 = [-l*sin(phi0); 0; -l*cos(phi0)];
 % Initial velocity
 V_0 = [0; 0; 0];
 % Total mass
-MASS = 10;
+MASS = 1000;
 % Number of spatial dimensions
 DIM = 3;
 
@@ -23,7 +23,7 @@ DT = 0.01;
 % starting time
 T_0 = 0;
 % end time
-T_END = 100;
+T_END = 8;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method

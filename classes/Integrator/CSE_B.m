@@ -26,6 +26,7 @@ classdef CSE_B < Integrator
             self.LM0 = zeros(1*this_system.mCONSTRAINTS, 1);
             self.hasPARA = false;
             self.NAME = 'CSE-B';
+            self.has_enhanced_constraint_force = false;
         end
 
         function z0 = set_initial_condition(self, this_simulation, this_system)

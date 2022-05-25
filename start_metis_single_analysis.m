@@ -36,7 +36,7 @@ simulation = solver.solve(simulation, system, integrator);
 postprocess = Postprocess();
 
 % Compute various postprocessing quantities
-simulation = postprocess.compute(system, simulation);
+simulation = postprocess.compute(system, simulation, integrator);
 
 % Animation of trajectory if activated in input-file
 postprocess.animation(system, simulation);

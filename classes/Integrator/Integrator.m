@@ -13,6 +13,7 @@ classdef Integrator
         LM0
         hasPARA
         PARA
+        has_enhanced_constraint_force
     end
 
 end

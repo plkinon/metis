@@ -25,6 +25,7 @@ classdef MP_std < Integrator
             self.LM0 = zeros(this_system.mCONSTRAINTS, 1);
             self.hasPARA = false;
             self.NAME = 'MP-std';
+            self.has_enhanced_constraint_force = false;
         end
 
         function z0 = set_initial_condition(self, this_simulation, this_system)
