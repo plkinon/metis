@@ -130,11 +130,9 @@ classdef Postprocess
             for j = 2:(NT - 1)
 
                 diffH(j) = H(j+1) - H(j);
-                diffL(j, :) = L(j+1, :) - L(j-1, :);
-                % constraint_forces(j,:) = (p(j+1,:)-p(j,:))'/this_simulation.DT - (this_system.external_potential_gradient(q(j, :)')+this_system.internal_potential_gradient(q(j, :)'));
-                
+                diffL(j, :) = L(j+1, :) - L(j-1, :);                
 
-                if strcmp(this_simulation.INTEGRATOR, 'EMS_std')
+                if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B')
 
                     constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
                     
