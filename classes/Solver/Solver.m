@@ -152,7 +152,7 @@ classdef Solver
                 zn1 = zn1 + delta_z;
 
                 % Compute the residual norm and print current iteration
-                residual = max(max(abs(resi)), max(delta_z));
+                residual = max(max(abs(resi)), max(abs(delta_z)));
                 fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Iteration ',num2str(num_iter),', residual = ',num2str(residual)]);
 
             end
