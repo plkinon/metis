@@ -44,8 +44,10 @@ classdef Metis
         H
         T
         V
+        E
         L
         Hdiff
+        Ediff
         Ldiff
         constraint_position
         constraint_velocity

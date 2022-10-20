@@ -46,6 +46,7 @@ classdef Postprocess
             NT = int32(this_simulation.T_END/this_simulation.DT) + 1;
             external_torque = this_system.MASS_MAT;
             IM = external_torque \ eye(size(external_torque));
+            M = this_system.MASS_MAT;
 
             q = this_simulation.z(:, 1:nDOF);
             p = this_simulation.z(:, nDOF+1:2*nDOF);
@@ -82,8 +83,10 @@ classdef Postprocess
             T = zeros(NT, 1);
             V = zeros(NT, 1);
             H = zeros(NT, 1);
+            E = zeros(NT, 1);
             L = zeros(NT, 3);
             diffH = zeros(NT-1, 1);
+            diffE = zeros(NT-1, 1);
             diffL = zeros(NT-1, 3);
             constraint_position = zeros(NT, m);
             constraint_velocity = zeros(NT, m);
@@ -99,6 +102,7 @@ classdef Postprocess
                 T(j) = 1/2*p(j,:)*IM*p(j,:)';
                 V(j) = this_system.internal_potential(q(j, :)') + this_system.external_potential(q(j, :)');
                 H(j) = T(j) + V(j);
+                E(j) = p(j,:)*v(j,:)' - 1 / 2 * v(j, :) * M * v(j, :)' + V(j);
                 F_ext = -this_system.external_potential_gradient(q(j, :)');
 
                 % Constraints on position and velocity level
@@ -130,6 +134,7 @@ classdef Postprocess
             for j = 2:(NT - 1)
 
                 diffH(j) = H(j+1) - H(j);
+                diffE(j) = E(j+1) - E(j);
                 diffL(j, :) = L(j+1, :) - L(j-1, :);                
 
                 if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B')
@@ -152,8 +157,10 @@ classdef Postprocess
             this_simulation.T = T;
             this_simulation.V = V;
             this_simulation.H = H;
+            this_simulation.E = E;
             this_simulation.L = L;
             this_simulation.Hdiff = diffH;
+            this_simulation.Ediff = diffE;
             this_simulation.Ldiff = diffL;
             this_simulation.constraint_position = constraint_position;
             this_simulation.constraint_velocity = constraint_velocity;
@@ -295,11 +302,13 @@ classdef Postprocess
             % Function for plotting postprocessing results
 
             H = this_simulation.H;
+            E = this_simulation.E;
             V = this_simulation.V;
             T = this_simulation.T;
             t = this_simulation.t;
             L = this_simulation.L;
             diffH = this_simulation.Hdiff;
+            diffE = this_simulation.Ediff;
             diffL = this_simulation.Ldiff;
             g_pos = this_simulation.constraint_position;
             g_vel = this_simulation.constraint_velocity;
@@ -332,6 +341,22 @@ classdef Postprocess
                         xlabel('$t$', 'interpreter', 'latex')
                         ylabel('$\mathrm{[J]}$', 'interpreter', 'latex')
 
+                    case 'general_energy_function'
+
+                        %plots Energy quantities over time
+                        if isnan(E(end))
+                            plotline = plot(t(1:end-1), E(1:end-1));
+                        else
+                            plotline = plot(t, E);
+                        end
+                        fig.Name = 'energy_functional';
+                        Mmin = min(E);
+                        Mmax = max(E);
+                        ylim([Mmin - 0.1 * abs(Mmax-Mmin), Mmax + 0.1 * abs(Mmax-Mmin)]);
+                        title(strcat(integrator_string, ': Energy'));
+                        xlabel('$t$', 'interpreter', 'latex')
+                        ylabel('$E(t)$', 'interpreter', 'latex')
+
                     case 'angular_momentum'
 
                         %plots the ang. Mom. about dim-axis over time
@@ -360,6 +385,22 @@ classdef Postprocess
                         title(strcat(integrator_string, ': Energy difference'));
                         xlabel('$t$', 'interpreter', 'latex');
                         ylabel('$H^\mathrm{n+1}-H^\mathrm{n} \ \mathrm{[J]}$', 'interpreter', 'latex');
+
+                    case 'energy_function_difference'
+
+                        %plots the increments of Hamiltonian over time
+                        plotline = plot(t(1:end-1), diffE, 'color', self.color_scheme{3});
+                        max_diff = max(diffE);
+                        max_rounded = 10^(real(floor(log10(max_diff))) + 1);
+                        min_diff = min(diffE);
+                        min_rounded = -10^(real(floor(log10(min_diff))) + 1);
+                        hold on
+                        plot([t(1), t(end)], [max_rounded, max_rounded], 'k--', [t(1), t(end)], [min_rounded, min_rounded], 'k--');
+                        ylim([2 * min_rounded, 2 * max_rounded]);
+                        fig.Name = 'E_diff';
+                        title(strcat(integrator_string, ': Energy difference'));
+                        xlabel('$t$', 'interpreter', 'latex');
+                        ylabel('$E^\mathrm{n+1}-E^\mathrm{n}$', 'interpreter', 'latex');
 
                     case 'angular_momentum_difference'
 
