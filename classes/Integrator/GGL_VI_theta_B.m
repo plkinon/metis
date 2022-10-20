@@ -38,23 +38,7 @@ classdef GGL_VI_theta_B < Integrator
 
             M = this_system.MASS_MAT;
             v0 = this_simulation.V_0;
-            q0 = this_simulation.Q_0;
-            n = this_system.nDOF;
-            m = this_system.mCONSTRAINTS;
-            h = self.DT;
-            The = self.PARA(1);
-            theta = self.PARA(2);
-            lambda0 = self.LM0(1:m);
-            gamma0 = self.LM0(m+1:2*m);
-            G_0 = this_system.constraint_gradient(q0);
-            DV_0 = this_system.internal_potential_gradient(q0) + this_system.external_potential_gradient(q0);
-            t_0 = zeros(n);
-            for j = 1:m
-                t_0 = t_0 + this_system.constraint_hessian(q0, j) * gamma0(j);
-            end
-            % p0 = (M+h*(1-The)*t_0)*v0 + h*((1-The)*DV_0 + (1-theta)*G_0'*lambda0);
-            % macht keinen Sinn, da p0 aufgegeben wird und v_0 nicht
-            % verwendet wird
+            q0 = this_simulation.Q_0;           
             p0 = M * v0;
             z0 = [q0', p0', v0', self.LM0'];
 
@@ -94,7 +78,6 @@ classdef GGL_VI_theta_B < Integrator
             qn = zn(1:n);
             pn = zn(n+1:2*n);
             G_n = this_system.constraint_gradient(qn);
-            g_n = this_system.constraint(qn);
 
             %% Quantities at t_n+theta
             theta = self.PARA(2);
