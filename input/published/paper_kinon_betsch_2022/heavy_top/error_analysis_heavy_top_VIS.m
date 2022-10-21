@@ -53,6 +53,7 @@ INT_PARA = [NaN, NaN];
 DT = [0.0001, 0.00005, 0.00001, 0.000005];
 T_0 = 0;
 T_END = 0.001;
+CONV_QUANTITY = 'p';
 
 %% Solver Method
 MAX_ITERATIONS = 40;
