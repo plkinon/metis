@@ -447,7 +447,7 @@ classdef HeavyTop < System
                                                                                             if strcmp(this_simulation.CONV_QUANTITY,'q')
                                                                                                 analyzed_quantity = this_simulation.z(end, 3); %z-coordinate of center of mass
                                                                                             elseif strcmp(this_simulation.CONV_QUANTITY,'p')
-                                                                                                analyzed_quantity = this_simulation.z(end, 15); %z-coordinate of momentum of center of mass
+                                                                                                analyzed_quantity = this_simulation.z(end, 13:15); %x-coordinate of momentum of center of mass
                                                                                             else
                                                                                                 error('quantity not yet implement for convergence analysis.')
                                                                                             end
@@ -455,13 +455,14 @@ classdef HeavyTop < System
                                                                                         end
 
 
-                                                                                        function reference_solution = hconvergence_reference(~, this_simulation, ~)
+                                                                                        function reference_solution = hconvergence_reference(~, this_simulation, analyzed_quantity)
 
                                                                                             if strcmp(this_simulation.CONV_QUANTITY,'q')    
                                                                                                 reference_solution = this_simulation.Q_0(3); %position
                                                                                                 
                                                                                             elseif strcmp(this_simulation.CONV_QUANTITY,'p')
-                                                                                                reference_solution = 0; %velocity
+                                                                                                %reference_solution = 0; %velocity
+                                                                                                reference_solution = analyzed_quantity(:, end, end);
                                                                                             else
                                                                                                 error('quantity not yet implemented for convergence analysis.')
                                                                                             end

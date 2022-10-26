@@ -48,12 +48,12 @@ V_0 = [v00; v10; v20; v30];
 clear rho a r l d g J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0 v00 v10 v20 v30 omega_p omega_s
 
 %% Integrator
-INTEGRATOR = {'GGL_VI_mod'};
-INT_PARA = [NaN, NaN];
-DT = [0.0001, 0.00005, 0.00001, 0.000005];
+INTEGRATOR = {'GGL_VI_mod', 'GGL_VI_theta_A', 'GGL_VI_theta_B', 'EMS_ggl'};
+INT_PARA = [NaN, NaN; 0.5, NaN; 1, 0.5; NaN, NaN];
+DT = [0.00001, 0.000005, 0.000001, 0.0000005];
 T_0 = 0;
 T_END = 0.001;
-CONV_QUANTITY = 'p';
+CONV_QUANTITY = 'q';
 
 %% Solver Method
 MAX_ITERATIONS = 40;
