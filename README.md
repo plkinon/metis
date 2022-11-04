@@ -98,7 +98,7 @@ Rigid Body Dynamics with Directors:
 -   GitHub - [philipplk](https://github.com/philipplk)
 -   Website - [Philipp L. Kinon, Karlsruhe Institute of Technology (KIT)](https://www.ifm.kit.edu/english/14_5490.php)
 -   ResearchGate - [Philipp L. Kinon](https://www.researchgate.net/profile/Philipp-Kinon)
--   LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/philipp-kinon-9092781b5/)
+-   LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/philipp-lothar-kinon-9092781b5/)
 
 [Back To The Top](#description)
 
