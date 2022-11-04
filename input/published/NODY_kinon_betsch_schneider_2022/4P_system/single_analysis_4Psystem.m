@@ -14,15 +14,15 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'EMS_ggl';
+INTEGRATOR = 'GGL_VI_theta_A';
 % Parameters of the method
-INT_PARA = [NaN, NaN];
+INT_PARA = [0.5, NaN];
 % time step size
-DT = 0.25;
+DT = 0.05;
 % starting time
 T_0 = 0;
 % end time
-T_END = 100;
+T_END = 1;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
