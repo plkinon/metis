@@ -32,9 +32,6 @@ n_INT = numel(dummy_simulation.ALL_INTEGRATOR);
 postprocess = Postprocess();
 dummy_simulation = postprocess.compute(system, dummy_simulation, dummy_integrator);
 
-% Analysis quantity allocation
-analyzed_quantity = zeros(system.DIM, n_DT, n_INT);
-
 %% Loop over all desired timestepsizes and integration schemes
 for i = 1:n_DT
     for j = 1:n_INT
