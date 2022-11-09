@@ -448,6 +448,9 @@ classdef HeavyTop < System
                                                                                                 analyzed_quantity = this_simulation.z(end, 3); %z-coordinate of center of mass
                                                                                             elseif strcmp(this_simulation.CONV_QUANTITY,'p')
                                                                                                 analyzed_quantity = this_simulation.z(end, 13:15); %x-coordinate of momentum of center of mass
+                                                                                            elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
+                                                                                                analyzed_quantity = 0.5*(this_simulation.z(end, end-15)+this_simulation.z(end-1, end-15)); %LM for external constraint on pos level
+                                                                                            
                                                                                             else
                                                                                                 error('quantity not yet implement for convergence analysis.')
                                                                                             end
@@ -463,6 +466,8 @@ classdef HeavyTop < System
                                                                                             elseif strcmp(this_simulation.CONV_QUANTITY,'p')
                                                                                                 %reference_solution = 0; %velocity
                                                                                                 reference_solution = analyzed_quantity(:, end, end);
+                                                                                            elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
+                                                                                                reference_solution = analyzed_quantity(:, end, end); %LM for external constraint on pos level
                                                                                             else
                                                                                                 error('quantity not yet implemented for convergence analysis.')
                                                                                             end
