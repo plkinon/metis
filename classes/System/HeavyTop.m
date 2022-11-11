@@ -449,7 +449,7 @@ classdef HeavyTop < System
                                                                                             elseif strcmp(this_simulation.CONV_QUANTITY,'p')
                                                                                                 analyzed_quantity = this_simulation.z(end, 13:15); %x-coordinate of momentum of center of mass
                                                                                             elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
-                                                                                                analyzed_quantity = 0.5*(this_simulation.z(end, end-15)+this_simulation.z(end-1, end-15)); %LM for external constraint on pos level
+                                                                                                analyzed_quantity = this_simulation.z(end, end-15); %LM for external constraint on pos level
                                                                                             
                                                                                             else
                                                                                                 error('quantity not yet implement for convergence analysis.')
