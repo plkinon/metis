@@ -85,6 +85,9 @@ classdef Postprocess
             H = zeros(NT, 1);
             E = zeros(NT, 1);
             L = zeros(NT, 3);
+            if DIM == 2
+                L = zeros(NT,1);
+            end
             diffH = zeros(NT-1, 1);
             diffE = zeros(NT-1, 1);
             diffL = zeros(NT-1, 3);
@@ -125,6 +128,9 @@ classdef Postprocess
                         L(j, :) = L(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), p(j, (k - 1)*DIM+1:k*DIM));
                         external_torque(j, :) = external_torque(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), F_ext((k - 1)*DIM+1:k*DIM));
                     end
+                
+                elseif DIM == 2
+                    L(j) = q(j,1)*p(j,2) - q(j,2)*p(j,1);
 
                 end
 
