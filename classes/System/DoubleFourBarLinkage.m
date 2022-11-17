@@ -168,8 +168,59 @@ classdef DoubleFourBarLinkage < System
         function D2g = constraint_hessian(~, ~, m)
 
             % Hessian of g_k w.r.t. q vanish (only linear constraints)
+
             D2g = zeros(30, 30);
-       
+            if ismember(m, [1,4,7,10,13])
+                
+                D2gint1 = blkdiag(zeros(2,2),eye(2),zeros(2,2));
+                if m ==1
+                    D2g(1:6,1:6)=D2gint1;
+                elseif m==4
+                    D2g(7:12,7:12)=D2gint1;
+                elseif m==7
+                    D2g(13:18,13:18)=D2gint1;
+                elseif m==10
+                    D2g(19:24,19:24)=D2gint1;
+                elseif m==13
+                    D2g(25:30,25:30)=D2gint1;
+                end
+
+            elseif ismember(m, [2,5,8,11,14])
+               
+                D2gint2 = blkdiag(zeros(2,2),zeros(2,2), eye(2));
+                if m ==2
+                    D2g(1:6,1:6)=D2gint2;
+                elseif m==5
+                    D2g(7:12,7:12)=D2gint2;
+                elseif m==8
+                    D2g(13:18,13:18)=D2gint2;
+                elseif m==11
+                    D2g(19:24,19:24)=D2gint2;
+                elseif m==14
+                    D2g(25:30,25:30)=D2gint2;
+                end
+
+            elseif ismember(m, [3,6,9,12,15])
+                
+                D2gint3 = [zeros(2,2), eye(2), zeros(2,2);
+                       eye(2), zeros(2,2), zeros(2,2);
+                       zeros(2,2), zeros(2,2), zeros(2,2)];
+                if m ==3
+                    D2g(1:6,1:6)=D2gint3;
+                elseif m==6
+                    D2g(7:12,7:12)=D2gint3;
+                elseif m==9
+                    D2g(13:18,13:18)=D2gint3;
+                elseif m==12
+                    D2g(19:24,19:24)=D2gint3;
+                elseif m==15
+                    D2g(25:30,25:30)=D2gint3;
+                end
+
+            elseif m > 29
+                error('incorrect index of constraint')
+            end
+            
         end
 
         function [] = potential_invariant(~, ~, ~)
