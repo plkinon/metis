@@ -33,11 +33,11 @@ INTEGRATOR = 'GGL_VI_mod';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.0005;
+DT = 0.001;
 % starting time
 T_0 = 0;
 % end time
-T_END = 4;
+T_END = 10;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
@@ -49,7 +49,7 @@ TOLERANCE = 1E-09;
 % Animation of trajectory [true/false]
 shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
-plot_quantities = {'energy', 'energy_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'};
+plot_quantities = {'energy', 'energy_difference', 'general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'};
 % Export of simulation results in a .mat-file [true/false]
 should_export = true;
 % Export of figures in .eps- and .tikz-files
