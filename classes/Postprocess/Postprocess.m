@@ -372,7 +372,11 @@ classdef Postprocess
                         ylim([Lmin - 0.1 * abs(Lmax-Lmin), Lmax + 0.1 * abs(Lmax-Lmin)]);
                         fig.Name = 'ang_mom';
                         title(strcat(integrator_string, ': Angular Momentum'));
-                        legend('$L_1$', '$L_2$', '$L_3$', 'interpreter', 'latex');
+                        if this_simulation.DIM == 3
+                            legend('$L_1$', '$L_2$', '$L_3$', 'interpreter', 'latex');
+                        else
+                            legend('$L$', 'interpreter', 'latex');
+                        end
                         xlabel('$t$', 'interpreter', 'latex');
                         ylabel('$L_i(t) \ \mathrm{[J\,s]}$', 'interpreter', 'latex');
 
