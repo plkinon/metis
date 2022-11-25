@@ -85,12 +85,13 @@ classdef Postprocess
             H = zeros(NT, 1);
             E = zeros(NT, 1);
             L = zeros(NT, 3);
-            if DIM == 2
-                L = zeros(NT,1);
-            end
             diffH = zeros(NT-1, 1);
             diffE = zeros(NT-1, 1);
             diffL = zeros(NT-1, 3);
+            if DIM == 2
+                L = zeros(NT,1);
+                diffL = zeros(NT-1,1);
+            end
             constraint_position = zeros(NT, m);
             constraint_velocity = zeros(NT, m);
             constraint_forces = zeros(NT-1,nDOF);
@@ -130,18 +131,21 @@ classdef Postprocess
                     end
                 
                 elseif DIM == 2
-                    L(j) = q(j,1)*p(j,2) - q(j,2)*p(j,1);
+
+                    for k =1:d
+                        L(j) = L(j) + q(j,(k - 1)*DIM+1)*p(j,(k - 1)*DIM+2) - q(j,(k - 1)*DIM+2)*p(j,(k - 1)*DIM+1);
+                    end
 
                 end
 
             end
 
             % Compute time-increments in Hamiltonian and angular momentum
-            for j = 2:(NT - 1)
+            for j = 1:(NT - 1)
 
                 diffH(j) = H(j+1) - H(j);
                 diffE(j) = E(j+1) - E(j);
-                diffL(j, :) = L(j+1, :) - L(j-1, :);                
+                diffL(j, :) = L(j+1, :) - L(j, :);                
 
                 if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B')
 
@@ -261,7 +265,8 @@ classdef Postprocess
                         % add chosen matlab2tikz directory
                         addpath([export_simulation.matlab2tikz_directory,'/src']);
                         % tries to export via matlab2tikz if available
-                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
+                        
+                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.4g');
                     catch
                         % if chosen directory is wrong or not existing
                         fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           ']);
@@ -276,7 +281,7 @@ classdef Postprocess
                         fprintf('  \n');
                         addpath([export_simulation.matlab2tikz_directory,'/src']);
                         % Export to .tikz now
-                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.7g');
+                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.4g');
                     end
                     warning('on')
 
@@ -426,7 +431,11 @@ classdef Postprocess
                         fig.Name = 'J_diff';
                         title(strcat(integrator_string, ': Ang. mom. - difference'));
                         xlabel('$t$', 'interpreter', 'latex');
-                        legend('$L_1$', '$L_2$', '$L_3$', 'interpreter', 'latex');
+                        if this_simulation.DIM == 3
+                            legend('$L_1$', '$L_2$', '$L_3$', 'interpreter', 'latex');
+                        else
+                            legend('$L$', 'interpreter', 'latex');
+                        end
                         ylabel('$L_i^\mathrm{n+1}-L_i^\mathrm{n} \ \mathrm{[J\,s]}$', 'interpreter', 'latex');
 
                     case 'constraint_position'
