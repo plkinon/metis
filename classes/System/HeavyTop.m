@@ -58,12 +58,6 @@ classdef HeavyTop < System
 
         end
 
-        function self = initialise(self, CONFIG, this_integrator)
-            % Set initial values
-            self.z = zeros(this_integrator.NT, this_integrator.nVARS);
-            self.z(1, :) = [CONFIG.Q_0', (self.MASS_MAT * CONFIG.V_0)', this_integrator.LM0'];
-        end
-
         function V_ext = external_potential(self, q)
             % given by external acceleration acting on center of mass
             V_ext = -self.MASS * self.EXT_ACC(1:3)' * q(1:3);

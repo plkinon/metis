@@ -51,12 +51,12 @@ classdef FourParticleSystem < System
             self.nConstraintInvariants = 2;
             self.nVconstraintInvariants = 2;
         end
-
-        function self = initialise(self, CONFIG, this_integrator)
-            % Set initial values
-            self.z = zeros(this_integrator.NT, this_integrator.nVARS);
-            self.z(1, :) = [CONFIG.Q_0', (self.MASS_MAT * CONFIG.V_0)', this_integrator.LM0'];
-        end
+% 
+%         function self = initialise(self, CONFIG, this_integrator)
+%             % Set initial values
+%             self.z = zeros(this_integrator.NT, this_integrator.nVARS);
+%             self.z(1, :) = [CONFIG.Q_0', (self.MASS_MAT * CONFIG.V_0)', this_integrator.LM0'];
+%         end
 
         %% Potential functions
 
