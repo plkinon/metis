@@ -54,6 +54,14 @@ classdef DoubleFourBarLinkage < System
             self.nPotentialInvariants = 0;
             self.nConstraintInvariants = 29;
             self.nVconstraintInvariants = 29;
+            
+            % dissipation due to damping pots
+            eta1 = 0.5;
+            eta2 = 0.5;
+            Ci = [eye(2) l/2*eye(2) zeros(2,2);
+                  zeros(2,2) zeros(2,2) zeros(2,2);
+                  l/2*eye(2) l^2/4*eye(2) zeros(2,2)];
+            self.DISS_MAT = blkdiag(zeros(6,6), eta1*Ci, zeros(6,6), eta2*Ci, zeros(6,6));
 
 
         end
@@ -94,8 +102,17 @@ classdef DoubleFourBarLinkage < System
             D2V_int = zeros(size(q, 1));
         end
 
-        %%%%%%%%%%%%%
-        %TODO ab hier
+        function F_visc = viscous_forces(self, v)
+            
+            F_visc = - self.DISS_MAT*v;
+
+        end
+
+        function C = viscous_forces_gradient(self, ~)
+
+            C = - self.DISS_MAT;
+        
+        end
 
         function g = constraint(self, q)
 

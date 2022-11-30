@@ -15,7 +15,7 @@ classdef System
         nPotentialInvariants % number of invariants of the potential
         nConstraintInvariants % number of invariants of the constraint on position level
         nVconstraintInvariants % number of invariants of the constraint on velocity level
-
+        DISS_MAT % dissipation matrix
     end
 
 end

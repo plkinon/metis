@@ -84,10 +84,12 @@ classdef Postprocess
             V = zeros(NT, 1);
             H = zeros(NT, 1);
             E = zeros(NT, 1);
+            D = zeros(NT, 1);
             L = zeros(NT, 3);
             diffH = zeros(NT-1, 1);
             diffE = zeros(NT-1, 1);
             diffL = zeros(NT-1, 3);
+            diss_work = zeros(NT-1, 1);
             if DIM == 2
                 L = zeros(NT,1);
                 diffL = zeros(NT-1,1);
@@ -107,6 +109,7 @@ classdef Postprocess
                 V(j) = this_system.internal_potential(q(j, :)') + this_system.external_potential(q(j, :)');
                 H(j) = T(j) + V(j);
                 E(j) = p(j,:)*v(j,:)' - 1 / 2 * v(j, :) * M * v(j, :)' + V(j);
+                D(j) = v(j, :) * this_system.DISS_MAT * v(j, :)';
                 F_ext = -this_system.external_potential_gradient(q(j, :)');
 
                 % Constraints on position and velocity level
@@ -142,11 +145,10 @@ classdef Postprocess
 
             % Compute time-increments in Hamiltonian and angular momentum
             for j = 1:(NT - 1)
-
                 diffH(j) = H(j+1) - H(j);
                 diffE(j) = E(j+1) - E(j);
                 diffL(j, :) = L(j+1, :) - L(j, :);                
-
+                diss_work(j+1) = diss_work(j)+D(j+1);
                 if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B')
 
                     constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
@@ -168,6 +170,8 @@ classdef Postprocess
             this_simulation.V = V;
             this_simulation.H = H;
             this_simulation.E = E;
+            this_simulation.D = D;
+            this_simulation.diss_work = diss_work;
             this_simulation.L = L;
             this_simulation.Hdiff = diffH;
             this_simulation.Ediff = diffE;
