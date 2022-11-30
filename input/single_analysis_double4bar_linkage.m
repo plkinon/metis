@@ -29,7 +29,7 @@ clear l q10 q20 q30 q40 q50 v0 v10 v20 v30 v40 v50
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'GGL_VI_mod';
+INTEGRATOR = 'GGL_VI_mod_visc';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
