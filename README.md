@@ -9,13 +9,13 @@ See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
 @software{kinon_metis_2022,
   author       = {Philipp L. Kinon and
                   Julian K. Bauer},
-  title        = {{metis: computing constrained dynamical systems, version 1.0.2}},
+  title        = {{metis: computing constrained dynamical systems, version 1.0.4}},
   month        = aug,
   year         = 2022,
   publisher    = {Zenodo},
   version      = {v1.0.2},
-  doi          = {10.5281/zenodo.7286339},
-  url          = {https://doi.org/10.5281/zenodo.7286339}
+  doi          = {10.5281/zenodo.7409028},
+  url          = {https://doi.org/10.5281/zenodo.7409028}
 }
 ```
 
