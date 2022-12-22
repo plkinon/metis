@@ -66,6 +66,24 @@ classdef DoubleFourBarLinkage < System
 
         end
 
+        function M = get_mass_matrix(self, ~)
+            
+            M = self.MASS_MAT;
+
+        end
+
+        function Dq_T = kinetic_energy_gradient_from_momentum(~, q, ~)
+
+            Dq_T = zeros(size(q));
+
+        end
+
+        function Dq_T = kinetic_energy_gradient_from_velocity(~, q, ~)
+
+            Dq_T = zeros(size(q));
+
+        end
+
         function V_ext = external_potential(self, q)
             % given by external acceleration acting on center of mass
             V_ext = 0;

@@ -50,13 +50,27 @@ classdef FourParticleSystem < System
             self.nPotentialInvariants = 2;
             self.nConstraintInvariants = 2;
             self.nVconstraintInvariants = 2;
+
+            self.DISS_MAT = zeros(self.nDOF,self.nDOF);
         end
-% 
-%         function self = initialise(self, CONFIG, this_integrator)
-%             % Set initial values
-%             self.z = zeros(this_integrator.NT, this_integrator.nVARS);
-%             self.z(1, :) = [CONFIG.Q_0', (self.MASS_MAT * CONFIG.V_0)', this_integrator.LM0'];
-%         end
+
+        function M = get_mass_matrix(self, ~)
+            
+            M = self.MASS_MAT;
+
+        end
+
+        function Dq_T = kinetic_energy_gradient_from_momentum(~, q, ~)
+
+            Dq_T = zeros(size(q));
+
+        end
+
+        function Dq_T = kinetic_energy_gradient_from_velocity(~, q, ~)
+
+            Dq_T = zeros(size(q));
+
+        end
 
         %% Potential functions
 
