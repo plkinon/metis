@@ -98,8 +98,7 @@ classdef Solver
         function zn1_guess = newton_initial_guess(~, zn1, this_system, this_simulation, DT)
             
             nDOF = this_system.nDOF;
-            M = this_system.MASS_MAT;
-            IM = M \ eye(size(M));
+            
 
             qn1 = zn1(1:nDOF);
             pn1 = zn1(nDOF+1:2*nDOF);
@@ -113,6 +112,8 @@ classdef Solver
             else
 
                 % else: compute by means of momenta
+                M = this_system.get_mass_matrix(qn1);
+                IM = M \ eye(size(M));
                 vn1 = IM * pn1;
 
             end
