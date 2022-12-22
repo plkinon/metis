@@ -42,11 +42,10 @@ classdef Postprocess
             m = this_system.mCONSTRAINTS;
             DIM = this_system.DIM;
             d = nDOF / DIM;
-
+            
             NT = int32(this_simulation.T_END/this_simulation.DT) + 1;
-            external_torque = this_system.MASS_MAT;
-            IM = external_torque \ eye(size(external_torque));
-            M = this_system.MASS_MAT;
+            %external_torque = this_system.MASS_MAT;
+            %IM = external_torque \ eye(size(external_torque));
 
             q = this_simulation.z(:, 1:nDOF);
             p = this_simulation.z(:, nDOF+1:2*nDOF);
@@ -67,6 +66,8 @@ classdef Postprocess
 
                 % else: compute by means of momenta
                 for j = 1:NT
+                    M = this_system.get_mass_matrix(q(j,:));
+                    IM =  M \ eye(size(M));
                     v(j, :) = (IM * p(j, :)')';
                 end
                 lambda = this_simulation.z(:,2*nDOF+1:2*nDOF+m);
@@ -97,11 +98,14 @@ classdef Postprocess
             constraint_position = zeros(NT, m);
             constraint_velocity = zeros(NT, m);
             constraint_forces = zeros(NT-1,nDOF);
+
+                
             external_torque = zeros(NT,3);
 
             % Compute quantities for every point in time
             for j = 1:NT
-
+                M = this_system.get_mass_matrix(q(j,:));
+                IM = M \ eye(size(M));
                 % Kinetic and potential energy, Hamiltonian
                 T(j) = 1 / 2 * v(j, :) * M * v(j, :)'; %in rare cases,
                 %compute T with the velocity quantities
@@ -113,9 +117,10 @@ classdef Postprocess
                 F_ext = -this_system.external_potential_gradient(q(j, :)');
 
                 % Constraints on position and velocity level
-                constraint_position(j, :) = this_system.constraint(q(j, :)')';
-                constraint_velocity(j, :) = (this_system.constraint_gradient(q(j, :)') * v(j, :)')';
-            
+                if m > 0
+                    constraint_position(j, :) = this_system.constraint(q(j, :)')';
+                    constraint_velocity(j, :) = (this_system.constraint_gradient(q(j, :)') * v(j, :)')';
+                end
 
                 if strcmp(this_simulation.INTEGRATOR, 'GGL_VI_mod')
                     % this specific integration scheme relies upon
@@ -126,11 +131,17 @@ classdef Postprocess
 
                 % Compute angular momentum
                 if DIM == 3
+                    if ismethod(this_system,'get_cartesian_angular_momentum_from_momentum')
+                       
+                        L(j,:) = this_system.get_cartesian_angular_momentum_from_momentum(q(j,:), p(j,:));
 
-                    for k = 1:d
+                    else
+                        r = q(j,:);
+                        r_dot_m = p(j,:);
 
-                        L(j, :) = L(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), p(j, (k - 1)*DIM+1:k*DIM));
-                        external_torque(j, :) = external_torque(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), F_ext((k - 1)*DIM+1:k*DIM));
+                        L(j,:) = L(j,:)+ cross(r((k - 1)*DIM+1:k*DIM), r_dot_m((k - 1)*DIM+1:k*DIM));
+                       % L(j, :) = L(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), p(j, (k - 1)*DIM+1:k*DIM));
+                        %external_torque(j, :) = external_torque(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), F_ext((k - 1)*DIM+1:k*DIM));
                     end
                 
                 elseif DIM == 2
@@ -145,24 +156,26 @@ classdef Postprocess
 
             % Compute time-increments in Hamiltonian and angular momentum
             for j = 1:(NT - 1)
+
                 diffH(j) = H(j+1) - H(j);
                 diffE(j) = E(j+1) - E(j);
                 diffL(j, :) = L(j+1, :) - L(j, :);                
                 diss_work(j+1) = diss_work(j)+D(j+1);
-                if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B')
 
-                    constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
-                    
-                else 
-                    t_bar = zeros(nDOF);
-                    for l = 1:m
-                        t_bar = t_bar + this_system.constraint_hessian(q(j,:), l) * gamma(j,l);
+                if m > 0
+                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B')
+        
+                        constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
+                        
+                    else 
+                        t_bar = zeros(nDOF);
+                        for l = 1:m
+                            t_bar = t_bar + this_system.constraint_hessian(q(j,:), l) * gamma(j,l);
+                        end
+                        constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')'  + (t_bar * IM * p(j,:)')' ;
                     end
-                    constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')'  + (t_bar * IM * p(j,:)')' ;
                 end
                 
-                
-
             end
 
             % Save computed quantities to simulation-object
