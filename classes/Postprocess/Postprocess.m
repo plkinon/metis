@@ -51,12 +51,24 @@ classdef Postprocess
             p = this_simulation.z(:, nDOF+1:2*nDOF);
             v = zeros(NT, nDOF);
 
+            if m > 0
+                lambda = this_simulation.z(:,2*nDOF+1:2*nDOF+m);
+            end
+
             % Check if integration scheme had independent velocity quantities
             if this_simulation.INDI_VELO == true
 
                 % set velocity vector directly
-                v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
-                lambda = this_simulation.z(:,3*nDOF+1:3*nDOF+m);
+                if strcmp(this_integrator.NAME,'Lagrange_top_ODE')
+                    v = this_simulation.z(:, nDOF+1:2*nDOF);
+                else
+                    v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
+                end
+
+                if m > 0
+                    lambda = this_simulation.z(:,3*nDOF+1:3*nDOF+m);
+                end
+
                 if this_integrator.has_enhanced_constraint_force
 
                     gamma = this_simulation.z(:,3*nDOF+m+1:3*nDOF+2*m);
@@ -70,7 +82,7 @@ classdef Postprocess
                     IM =  M \ eye(size(M));
                     v(j, :) = (IM * p(j, :)')';
                 end
-                lambda = this_simulation.z(:,2*nDOF+1:2*nDOF+m);
+                
 
                 if this_integrator.has_enhanced_constraint_force
                      gamma = this_simulation.z(:,2*nDOF+m+1:2*nDOF+2*m);
@@ -105,7 +117,7 @@ classdef Postprocess
             % Compute quantities for every point in time
             for j = 1:NT
                 M = this_system.get_mass_matrix(q(j,:));
-                IM = M \ eye(size(M));
+                
                 % Kinetic and potential energy, Hamiltonian
                 T(j) = 1 / 2 * v(j, :) * M * v(j, :)'; %in rare cases,
                 %compute T with the velocity quantities
@@ -126,6 +138,7 @@ classdef Postprocess
                     % this specific integration scheme relies upon
                     % secondary constraints with momentum formulation and
                     % has non-aligned velocites
+                    IM = M \ eye(size(M));
                     constraint_velocity(j, :) = (this_system.constraint_gradient(q(j, :)') * IM * p(j, :)')';
                 end
 
@@ -138,10 +151,12 @@ classdef Postprocess
                     else
                         r = q(j,:);
                         r_dot_m = p(j,:);
-
-                        L(j,:) = L(j,:)+ cross(r((k - 1)*DIM+1:k*DIM), r_dot_m((k - 1)*DIM+1:k*DIM));
+                            for k=1:d
+                             L(j,:) = L(j,:)+ cross(r((k - 1)*DIM+1:k*DIM), r_dot_m((k - 1)*DIM+1:k*DIM));
                        % L(j, :) = L(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), p(j, (k - 1)*DIM+1:k*DIM));
                         %external_torque(j, :) = external_torque(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), F_ext((k - 1)*DIM+1:k*DIM));
+                            end
+
                     end
                 
                 elseif DIM == 2
@@ -163,7 +178,7 @@ classdef Postprocess
                 diss_work(j+1) = diss_work(j)+D(j+1);
 
                 if m > 0
-                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B')
+                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML')
         
                         constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
                         
