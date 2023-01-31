@@ -412,7 +412,11 @@ classdef LagrangeTop < System
                                                                                             if strcmp(this_simulation.CONV_QUANTITY,'q')
                                                                                                 analyzed_quantity = this_simulation.z(end, 3)*self.GEOM(4); %z-coordinate of center of mass
                                                                                             elseif strcmp(this_simulation.CONV_QUANTITY,'p')
-                                                                                                analyzed_quantity = this_simulation.z(end, 4:6); %x-coordinate of momentum of center of mass
+                                                                                                d_3 = this_simulation.z(end, 1:3);
+                                                                                                m =  this_simulation.z(end, 4:6);
+                                                                                                J_tilde_1_inv = self.MASS_MAT(1,1);
+                                                                                                l = self.GEOM(4);
+                                                                                                analyzed_quantity = l*J_tilde_1_inv * cross(m, d_3); %x-coordinate of momentum of center of mass
                                                                                             elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
                                                                                                 analyzed_quantity = this_simulation.z(end, end-15); %LM for external constraint on pos level
                                                                                             
