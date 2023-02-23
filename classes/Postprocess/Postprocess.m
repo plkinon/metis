@@ -187,6 +187,7 @@ classdef Postprocess
                         for l = 1:m
                             t_bar = t_bar + this_system.constraint_hessian(q(j,:), l) * gamma(j,l);
                         end
+                        IM = M \ eye(size(M));
                         constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')'  + (t_bar * IM * p(j,:)')' ;
                     end
                 end

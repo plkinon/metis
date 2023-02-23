@@ -59,10 +59,10 @@ clear rho a r l d I1 I2 I3 J_tilde m_0 J J1 J3 alpha0 R0 phi0 d10 d20 d30 OMEGA0
 %% Integrator
 INTEGRATOR = {'Lagrange_top_ODE'};
 INT_PARA = [NaN, NaN];
-DT = [0.00001, 0.000005, 0.000001, 0.0000005];
+DT = [0.0001, 0.00005, 0.00001, 0.0000005];
 T_0 = 0;
 T_END = 0.001;
-CONV_QUANTITY = 'p';
+CONV_QUANTITY = 'q';
 
 %% Solver Method
 MAX_ITERATIONS = 40;
