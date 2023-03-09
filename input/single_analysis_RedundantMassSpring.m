@@ -6,7 +6,7 @@ EXT_ACC = [0];
 % Initial configuration [mass no.1; mass no.2; mass no.3, mass no.4]
 Q_0 = [0; 2; 0];
 % Initial velocity [mass no.1; mass no.2; mass no.3, mass no.4]
-V_0 = [0.1; 0.1; 0.1];
+V_0 = [0.1; 0.1; -0.1];
 % Masses [mass no.1; mass no.2; mass no.3, mass no.4]
 MASS = [1; 1];
 % Spatial dimensions
