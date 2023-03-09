@@ -76,7 +76,7 @@ classdef RedundantTwoMassSpringSystem < System
             q2 = q(2);
             q3 = q(3);
 
-            V_int = 1 / 4 * self.K1 * q1^4 + 1 / 4 * self.K2 * q3^4;
+            V_int = 1/4 * self.K1 * q1^4 + 1/4 * self.K2 * q3^4;
 
         end
 
@@ -207,18 +207,18 @@ classdef RedundantTwoMassSpringSystem < System
         % internal potential computed with the invariant
         function Vs = potential_from_invariant(self, pi, i)
             if i == 1
-                Vs = 0.5 * self.K1 * pi^2;
+                Vs = 0.25 * self.K1 * pi^2;
             elseif i == 2
-                Vs = 0.5 * self.K2 * pi^2;
+                Vs = 0.25 * self.K2 * pi^2;
             end
         end
 
         % gradient of internal potential w.r.t. the invariant
         function DVsDpi = potential_gradient_from_invariant(self, pi, i)
             if i == 1
-                DVsDpi = self.K1 * pi;
+                DVsDpi = 0.5 * self.K1 * pi;
             elseif i == 2
-                DVsDpi = self.K2 * pi;
+                DVsDpi = 0.5 * self.K2 * pi;
             end
         end
 
