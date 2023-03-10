@@ -1,4 +1,4 @@
-classdef EML_noCons_new < Integrator
+classdef EML_noCons_Lagrange < Integrator
 
     %% Energy_Momentum-Integration scheme for standard constrained DAE
     %
@@ -6,8 +6,7 @@ classdef EML_noCons_new < Integrator
     %
     % - uses Livens equations of motion
     %
-    % - uses standard gradient for ext. potential and discrete gradient for
-    %   internal potential
+    % - uses discrete gradient for Lagrangians
     %
     % - takes account of non-constant mass-matrices
     %
@@ -16,7 +15,7 @@ classdef EML_noCons_new < Integrator
 
     methods
 
-        function self = EML_noCons_new(this_simulation, this_system)
+        function self = EML_noCons_Lagrange(this_simulation, this_system)
             self.DT = this_simulation.DT;
             self.T_0 = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
@@ -26,7 +25,7 @@ classdef EML_noCons_new < Integrator
             self.INDI_VELO = true;
             self.LM0 = [];
             self.hasPARA = false;
-            self.NAME = 'EMG-noCons';
+            self.NAME = 'EMG-noCons-Lagrange';
             self.has_enhanced_constraint_force = [];
 end
 
@@ -85,8 +84,6 @@ end
                     p_n05 - DG_2_L];
 
             %% Tangent matrix
-            %tang = [eye(n), -h * 0.5 * IM; 
-            %        h * 0.5 * D2Vext_n05 + h * K21_DG_V, eye(n)];
             tang = [];
         end
 

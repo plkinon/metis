@@ -6,8 +6,7 @@ classdef EML_noCons < Integrator
     %
     % - uses Livens equations of motion
     %
-    % - uses standard gradient for ext. potential and discrete gradient for
-    %   internal potential
+    % - uses discrete gradient for ext. potential and internal potential
     %
     % - takes account of non-constant mass-matrices
     %
@@ -26,7 +25,7 @@ classdef EML_noCons < Integrator
             self.INDI_VELO = true;
             self.LM0 = [];
             self.hasPARA = false;
-            self.NAME = 'EMG-noCons';
+            self.NAME = 'EML-noCons';
             self.has_enhanced_constraint_force = [];
 end
 
@@ -62,8 +61,6 @@ end
             p_n05 = 0.5 * (pn + pn1);
             v_n05 = 0.5 * (vn + vn1);
             DVext_n05 = this_system.external_potential_gradient(q_n05);
-            D2Vext_n05 = this_system.external_potential_hessian(q_n05);
-            D2Vint_n05 = this_system.internal_potential_hessian(q_n05);
             D_1_T_n05 = this_system.kinetic_energy_gradient_from_velocity(q_n05, v_n05);
 
             %% Discrete gradients
@@ -73,11 +70,8 @@ end
             T_qnvn1  = 0.5 * vn1' * Mn  * vn1;
             % for the internal potential
             DG_Vint = zeros(n, 1); % for the internal potential
-            DG_Vext = zeros(n, 1); % for the external potential
-            DG_1_T = zeros(n, 1);
             D_1_T_qn05_vn = this_system.kinetic_energy_gradient_from_velocity(q_n05, vn);
             D_1_T_qn05_vn1 = this_system.kinetic_energy_gradient_from_velocity(q_n05, vn1);
-            K21_DG_V = zeros(n, n);
             V_invariants_difference_too_small = false;
 
             % for every invariant individually
@@ -91,17 +85,11 @@ end
                 Vs_n = this_system.potential_from_invariant(pi_n, i);
                 Vs_n1 = this_system.potential_from_invariant(pi_n1, i);
 
-                %for the tangent matrix
-                D2PiDq2 = this_system.potential_invariant_hessian(q_n05, i);
-                DPiDq_n1 = this_system.potential_invariant_gradient(qn1, i);
-                DVsDpi_n1 = this_system.potential_gradient_from_invariant(pi_n1, i);
-
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
                 if abs(pi_n1-pi_n) > 1e-09
                     % discrete gradient
                     DG_Vint = DG_Vint + (Vs_n1 - Vs_n) / (pi_n1 - pi_n) * DPiq_n05;
-                    K21_DG_V = K21_DG_V + DPiq_n05 * (DVsDpi_n1 * DPiDq_n1 * 1 / (pi_n1 - pi_n) - (Vs_n1 - Vs_n) / (pi_n1 - pi_n)^2 * DPiDq_n1)' + (Vs_n1 - Vs_n) / (pi_n1 - pi_n) * 1 / 2 * D2PiDq2;
                 else
                     V_invariants_difference_too_small = true;
                     break
@@ -112,7 +100,6 @@ end
             if V_invariants_difference_too_small
                 % else use MP evaluation of gradient
                 DG_Vint = this_system.internal_potential_gradient(q_n05);
-                K21_DG_V = 1 / 2 * D2Vint_n05;
             end
 
             if abs((qn1-qn)'*(qn1-qn)) > 1e-9
@@ -133,8 +120,6 @@ end
                     p_n05 - DG_2_T];
 
             %% Tangent matrix
-            %tang = [eye(n), -h * 0.5 * IM; 
-            %        h * 0.5 * D2Vext_n05 + h * K21_DG_V, eye(n)];
             tang = [];
         end
 
