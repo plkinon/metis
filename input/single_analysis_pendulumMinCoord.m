@@ -14,7 +14,7 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'EML_noCons_new';
+INTEGRATOR = 'EML_noCons_Lagrange';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
