@@ -23,11 +23,13 @@ classdef SpringPendulumPolar < System
 
            % Resting lengths of the springs
             self.GEOM(1) = 1;
-            self.GEOM(2) = 3000;
+            %EA (stiffness)
+            self.GEOM(2) = 300;
 
             self.nPotentialInvariants = 1;
 
             self.DISS_MAT = zeros(3,3);
+            self.isCyclicCoordinate = [false;false;true];
 
         end
 

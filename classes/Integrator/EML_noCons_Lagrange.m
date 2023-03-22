@@ -25,7 +25,7 @@ classdef EML_noCons_Lagrange < Integrator
             self.INDI_VELO = true;
             self.LM0 = [];
             self.hasPARA = false;
-            self.NAME = 'EMG-noCons-Lagrange';
+            self.NAME = 'EML-noCons-Lagrange';
             self.has_enhanced_constraint_force = [];
 end
 
@@ -57,6 +57,7 @@ end
             q_n05 = 0.5 * (qn + qn1);
             p_n05 = 0.5 * (pn + pn1);
             v_n05 = 0.5 * (vn + vn1);
+            Mn05 = this_system.get_mass_matrix(q_n05);
 
             D_1_L_n05 = this_system.kinetic_energy_gradient_from_velocity(q_n05, v_n05) - this_system.external_potential_gradient(q_n05) - this_system.internal_potential_gradient(q_n05);
             
@@ -72,11 +73,17 @@ end
                 DG_1_L_q_vn = D_1_L_qn05_vn + ((L_qn1vn - L_qnvn - D_1_L_qn05_vn'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn))) * (qn1-qn); 
                 DG_1_L_q_vn1 = D_1_L_qn05_vn1 + ((L_qn1vn1 - L_qnvn1 - D_1_L_qn05_vn1'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn))) * (qn1-qn); 
                 DG_1_L = 0.5*(DG_1_L_q_vn + DG_1_L_q_vn1);
+                DG_2_L = 0.5*(Mn + Mn1)*v_n05;
             else
                 DG_1_L = D_1_L_n05;
+                DG_2_L = Mn05*v_n05;
             end
 
-            DG_2_L = 0.5*(Mn + Mn1)*v_n05;
+%             if any(this_system.isCyclicCoordinate) 
+%                 DG_1_L(this_system.isCyclicCoordinate) = D_1_L_n05(this_system.isCyclicCoordinate);
+%             end
+
+            %DG_2_L = 0.5*(Mn + Mn1)*v_n05;
 
             %% Residual vector
             resi = [qn1 - qn - h * v_n05; 

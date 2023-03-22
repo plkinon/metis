@@ -16,6 +16,7 @@ classdef System
         nConstraintInvariants % number of invariants of the constraint on position level
         nVconstraintInvariants % number of invariants of the constraint on velocity level
         DISS_MAT % dissipation matrix
+        isCyclicCoordinate % vector with boolean entries which are 1 for cyclic coordinates
     end
 
 end

@@ -151,10 +151,10 @@ classdef Postprocess
                     else
                         r = q(j,:);
                         r_dot_m = p(j,:);
+
                             for k=1:d
-                             L(j,:) = L(j,:)+ cross(r((k - 1)*DIM+1:k*DIM), r_dot_m((k - 1)*DIM+1:k*DIM));
-                       % L(j, :) = L(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), p(j, (k - 1)*DIM+1:k*DIM));
-                        %external_torque(j, :) = external_torque(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), F_ext((k - 1)*DIM+1:k*DIM));
+                                L(j,:) = L(j,:)+ cross(r((k - 1)*DIM+1:k*DIM), r_dot_m((k - 1)*DIM+1:k*DIM));
+                                %external_torque(j, :) = external_torque(j, :) + cross(q(j, (k - 1)*DIM+1:k*DIM), F_ext((k - 1)*DIM+1:k*DIM));
                             end
 
                     end

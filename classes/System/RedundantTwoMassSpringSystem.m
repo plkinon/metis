@@ -33,7 +33,7 @@ classdef RedundantTwoMassSpringSystem < System
            % Resting lengths of the springs
             self.GEOM(1) = 1; %length of 1st spring without strain
             self.GEOM(2) = 1; %length of 2nd spring without strain
-            self.GEOM(3) = 1;
+            self.GEOM(3) = 0.1; %w 
             
             self.K1 = 1;
             self.K2 = 2;

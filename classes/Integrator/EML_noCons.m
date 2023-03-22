@@ -87,7 +87,7 @@ end
 
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
-                if abs(pi_n1-pi_n) > 1e-09
+                if abs(pi_n1-pi_n) > 1e-07
                     % discrete gradient
                     DG_Vint = DG_Vint + (Vs_n1 - Vs_n) / (pi_n1 - pi_n) * DPiq_n05;
                 else
@@ -102,7 +102,7 @@ end
                 DG_Vint = this_system.internal_potential_gradient(q_n05);
             end
 
-            if abs((qn1-qn)'*(qn1-qn)) > 1e-9
+            if abs((qn1-qn)'*(qn1-qn)) > 1e-7
                 DG_1_T_q_vn = D_1_T_qn05_vn + ((T_qn1vn - T_qnvn - D_1_T_qn05_vn'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn))) * (qn1-qn); 
                 DG_1_T_q_vn1 = D_1_T_qn05_vn1 + ((T_qn1vn1 - T_qnvn1 - D_1_T_qn05_vn1'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn))) * (qn1-qn); 
                 DG_1_T = 0.5*(DG_1_T_q_vn + DG_1_T_q_vn1);
