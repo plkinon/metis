@@ -36,7 +36,7 @@ classdef RedundantTwoMassSpringSystem < System
             self.GEOM(3) = 0.1; %w 
             
             self.K1 = 1;
-            self.K2 = 2;
+            self.K2 = 3;
 
             self.nPotentialInvariants = 2;
             self.nConstraintInvariants = 1;
@@ -73,10 +73,9 @@ classdef RedundantTwoMassSpringSystem < System
         function V_int = internal_potential(self, q)
             % Internal potential
             q1 = q(1);
-            q2 = q(2);
             q3 = q(3);
 
-            V_int = 1/4 * self.K1 * q1^4 + 1/4 * self.K2 * q3^4;
+            V_int = 1/2 * self.K1 *(q1^2 + q1^4) + 1/2 * self.K2 * (q3^2 + q3^4);
 
         end
 
@@ -91,12 +90,11 @@ classdef RedundantTwoMassSpringSystem < System
         function DV_int = internal_potential_gradient(self, q)
 
             q1 = q(1);
-            q2 = q(2);
             q3 = q(3);
 
-            DV_int = [ self.K1 * q1^3; 
+            DV_int = [ self.K1 * (q1 + 2 * q1^3); 
                         0;
-                      self.K2*q3^3];
+                       self.K2 * (q3 + 2 * q3^3)];
 
         end
 
@@ -105,7 +103,6 @@ classdef RedundantTwoMassSpringSystem < System
 
             % Extract single positions
             q1 = q(1);
-            q2 = q(2);
             q3 = q(3);
 
             % Potential law parameters
@@ -113,9 +110,9 @@ classdef RedundantTwoMassSpringSystem < System
             k2 = self.K2;
 
             % Compose hessian
-            D2V_int = [3*k1*q1^2, 0, 0;
+            D2V_int = [k1 + 6*k1*q1^2, 0, 0;
                        0, 0, 0;
-                       0, 0, 3*k2*q3^2];
+                       0, 0, k2 + 6*k2*q3^2];
 
         end
 
@@ -207,18 +204,18 @@ classdef RedundantTwoMassSpringSystem < System
         % internal potential computed with the invariant
         function Vs = potential_from_invariant(self, pi, i)
             if i == 1
-                Vs = 0.25 * self.K1 * pi^2;
+                Vs = 1/2 * self.K1 * (pi + pi^2);
             elseif i == 2
-                Vs = 0.25 * self.K2 * pi^2;
+                Vs = 1/2 * self.K2 * (pi + pi^2);
             end
         end
 
         % gradient of internal potential w.r.t. the invariant
         function DVsDpi = potential_gradient_from_invariant(self, pi, i)
             if i == 1
-                DVsDpi = 0.5 * self.K1 * pi;
+                DVsDpi = 0.5 * self.K1 * (1 + 2*pi);
             elseif i == 2
-                DVsDpi = 0.5 * self.K2 * pi;
+                DVsDpi = 0.5 * self.K2 * (1 + 2*pi);
             end
         end
 
