@@ -83,8 +83,6 @@ end
 %                 DG_1_L(this_system.isCyclicCoordinate) = D_1_L_n05(this_system.isCyclicCoordinate);
 %             end
 
-            %DG_2_L = 0.5*(Mn + Mn1)*v_n05;
-
             %% Residual vector
             resi = [qn1 - qn - h * v_n05; 
                     pn1 - pn - h * DG_1_L;
