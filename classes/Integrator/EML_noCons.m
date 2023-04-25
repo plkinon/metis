@@ -62,16 +62,20 @@ end
             v_n05 = 0.5 * (vn + vn1);
             DVext_n05 = this_system.external_potential_gradient(q_n05);
             D_1_T_n05 = this_system.kinetic_energy_gradient_from_velocity(q_n05, v_n05);
+            D_2_T_n05 = this_system.get_mass_matrix(q_n05)*v_n05;
 
             %% Discrete gradients
             T_qn1vn  = 0.5 * vn'  * Mn1 * vn;
             T_qnvn   = 0.5 * vn'  * Mn  * vn;
             T_qn1vn1 = 0.5 * vn1' * Mn1 * vn1;
             T_qnvn1  = 0.5 * vn1' * Mn  * vn1;
+            
             % for the internal potential
             DG_Vint = zeros(n, 1); % for the internal potential
             D_1_T_qn05_vn = this_system.kinetic_energy_gradient_from_velocity(q_n05, vn);
             D_1_T_qn05_vn1 = this_system.kinetic_energy_gradient_from_velocity(q_n05, vn1);
+            D_2_T_qn_vn05 = Mn * v_n05;
+            D_2_T_qn1_vn05 = Mn1 * v_n05;
             V_invariants_difference_too_small = false;
 
             % for every invariant individually
@@ -87,7 +91,7 @@ end
 
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
-                if abs(pi_n1-pi_n) > 1e-07
+                if abs(pi_n1-pi_n) > 1e-09
                     % discrete gradient
                     DG_Vint = DG_Vint + (Vs_n1 - Vs_n) / (pi_n1 - pi_n) * DPiq_n05;
                 else
@@ -102,10 +106,11 @@ end
                 DG_Vint = this_system.internal_potential_gradient(q_n05);
             end
 
-            if abs((qn1-qn)'*(qn1-qn)) > 1e-7
+            if abs((qn1-qn)'*(qn1-qn)) > 1e-9
                 DG_1_T_q_vn = D_1_T_qn05_vn + ((T_qn1vn - T_qnvn - D_1_T_qn05_vn'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn))) * (qn1-qn); 
                 DG_1_T_q_vn1 = D_1_T_qn05_vn1 + ((T_qn1vn1 - T_qnvn1 - D_1_T_qn05_vn1'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn))) * (qn1-qn); 
                 DG_1_T = 0.5*(DG_1_T_q_vn + DG_1_T_q_vn1);
+               
                 DG_Vext = DVext_n05 + ((Vext_n1 - Vext_n - DVext_n05'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn)) ) * (qn1-qn);
             else
                 DG_1_T = D_1_T_n05;
@@ -113,6 +118,12 @@ end
             end
 
             DG_2_T = 0.5*(Mn + Mn1)*v_n05;
+% 
+%             if any(this_system.isCyclicCoordinate) 
+%                 DG_1_T(this_system.isCyclicCoordinate) = zeros(size(DG_1_T(this_system.isCyclicCoordinate)));
+%                 DG_Vext(this_system.isCyclicCoordinate) = zeros(size(DG_Vext(this_system.isCyclicCoordinate)));
+%                 DG_Vint(this_system.isCyclicCoordinate) = zeros(size(DG_Vint(this_system.isCyclicCoordinate)));
+%             end
 
             %% Residual vector
             resi = [qn1 - qn - h * v_n05; 
