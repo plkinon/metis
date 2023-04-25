@@ -28,11 +28,23 @@ classdef PendulumMinCoord < System
 
             self.DISS_MAT = zeros(2,2);
 
+            self.isCyclicCoordinate = [false;true];
+
+
         end
         
         function M = get_mass_matrix(self, q)
             
             theta = q(1);
+            m =  self.MASS;
+            l = self.GEOM(1);
+            M = diag([m*l^2, m*l^2*(sin(theta))^2]);
+
+        end
+
+                function M = get_mass_matrix_cyclic(self, x)
+            
+            theta = x(1);
             m =  self.MASS;
             l = self.GEOM(1);
             M = diag([m*l^2, m*l^2*(sin(theta))^2]);
@@ -86,6 +98,17 @@ classdef PendulumMinCoord < System
 
         end
 
+        function Dq_T = kinetic_energy_gradient_from_velocity_cyclic(self, x, v)
+            
+            theta = x(1);
+            v_phi = v(2);
+            m =  self.MASS;
+            l = self.GEOM(1);
+
+            Dq_T = [m*l^2*sin(theta)*cos(theta)*v_phi^2];
+
+        end
+
         function Dq_T = kinetic_energy_gradient_from_momentum(self, q, p)
             
             theta = q(1);
@@ -122,12 +145,30 @@ classdef PendulumMinCoord < System
 
         end
 
+        function V_ext = external_potential_cyclic(self, x)
+            % External potential
+            theta = x(1);
+            m =  self.MASS;
+            g =  self.EXT_ACC;
+            l = self.GEOM(1);
+            V_ext = -m*g*l*cos(theta);
+
+        end
+
         function DV_ext = external_potential_gradient(self, q)
             theta = q(1);
             m =  self.MASS;
             g =  self.EXT_ACC;
             l = self.GEOM(1);
             DV_ext = [m*g*l*sin(theta); 0];
+        end
+
+        function DV_ext = external_potential_gradient_cyclic(self, x)
+            theta = x(1);
+            m =  self.MASS;
+            g =  self.EXT_ACC;
+            l = self.GEOM(1);
+            DV_ext = [m*g*l*sin(theta)];
         end
 
         function D2V_ext = external_potential_hessian(self, q)
