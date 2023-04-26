@@ -50,6 +50,10 @@ classdef Postprocess
             q = this_simulation.z(:, 1:nDOF);
             p = this_simulation.z(:, nDOF+1:2*nDOF);
             v = zeros(NT, nDOF);
+            
+            if this_system.mMixedQuantities > 0
+                alpha = this_simulation.z(:,3*nDOF+1:3*nDOF+this_system.mMixedQuantities);
+            end
 
             if m > 0
                 lambda = this_simulation.z(:,2*nDOF+1:2*nDOF+m);
@@ -113,6 +117,8 @@ classdef Postprocess
 
                 
             external_torque = zeros(NT,3);
+            
+            alpha_from_q = zeros(NT, 1);
 
             % Compute quantities for every point in time
             for j = 1:NT
@@ -123,6 +129,12 @@ classdef Postprocess
                 %compute T with the velocity quantities
                 % T(j) = 1/2*p(j,:)*IM*p(j,:)';
                 V(j) = this_system.internal_potential(q(j, :)') + this_system.external_potential(q(j, :)');
+                
+                if this_integrator.compute_potential_from_mixed_quantity
+                    V(j) = this_system.internal_potential_from_mixed_quantity(alpha(j, :)') + this_system.external_potential(q(j, :)');
+                    alpha_from_q(j) = (q(j, :)*q(j, :)'-1)/2;
+                end
+
                 H(j) = T(j) + V(j);
                 E(j) = p(j,:)*v(j,:)' - 1 / 2 * v(j, :) * M * v(j, :)' + V(j);
                 D(j) = v(j, :) * this_system.DISS_MAT * v(j, :)';
@@ -209,6 +221,7 @@ classdef Postprocess
             this_simulation.constraint_velocity = constraint_velocity;
             this_simulation.constraint_forces = constraint_forces;
             this_simulation.external_torque = external_torque;
+            this_simulation.alpha_from_q = alpha_from_q;
 
         end
 

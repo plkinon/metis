@@ -25,8 +25,8 @@ clearvars;
 % Add all subdirectories and to the current path
 addpath(genpath(fileparts(which(mfilename))));
 % Metis creates objects from input-file
-[simulation, system, integrator, solver] = Metis('input/single_analysis_pendulumMinCoord', 1, 1);
-
+%[simulation, system, integrator, solver] = Metis('input/single_analysis_pendulumMinCoord', 1, 1);
+[simulation, system, integrator, solver] = Metis('input/single_analysis_SpringPendulum', 1, 1);
 %% METIS solver
 % Solve system with chosen solver and integration scheme
 simulation = solver.solve(simulation, system, integrator);

@@ -26,6 +26,7 @@ classdef Metis
         optime
         NUM_ITER
         MEAN_ITER
+        ALPHA_0
 
         %% Postprocessing parameters
         % Can be given in an input-file (not necessary for computing)
@@ -55,6 +56,7 @@ classdef Metis
         constraint_velocity
         constraint_forces
         external_torque
+        alpha_from_q
 
         %% Error analysis parameters
         % Only necessary if you want to conduct an error analysis for

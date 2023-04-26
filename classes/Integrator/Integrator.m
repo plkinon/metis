@@ -14,6 +14,7 @@ classdef Integrator
         hasPARA
         PARA
         has_enhanced_constraint_force
+        compute_potential_from_mixed_quantity
     end
 
 end

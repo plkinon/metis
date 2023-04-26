@@ -17,6 +17,7 @@ classdef System
         nVconstraintInvariants % number of invariants of the constraint on velocity level
         DISS_MAT % dissipation matrix
         isCyclicCoordinate % vector with boolean entries which are 1 for cyclic coordinates
+        mMixedQuantities % number of mixed quantities for integrator (e.g. strain)
     end
 
 end
