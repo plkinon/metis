@@ -24,7 +24,7 @@ DT = 0.01;
 % starting time
 T_0 = 0;
 % end time
-T_END = 10;
+T_END = 4;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method

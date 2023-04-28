@@ -71,7 +71,7 @@ end
             %% Discrete gradients
             
             % for the internal potential
-            if abs((epsn1-epsn)'*(epsn1-epsn)) > 1e-9
+            if abs((epsn1-epsn)'*(epsn1-epsn)) > 1e-10
                 DG_Vint = (Vint_n1 - Vint_n)/(epsn1-epsn);
             else
                 % else use MP evaluation of gradient
@@ -79,7 +79,7 @@ end
             end
 
             % for the external potential
-            if abs((qn1-qn)'*(qn1-qn)) > 1e-9               
+            if abs((qn1-qn)'*(qn1-qn)) > 1e-10               
                 DG_Vext = DVext_n05 + ((Vext_n1 - Vext_n - DVext_n05'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn)) ) * (qn1-qn);
             else
                 DG_Vext = DVext_n05;
