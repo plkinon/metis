@@ -96,6 +96,15 @@ classdef Postprocess
 
             end
 
+            if this_system.mMixedQuantities > 0 && this_simulation.INDI_VELO
+                mixed_quantity_difference = zeros(NT,this_system.mMixedQuantities);
+                for j = 1:NT
+                    mixed_quantity = this_simulation.z(j,3*nDOF+1:3*nDOF+this_system.mMixedQuantities);
+                    mixed_quantity_from_position = this_system.mixed_quantity(q(j,:)');
+                    mixed_quantity_difference(j) = mixed_quantity - mixed_quantity_from_position;
+                end
+            end
+
             % Allocate space for postprocessing quantities
             T = zeros(NT, 1);
             V = zeros(NT, 1);
@@ -222,6 +231,7 @@ classdef Postprocess
             this_simulation.constraint_forces = constraint_forces;
             this_simulation.external_torque = external_torque;
             this_simulation.alpha_from_q = alpha_from_q;
+            this_simulation.mixed_quantity_difference = mixed_quantity_difference;
 
         end
 
@@ -369,6 +379,7 @@ classdef Postprocess
             diffL = this_simulation.Ldiff;
             g_pos = this_simulation.constraint_position;
             g_vel = this_simulation.constraint_velocity;
+            C_diff = this_simulation.mixed_quantity_difference;
 
             % go through desired output quantities
             for i = 1:length(this_simulation.plot_quantities)
@@ -517,6 +528,24 @@ classdef Postprocess
                         title(strcat(integrator_string, ': Constraint on velocity level'));
                         xlabel('$t$', 'interpreter', 'latex');
                         ylabel('$g^\mathbf{v}_k(t)$', 'interpreter', 'latex');
+
+
+                    case 'mixed_quantity_difference'
+
+                        %plots the velocity constraint and their violations by integration
+                        plotline = plot(t, C_diff);
+                        max_diff = max(max(C_diff));
+                        max_rounded = 10^(real(floor(log10(max_diff))+1));
+                        min_diff = min(min(C_diff));
+                        min_rounded = -10^(real(floor(log10(min_diff))) + 1);
+                        hold on
+                        plot([t(1), t(end)], [max_rounded, max_rounded], 'k--', [t(1), t(end)], [min_rounded, min_rounded], 'k--');
+                        ylim([2 * min_rounded, 2 * max_rounded]);
+
+                        fig.Name = 'C_diff';
+                        title(strcat(integrator_string, ': mixed quantity difference'));
+                        xlabel('$t$', 'interpreter', 'latex');
+                        ylabel('$C - C (q) $', 'interpreter', 'latex');
 
                     otherwise
 

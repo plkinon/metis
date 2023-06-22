@@ -57,6 +57,7 @@ classdef Metis
         constraint_forces
         external_torque
         alpha_from_q
+        mixed_quantity_difference
 
         %% Error analysis parameters
         % Only necessary if you want to conduct an error analysis for

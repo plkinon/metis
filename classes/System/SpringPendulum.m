@@ -111,6 +111,11 @@ classdef SpringPendulum < System
 
             DV_int = k*l0/4*(1- 1/C) ;
         end
+        
+        function C_q = mixed_quantity(self,q)
+            l0 = self.GEOM(1);
+            C_q = (q'*q)/(l0^2);
+        end
 
         function D_C_q = mixed_quantity_gradient(self,q)
             l0 = self.GEOM(1);

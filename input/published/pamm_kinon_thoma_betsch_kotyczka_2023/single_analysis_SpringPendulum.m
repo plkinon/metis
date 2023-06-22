@@ -34,9 +34,9 @@ TOLERANCE = 1E-09;
 
 %% Postprocessing
 % Animation of trajectory [true/false]
-shouldAnimate = true;
+shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
-plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference'};
+plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference','mixed_quantity_difference'};
 % Export of simulation results in a .mat-file [true/false]
 should_export = true;
 % Export of figures in .eps- and .tikz-files
