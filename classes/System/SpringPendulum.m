@@ -82,17 +82,17 @@ classdef SpringPendulum < System
             l0 = self.GEOM(1);
             k = self.GEOM(2);
 
-            eps = (q'*q-l0^2)/(2*l0^2);
-            V_int = k*l0/4*(2*eps-log(2*eps+1));
+            C = (q'*q)/(l0^2);
+            V_int = k*l0/4*(C-log(C)-1);
 
         end
 
-        function V_int = internal_potential_from_mixed_quantity(self, eps)
+        function V_int = internal_potential_from_mixed_quantity(self, C)
             
             l0 = self.GEOM(1);
             k = self.GEOM(2);
 
-            V_int = k*l0/4*(2*eps-log(2*eps+1));
+            V_int = k*l0/4*(C-log(C)-1);
             
         end
 
@@ -105,16 +105,16 @@ classdef SpringPendulum < System
             DV_int = k*l0/2*(1- 1/(2*eps+1)) * q/l0^2 ;
         end
 
-        function DV_int = internal_potential_gradient_from_mixed_quantity(self, eps)
+        function DV_int = internal_potential_gradient_from_mixed_quantity(self, C)
             l0 = self.GEOM(1);
             k = self.GEOM(2);
 
-            DV_int = k*l0/2*(1- 1/(2*eps+1)) ;
+            DV_int = k*l0/4*(1- 1/C) ;
         end
 
-        function D_eps_q = mixed_quantity_gradient(self,q)
+        function D_C_q = mixed_quantity_gradient(self,q)
             l0 = self.GEOM(1);
-            D_eps_q = q/(l0^2) ;
+            D_C_q = 2*q/(l0^2) ;
 
         end
 

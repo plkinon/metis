@@ -48,31 +48,31 @@ end
             qn1 = zn1(1:n);
             pn1 = zn1(n+1:2*n);
             vn1 = zn1(2*n+1:3*n);
-            epsn1 = zn1(3*n+1:3*n+mMixed);
+            Cn1 = zn1(3*n+1:3*n+mMixed);
             Vext_n1 = this_system.external_potential(qn1);
-            Vint_n1 = this_system.internal_potential_from_mixed_quantity(epsn1);
+            Vint_n1 = this_system.internal_potential_from_mixed_quantity(Cn1);
             
             %% Known quantities from last time-step
             qn = zn(1:n);
             pn = zn(n+1:2*n);
             vn = zn(2*n+1:3*n);
-            epsn = zn(3*n+1:3*n+mMixed);
+            Cn = zn(3*n+1:3*n+mMixed);
             Vext_n = this_system.external_potential(qn);
-            Vint_n = this_system.internal_potential_from_mixed_quantity(epsn);
+            Vint_n = this_system.internal_potential_from_mixed_quantity(Cn);
            
             %% MP evaluated quantities
             q_n05 = 0.5 * (qn + qn1);
             v_n05 = 0.5 * (vn + vn1);
-            eps_n05 = 0.5 * (epsn + epsn1);
+            C_n05 = 0.5 * (Cn + Cn1);
 
             DVext_n05 = this_system.external_potential_gradient(q_n05);
-            DVint_n05 = this_system.internal_potential_gradient_from_mixed_quantity(eps_n05);
+            DVint_n05 = this_system.internal_potential_gradient_from_mixed_quantity(C_n05);
 
             %% Discrete gradients
             
             % for the internal potential
-            if abs((epsn1-epsn)'*(epsn1-epsn)) > 1e-10
-                DG_Vint = (Vint_n1 - Vint_n)/(epsn1-epsn);
+            if abs((Cn1-Cn)'*(Cn1-Cn)) > 1e-10
+                DG_Vint = (Vint_n1 - Vint_n)/(Cn1-Cn);
             else
                 % else use MP evaluation of gradient
                 DG_Vint = DVint_n05;
@@ -84,7 +84,7 @@ end
             else
                 DG_Vext = DVext_n05;
             end
-            D_eps_q_n05 = this_system.mixed_quantity_gradient(q_n05);
+            D_C_q_n05 = this_system.mixed_quantity_gradient(q_n05);
 
 %             if any(this_system.isCyclicCoordinate) 
 %                 DG_1_T(this_system.isCyclicCoordinate) = zeros(size(DG_1_T(this_system.isCyclicCoordinate)));
@@ -94,8 +94,8 @@ end
 
             %% Residual vector
             resi = [qn1 - qn - h * v_n05; 
-                    M*vn1 - M*vn + h * DG_Vext + h * D_eps_q_n05 * DG_Vint;
-                    epsn1 - epsn - h *  D_eps_q_n05' * v_n05;
+                    M*vn1 - M*vn + h * DG_Vext + h * D_C_q_n05 * DG_Vint;
+                    Cn1 - Cn - h *  D_C_q_n05' * v_n05;
                     pn1 - M*vn1];
 
             %% Tangent matrix
