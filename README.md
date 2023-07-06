@@ -71,6 +71,42 @@ The simulation is will be tracked by a log-file `./metis.log`.
 
 ---
 
+## How to start using GNU Octave
+
+Install [GNU Octave](https://octave.org/) with [Conda](https://docs.conda.io/en/latest/):
+
+Create a new Conda environment called `metis`
+
+```bash
+conda create -n metis
+```
+
+Activate the environment
+
+```bash
+conda activate metis
+```
+
+Install [Octave using Conda](https://anaconda.org/conda-forge/octave)
+
+```bash
+conda install -c conda-forge octave
+```
+
+Start an Octave-session
+
+```bash
+octave
+```
+
+Execute an analysis
+
+```bash
+start_metis_single_analysis;
+```
+
+---
+
 ## References
 
 Hamiltonian Dynamics and Constraints:
