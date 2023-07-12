@@ -40,7 +40,7 @@ classdef RedundantTwoMassSpringSystem < System
 
             self.nPotentialInvariants = 2;
             self.nConstraintInvariants = 1;
-
+            self.mMixedQuantities = 0;
             self.DISS_MAT = zeros(3,3);
 
         end
