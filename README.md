@@ -3,19 +3,30 @@
   <p align="center">Computing Constrained Mechanical Systems.</p>
 </p>
 
-See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
+See [license](LICENSE) and [acknowledgements](#acknowledgements). 
+
+## Citation
+
+If you used this code (partially) in your project or found it somehow useful, please cite one or both of the following works:
 
 ```bibtex
-@software{kinon_metis_2022,
-  author       = {Philipp L. Kinon and
-                  Julian K. Bauer},
-  title        = {{metis: computing constrained dynamical systems, version 1.0.4}},
-  month        = aug,
-  year         = 2022,
-  publisher    = {Zenodo},
-  version      = {v1.0.4},
-  doi          = {10.5281/zenodo.7409028},
-  url          = {https://doi.org/10.5281/zenodo.7409028}
+@article{kinon_ggl_2023,
+  author  = {Kinon, Philipp L. and Betsch, P. and Schneider, S.},
+  title   = {The {GGL} variational principle for constrained mechanical systems},
+  journal = {Multibody Syst. Dyn.},
+  volume  = {57},
+  pages   = {211--236},
+  year    = {2023},
+  doi     = {10.1007/s11044-023-09889-6}
+}
+
+@article{kinon_structure_2023,
+  author  = {Kinon, Philipp L. and Betsch, P. and Schneider, S.},
+  title   = {Structure-preserving integrators based on a new variational principle for constrained mechanical systems},
+  journal = {Nonlinear Dyn.},
+  year    = {2023},
+  doi     = {10.1007/s11071-023-08522-7},
+  note    = {doi: 10.1007/s11071-023-08522-7}
 }
 ```
 
@@ -25,9 +36,9 @@ See [license](LICENSE) and [acknowledgements](#acknowledgements). Cite as:
 
 Metis was a mythical Titaness who became the goddess of wisdom, prudence and ingenuity. Ingenuity being the "practical, complex and implicit" kind differs from the other types of wisdom.
 
-Likewise, this project targets the efficient and aesthetically pleasing numerical computation of dynamical systems being subject to holonomic constraints: particle systems as well as rigid body systems.
+Likewise, this project targets the efficient and aesthetically pleasing numerical computation of dynamical systems with or without holonomic constraints: particle systems as well as rigid body systems.
 
-Metis is an object-oriented MATLAB code package - tested with the R2020b version.
+Metis is an object-oriented MATLAB code package - tested with the R2021b version.
 
 A startscript loads the desired input-file. This input-file includes all necessary parameters for the given mechanical problem (geometry, loads, initial values,...), the chosen numerical integration scheme (time-step size, method, simulation time), the Postprocessing routine (plot quantities, animation, export) and the solution technique (max. iterations, tolerance). Metis creates all necessary objects and computes the approximate solution based on the given parameters. Eventually, one can choose to have an animation of the solution, some plots are created and the results are being exported.
 The simulation is will be tracked by a log-file `./metis.log`.
@@ -44,7 +55,7 @@ The simulation is will be tracked by a log-file `./metis.log`.
 -   Numerical Integration (Direct Methods, Variational Integrators, Energy-Momentum Schemes)
 -   Newton-Rhapson Method
 -   Particle Systems
--   Rigid Body Dynamics with Director Formulation
+-   Rigid Body Dynamics
 
 [Back To The Top](#description)
 
@@ -106,17 +117,11 @@ Rigid Body Dynamics with Directors:
 
 ## Acknowledgements
 
-Metis was mainly initialised by Philipp L. Kinon during their master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. This project would not have been possible without the support of others:
-
-**Academic Supervisors:**
-
--   [Prof. Dr.-Ing. Peter Betsch](https://www.ifm.kit.edu/english/14_4655.php)
--   [Simeon Schneider, M. Sc.](https://www.ifm.kit.edu/english/14_4890.php)
--   [Dr.-Ing. Mark Schiebl](https://www.ifm.kit.edu/english/14_4906.php)
+Metis was initialised by Philipp L. Kinon during their master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. Subsequently, Philipp worked on the code continuously in the context of academic projects. The achieved results would not have been possible without the support by [Prof. Peter Betsch](https://www.ifm.kit.edu/english/14_4655.php).
 
 **Coding support:**
 
-[Julian Bauer M. Sc.](https://www.ifm.kit.edu/english/14_5166.php)
+[Julian K. Bauer](https://scholar.google.de/citations?user=-qdVC1gAAAAJ&hl=en&oi=ao)
 (GitHub: [JulianKarlBauer](https://github.com/JulianKarlBauer))
 
 * * *
