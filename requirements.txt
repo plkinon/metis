@@ -1,3 +1,4 @@
-sphinx>=3.0.0
+sphinx>=4.0.0
+phython >=3.8
 sphinx_rtd_theme>=0.5.0
 -U sphinxcontrib-matlabdomain
