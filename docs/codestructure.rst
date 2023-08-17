@@ -10,4 +10,6 @@ Classes
 
 
 .. _Integrators:
+
+Integrators
 ------------
