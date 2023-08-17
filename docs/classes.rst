@@ -1,2 +1,5 @@
+Classes
+===========
+
 .. automodule:: classes
     :members:
