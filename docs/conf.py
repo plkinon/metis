@@ -35,7 +35,6 @@ extensions = [ 'sphinx.ext.duration',
     'sphinxcontrib.matlab',
 ]
 
-extensions = ['sphinx.ext.autodoc', 'sphinxcontrib.matlab']
 this_dir = os.path.dirname(os.path.abspath(__file__))
 matlab_src_dir = os.path.abspath(os.path.join(this_dir, '..'))
 primary_domain = 'mat'
