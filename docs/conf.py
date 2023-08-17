@@ -35,9 +35,10 @@ extensions = [ 'sphinx.ext.duration',
     'sphinxcontrib.matlab',
 ]
 
-primary_domain = "mat"
-matlab_src_dir = os.path.abspath('..')
-autosummary_generate = True
+extensions = ['sphinx.ext.autodoc', 'sphinxcontrib.matlab']
+this_dir = os.path.dirname(os.path.abspath(__file__))
+matlab_src_dir = os.path.abspath(os.path.join(this_dir, '..'))
+primary_domain = 'mat'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
