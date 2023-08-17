@@ -14,6 +14,9 @@
 %      and Engineering, 269: 437–453, 2014. doi: 10.1016/j.cma.2013.10.028.
 
 classdef HeavyTop < System
+% A rigid gyroscopic top. Makes use of director formulation, e.g. described
+% in [1,2]. Internal constraints plus a constraint which fixes the top to
+% the floor. Subject to initial velocities and external acceleration.
 
     %%
     methods
