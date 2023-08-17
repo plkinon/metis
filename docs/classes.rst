@@ -1,5 +1,5 @@
 Classes
 ===========
 
-.. automodule:: classes
+.. automodule:: test_data
     :members:
