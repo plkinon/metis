@@ -12,6 +12,9 @@ a. Single analysis: allows the integration of movement equations at a constant t
 
 b. Error analysis: the movemente equations are solved at different time step sizes Δ𝑡𝑖 . The output is aconvergence analysis with the error as a function of the time step size.
 
+.. note::
+
+   This project is under active development.
 
 Contents
 --------
@@ -19,6 +22,7 @@ Contents
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
    GettingStartet
    
 
