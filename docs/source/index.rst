@@ -10,8 +10,7 @@ Welcome to Metis's documentation!
 
 a. Single analysis: allows the integration of movement equations at a constant time step size. Output are quantities like energy, energy differences, the system's state variables and constraint evaluations (among others) as a function of time.
 
-b. Error analysis: the movemente equations are solved at different time step sizes Δ𝑡𝑖 . The output is a
-convergence analysis with the error as a function of the time step size.
+b. Error analysis: the movemente equations are solved at different time step sizes Δ𝑡𝑖 . The output is aconvergence analysis with the error as a function of the time step size.
 
 
 Contents
