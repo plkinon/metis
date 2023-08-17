@@ -36,6 +36,7 @@ extensions = [ 'sphinx.ext.duration',
 ]
 
 primary_domain = "mat"
+matlab_src_dir = os.path.abspath('..')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
