@@ -27,11 +27,18 @@ author = 'Jose Luis Muñoz Reyes'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
+extensions = [ 'sphinx.ext.duration',
+    'sphinx.ext.doctest',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+# -- Options for HTML output
+html_theme = 'sphinx_rtd_theme'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
