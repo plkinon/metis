@@ -1,6 +1,6 @@
-%% Class: Solver that conducts the computation
-% Time-stepping, Newton Rhapson method and numerical tangent if needed
 classdef Solver
+% Class: Solver that conducts the computation
+% Time-stepping, Newton Rhapson method and numerical tangent if needed
 
     properties
         MAX_ITERATIONS
