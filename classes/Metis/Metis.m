@@ -2,6 +2,8 @@
 % Conducts all the computations, stores Input-Parameters, sets up
 % variables, initialises classes and solving methods
 classdef Metis
+% Conducts all the computations, stores Input-Parameters, sets up
+% variables, initialises classes and solving methods
 
     properties
 
