@@ -1,4 +1,4 @@
-How to get startet
+Getting started:
 =====
 
 .. _Requirements:
