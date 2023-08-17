@@ -2,5 +2,5 @@ Systems
 =========
 
 
-.. automodule:: classes.Systems
+.. automodule:: classes.System
     :members:
