@@ -24,5 +24,6 @@ Contents
 
    GettingStartet
    codestructure
+   classes
    
 
