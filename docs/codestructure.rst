@@ -15,6 +15,7 @@ Classes
 
 Metis
 ------------
+.. atuomodule:: Metis
 .. autoclass:: Metis
     :show-inheritance:
     :members:
