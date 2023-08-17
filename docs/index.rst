@@ -23,6 +23,6 @@ Contents
    
 
    GettingStartet
-   modules
+   codestructure
    
 
