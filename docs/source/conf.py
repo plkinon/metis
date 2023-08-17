@@ -35,6 +35,8 @@ extensions = [ 'sphinx.ext.duration',
     'sphinxcontrib.matlab',
 ]
 
+primary_domain = "mat"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -56,4 +58,4 @@ exclude_patterns = []
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-primary_domain = "mat"
+
