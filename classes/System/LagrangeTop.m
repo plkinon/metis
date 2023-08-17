@@ -8,6 +8,8 @@
 %
 
 classdef LagrangeTop < System
+% A rigid gyroscopic top. Uses d_3 director and angular momentum as
+% variables.
 
     %%
     methods
