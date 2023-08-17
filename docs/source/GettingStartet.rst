@@ -13,7 +13,7 @@ First steps
 5. Adjust <input_file_name> corresponding to a file from /input, for more info look at README_inputz
     .. code-block:: console
 
-           (.venv) $ pip install lumache
+           [simulation, system, integrator, solver] = Metis('input/<input_file_name>',1,1);e
 6. Adjust the path to the matlab2tikz directory in the chosen input-file
 7. Execute start_metis_single_analysis.m for a first simulation
 8. Edit or change input file or create a new one in /input
