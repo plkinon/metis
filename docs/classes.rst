@@ -1,5 +1,5 @@
 Classes
 ===========
 
-.. automodule:: test_data
+.. automodule:: classes.Metis
     :members:
