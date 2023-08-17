@@ -18,8 +18,11 @@
 
 
 classdef DoubleFourBarLinkage < System
+% A system consisting of 5 bars. Makes use of 2D director formulation, 
+% e.g. described in [1]. Internal constraints plus a constraint which 
+% fixes the top to the floor. Subject to initial velocities and external 
+% acceleration. More details can be found in [2].
 
-    %%
     methods
 
         function self = DoubleFourBarLinkage(CONFIG)
