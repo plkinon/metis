@@ -1,14 +1,23 @@
 How to get startet
 =====
 
+.._Requirements:
+
+Requirements
+------------
+
+1. `MATLAB <https://www.mathworks.com/products/matlab.html>`_
+2. `matlab2tikz <https://github.com/matlab2tikz/matlab2tikz>`_ (optional)
+
+
 .. _First steps:
 
 First steps
 ------------
 
 1. Clone this directory or download the .zip folder
-2. Get matlab2tikz (optional)
-3. Open the MATLAB editor or run it with the shell script metis.sh
+2. Get `matlab2tikz <https://github.com/matlab2tikz/matlab2tikz>`_ (optional)
+3. Open the `MATLAB <https://www.mathworks.com/products/matlab.html>`_ editor or run it with the shell script metis.sh
 4. Open start_metis_single_analysis.m
 5. Adjust <input_file_name> corresponding to a file from /input, for more info look at README_inputz
 
