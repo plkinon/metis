@@ -1,6 +1,5 @@
 classdef GGL_theta_mod < Integrator
-
-    %% One-stage-theta-method (1) for GGL-like constrained DAE
+    % One-stage-theta-method (1) for GGL-like constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)

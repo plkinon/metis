@@ -1,6 +1,5 @@
 classdef EM_pH < Integrator
-
-    %% Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for standard constrained DAE
     %
     % - not derived from variational principle
     %

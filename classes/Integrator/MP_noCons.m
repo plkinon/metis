@@ -1,6 +1,5 @@
 classdef MP_noCons < Integrator
-
-    %% Midpoint-Integration scheme for unconstrained dynamics
+    % Midpoint-Integration scheme for unconstrained dynamics
     %
     % - based on momenta and positions (Hamiltonian approach)
     %

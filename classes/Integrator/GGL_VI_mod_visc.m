@@ -1,6 +1,5 @@
 classdef GGL_VI_mod_visc < Integrator
-
-    %% Variational integration scheme for GGL-like constrained DAE
+    % Variational integration scheme for GGL-like constrained DAE
     %
     % - based on constraint on position and momentum level
     %

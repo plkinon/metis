@@ -1,6 +1,5 @@
 classdef GGL_std < Integrator
-
-    %% GGL integration scheme for constrained DAE
+    % GGL integration scheme for constrained DAE
     %
     % - based constraints on position and momentum level
     %

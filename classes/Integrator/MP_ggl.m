@@ -1,6 +1,5 @@
 classdef MP_ggl < Integrator
-
-    %% Gen-alpha-typed-Integration scheme for standard constrained DAE
+    % Gen-alpha-typed-Integration scheme for standard constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)

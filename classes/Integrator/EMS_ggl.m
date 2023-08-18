@@ -1,6 +1,5 @@
 classdef EMS_ggl < Integrator
-
-    %% Energy_Momentum-Integration scheme for constrained DAE with GGL stabilisation
+    % Energy_Momentum-Integration scheme for constrained DAE with GGL stabilisation
     %
     % - based only on constraints on position and velocity level
     %

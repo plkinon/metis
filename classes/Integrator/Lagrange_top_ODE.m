@@ -1,6 +1,5 @@
 classdef Lagrange_top_ODE < Integrator
-
-    %% Integration scheme for Lagrange top 
+    % Integration scheme for Lagrange top 
     %
     % - based on angular momentum and director d3 (ODE approach)
     %

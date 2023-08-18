@@ -1,6 +1,5 @@
 classdef CSE_B < Integrator
-
-    %% Variational integration scheme for constrained DAE
+    % Variational integration scheme for constrained DAE
     %
     % - based on constraint on position level
     %

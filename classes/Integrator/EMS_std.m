@@ -1,6 +1,5 @@
 classdef EMS_std < Integrator
-
-    %% Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for standard constrained DAE
     %
     % - based only on constraint on position level
     %

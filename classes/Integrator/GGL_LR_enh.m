@@ -1,6 +1,5 @@
 classdef GGL_LR_enh < Integrator
-
-    %% Variational integration scheme for GGL-like constrained DAE
+    % Variational integration scheme for GGL-like constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)

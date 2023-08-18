@@ -1,6 +1,5 @@
 classdef MP_std < Integrator
-
-    %% Gen-Alpha-typed-Integration scheme for standard constrained DAE
+    % Gen-Alpha-typed-Integration scheme for standard constrained DAE
     %
     % - based only on constraint on position level
     %

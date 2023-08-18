@@ -1,6 +1,5 @@
 classdef GGL_VI_theta_B < Integrator
-
-    %% Runge-Kutta typed scheme for GGL-like constrained DAE
+    % Runge-Kutta typed scheme for GGL-like constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)

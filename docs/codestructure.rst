@@ -2,7 +2,7 @@ Code Structure
 ============
 
 .. toctree::
-	classes
+	StructureRST/classes
 
 
 
