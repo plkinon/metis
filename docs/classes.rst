@@ -1,5 +1,6 @@
 Classes
-===========
+==========
 
-.. automodule:: classes.Metis
-    :members:
+.. toctree::
+	Systems
+	Metis

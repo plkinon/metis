@@ -1,7 +1,8 @@
-Metis
-------------
+Code Structure 
+============
 
-.. autoclass:: classes.Metis.Metis
+.. toctree::
+	classes
 
 
 
