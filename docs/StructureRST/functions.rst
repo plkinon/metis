@@ -1,0 +1,6 @@
+Functions
+=========
+
+
+.. automodule:: functions
+    :members:
