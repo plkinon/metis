@@ -2,5 +2,8 @@ Classes
 ==========
 
 .. toctree::
-	Systems
+	Integrators
 	Metis
+	Postprocess
+	Solver
+	Systems
