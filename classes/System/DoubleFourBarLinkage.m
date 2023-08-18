@@ -1,10 +1,9 @@
 %% Class: Double Four Bar Linkage
-%
+classdef DoubleFourBarLinkage < System
 % A system consisting of 5 bars. Makes use of 2D director formulation, 
 % e.g. described in [1]. Internal constraints plus a constraint which 
 % fixes the top to the floor. Subject to initial velocities and external 
 % acceleration. More details can be found in [2].
-%
 % References:
 % [1]: Betsch, P. and Uhlar, S.: Energy-momentum conserving integration of 
 %      multibody dynamics, In: Multibody Syst Dyn, 17: 243–289,
@@ -16,30 +15,26 @@
 %      In: Mechanism and Machine Theory, 180: 105134, 2023. 
 %      doi: 10.1016/j.mechmachtheory.2022.105134.
 
-
-classdef DoubleFourBarLinkage < System
-% A system consisting of 5 bars. Makes use of 2D director formulation, 
-% e.g. described in [1]. Internal constraints plus a constraint which 
-% fixes the top to the floor. Subject to initial velocities and external 
-% acceleration. More details can be found in [2].
-
     methods
 
         function self = DoubleFourBarLinkage(CONFIG)
+            % This function contructs the desired system
 
-            self.nBODIES = 5;
-            self.DIM = CONFIG.DIM;
-            self.MASS = CONFIG.MASS;
+            self.nBODIES = 5; % Number of bodies
+            
+            self.DIM = CONFIG.DIM; % Number of dimensions
+            
+            self.MASS = CONFIG.MASS; 
             % 3 coordinates of center of mass + 3*3 director coordinates
             self.nDOF = self.nBODIES*6;
             % ext. acceleration only acts on center of mass
             self.EXT_ACC = [CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1)];
 
-            % Geometric parameter
-            l = 1; % 
+            
+            l = 1; % Geometric parameter
 
-            % Principle moments of inertia
-            J = 1/12*self.MASS*l^2;
+            
+            J = 1/12*self.MASS*l^2; % Principle moments of inertia
 
             % Entries of convected Euler tensor
             E1 = J/2;
@@ -70,18 +65,21 @@ classdef DoubleFourBarLinkage < System
         end
 
         function M = get_mass_matrix(self, ~)
+            % Collects the mass of the system
             
             M = self.MASS_MAT;
 
         end
 
         function Dq_T = kinetic_energy_gradient_from_momentum(~, q, ~)
+            % Calculates kinetic energy from momentum
 
             Dq_T = zeros(size(q));
 
         end
 
         function Dq_T = kinetic_energy_gradient_from_velocity(~, q, ~)
+            % Calculates kinetic energy from velocity
 
             Dq_T = zeros(size(q));
 
@@ -99,6 +97,7 @@ classdef DoubleFourBarLinkage < System
         end
 
         function DV_ext = external_potential_gradient(self, ~)
+            % calculates the potential gradient given an external force
             g = self.EXT_ACC(1:2);
             DV_ext = zeros(self.nDOF, 1);
             for i = 1:self.nBODIES

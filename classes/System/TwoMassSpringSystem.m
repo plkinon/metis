@@ -1,11 +1,8 @@
 %% Class: TwoMassSpringSystem
-%
+classdef TwoMassSpringSystem < System
 % Two masses, connected via elastic springs (yields internal potential).
 %
 % Resting lengths of the springs determined from initial configuration.
-%
-
-classdef TwoMassSpringSystem < System
 
     %% 4-particle system in 2 or 3 dimensions
     properties

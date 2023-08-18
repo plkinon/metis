@@ -1,5 +1,6 @@
 %% Class: Rigid Body moving through space
-%
+
+classdef RigidBodyMoving < System
 % A rigid body moving through space. Makes use of director formulation,
 % e.g. described in [1,2]. Only internal constraints.
 % Subject to initial velocities and external acceleration.
@@ -13,8 +14,6 @@
 % [2]: Krenk, S. and Nielsen, M. B. Conservative rigid body dynamics by convected
 %      base vectors with implicit constraints. In: Computer Methods in Applied Mechanics
 %      and Engineering, 269: 437–453, 2014. doi: 10.1016/j.cma.2013.10.028.
-
-classdef RigidBodyMoving < System
 
     methods
 

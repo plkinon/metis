@@ -1,9 +1,6 @@
 %% Class: SpringPendulum
-%
-% Spring pendulum with nonlinear elastic spring law.
-%
-
 classdef SpringPendulum < System
+    % Spring pendulum with nonlinear elastic spring law.
 
     properties
 
