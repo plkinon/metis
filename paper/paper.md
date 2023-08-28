@@ -31,15 +31,34 @@ bibliography: paper.bib
 
 The Matlab code framework `metis` is ...
 
-`metis` has been recently used in the authors works [@kinon_ggl_2023,kinon_structure_2023].
-
 # Statement of need
+
+Geometric or `structure-preserving` integration [@hairer_geometric_2006].
+
+
+Energy-momentum methods using discrete gradients (see, e.g. [@gonzalez_time_1996]) or variational integrators [@lew2016brief], [@marsden_discrete_2001], which have been extended to DAEs in [@leyendecker_variational_2008].
+
+Hamiltonian dynamics with or without constraints [@leimkuhler_simulating_2005], also systems governed by DAEs [@kunkel_differential-algebraic_2006] are feasible.
+
+Rigid body dynamics in terms of directors [@betsch2001constrained].
+
+
+Simulation of port-Hamiltonian systems [@duindam_modeling_2009].
+
+
+
+`metis` has been recently used in the authors works [@kinon_ggl_2023],[kinon_structure_2023]. based on Livens principle [@livens_hamiltons_1919].
+
+
+## Applicability
+
+...
 
 ## Motivation by example: Isotropic material and notations
 
 See this image \autoref{fig:dummy_image}.
 
-![ALT-text for dummy image: Random pixels \label{fig:dummy_image}](./figures/dummy_image.png){ width=80% }
+![ALT-text for dummy image: Random pixels \label{fig:dummy_image}](../logo.png){ width=80% }
 
 # Acknowledgements
 
