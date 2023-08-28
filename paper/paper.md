@@ -1,29 +1,37 @@
 ---
 title: "Metis: ..."
 tags:
-  - Python
+  - Matlab
   - mechanics
-  - continuum-mechanics
+  - dynamics
+  - numerical methods
 authors:
-  - name: Philipp Lothar Kinon
+  - name: Philipp Lothar Kinon^[corresponding author]
     orcid: 0000-0002-4128-5124
     affiliation: "1"
-  - name: Julian Karl Bauer^[corresponding author]
+  - name: Julian Karl Bauer
     orcid: 0000-0002-4931-5869
     affiliation: "2" # (Multiple affiliations must be quoted)
+  - name: José Luis Muñoz Reyes
+    orcid: XXX
+    affiliation: "1"
+  - name: Peter Betsch
+    orcid: 0000-0002-0596-2503
+    affiliation: "1"
 affiliations:
   - name: Institute of Mechanics, Karlsruhe Institute of Technology (KIT), Karlsruhe, Germany
     index: 1
   - name: Chair for Continuum Mechanics, Institute of Engineering Mechanics, Karlsruhe Institute of Technology (KIT), Karlsruhe, Germany
     index: 2
-date: 06 July 2023
+date: 28 August 2023
 bibliography: paper.bib
 ---
 
 # Summary
 
-The Python package `metis` is ...
-Look at [@Bauer2022], it is awesome...
+The Matlab code framework `metis` is ...
+
+`metis` has been recently used in the authors works [@kinon_ggl_2023,kinon_structure_2023].
 
 # Statement of need
 
