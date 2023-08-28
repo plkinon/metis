@@ -63,7 +63,7 @@ Simulation of *port-Hamiltonian* systems [@duindam_modeling_2009].
 
 `metis` has been recently used in the authors works (among others [@kinon_ggl_2023] and [@kinon_structure_2023]), where numerical schemes based on a mixed extension due to Livens principle [@livens_hamiltons_1919] have been derived for systems with holonomic constraints.
 
-## Motivation by example: Isotropic material and notations
+## Motivation by example
 
 See this image \autoref{fig:dummy_image}.
 
