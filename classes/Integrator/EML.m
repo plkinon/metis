@@ -19,7 +19,7 @@ classdef EML < Integrator
 
         
         function self = EML(this_simulation, this_system)
-        % Constructor 
+        %% Constructor 
         
             self.DT = this_simulation.DT;
             self.T_0 = this_simulation.T_0;
