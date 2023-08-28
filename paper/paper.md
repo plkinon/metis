@@ -1,5 +1,5 @@
 ---
-title: "Metis: Computing dynamical systems"
+title: "Metis: Matlab-based simulation of dynamical systems"
 tags:
   - Matlab
   - mechanics
