@@ -58,16 +58,21 @@ Rigid body dynamics in terms of *directors* [@betsch2001constrained].
 
 Simulation of *port-Hamiltonian* systems [@duindam_modeling_2009].
 
-## Usage so far
 
-
-`metis` has been recently used in the authors works (among others [@kinon_ggl_2023] and [@kinon_structure_2023]), where numerical schemes based on a mixed extension due to Livens principle [@livens_hamiltons_1919] have been derived for systems with holonomic constraints.
+## Code structure
 
 ## Motivation by example
+
+Show major workflow.
 
 See this image \autoref{fig:dummy_image}.
 
 ![ALT-text for dummy image: Random pixels \label{fig:dummy_image}](../logo.png){ width=80% }
+
+## Usage so far
+
+
+`metis` has been recently used in the authors works (among others [@kinon_ggl_2023] and [@kinon_structure_2023]), where numerical schemes based on a mixed extension due to Livens principle [@livens_hamiltons_1919] have been derived for systems with holonomic constraints.
 
 # Acknowledgements
 
