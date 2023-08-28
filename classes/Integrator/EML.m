@@ -20,9 +20,7 @@ classdef EML < Integrator
         
         function self = EML(this_simulation, this_system)
         % Constructor 
-        % 
-        % :param this_system: system 
-        % :returns self: Integrator class
+        
             self.DT = this_simulation.DT;
             self.T_0 = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
