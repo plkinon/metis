@@ -33,26 +33,35 @@ The Matlab code framework `metis` is ...
 
 # Statement of need
 
-Geometric or `structure-preserving` integration [@hairer_geometric_2006].
+General introduct.
 
 
-Energy-momentum methods using discrete gradients (see, e.g. [@gonzalez_time_1996]) or variational integrators [@lew2016brief], [@marsden_discrete_2001], which have been extended to DAEs in [@leyendecker_variational_2008].
+Classification of numerical time integrators:
 
-Hamiltonian dynamics with or without constraints [@leimkuhler_simulating_2005], also systems governed by DAEs [@kunkel_differential-algebraic_2006] are feasible.
-
-Rigid body dynamics in terms of directors [@betsch2001constrained].
+*Geometric* or *structure-preserving* integration [@hairer_geometric_2006].
 
 
-Simulation of port-Hamiltonian systems [@duindam_modeling_2009].
+*Energy-momentum* (EM) methods using *discrete gradients* (see, e.g. [@gonzalez_time_1996]) or variational integrators [@lew2016brief], [@marsden_discrete_2001], which have been extended to DAEs in [@leyendecker_variational_2008].
 
 
-
-`metis` has been recently used in the authors works [@kinon_ggl_2023],[kinon_structure_2023]. based on Livens principle [@livens_hamiltons_1919].
+Pros and cons of Matlab.
 
 
 ## Applicability
 
-...
+System classification:
+
+Hamiltonian dynamics with or without constraints [@leimkuhler_simulating_2005], also systems governed by differential-algebraic equations (DAEs) [@kunkel_differential-algebraic_2006] are feasible.
+
+Rigid body dynamics in terms of *directors* [@betsch2001constrained].
+
+
+Simulation of *port-Hamiltonian* systems [@duindam_modeling_2009].
+
+## Usage so far
+
+
+`metis` has been recently used in the authors works (among others [@kinon_ggl_2023] and [@kinon_structure_2023]), where numerical schemes based on a mixed extension due to Livens principle [@livens_hamiltons_1919] have been derived for systems with holonomic constraints.
 
 ## Motivation by example: Isotropic material and notations
 
