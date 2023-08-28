@@ -71,6 +71,6 @@ See this image \autoref{fig:dummy_image}.
 
 # Acknowledgements
 
-PLK and PB acknowledge financial support by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) – project numbers XX and YY.
+PLK and PB gratefully acknowledge financial support by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) – project numbers XX and YY.
 
 # References
