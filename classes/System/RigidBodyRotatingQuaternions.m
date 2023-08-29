@@ -11,7 +11,7 @@ classdef RigidBodyRotatingQuaternions < System
 
     methods
 
-        function self = SpringPendulumPolar(CONFIG)
+        function self = RigidBodyRotatingQuaternions(CONFIG)
 
             self.mCONSTRAINTS = 1;
             self.nBODIES = 1;
@@ -22,11 +22,12 @@ classdef RigidBodyRotatingQuaternions < System
             self.EXT_ACC = CONFIG.EXT_ACC;
 
            % parameters
-%            self.GEOM(1) = 1;
- %           self.GEOM(2) = 300;
-
+            self.GEOM = [6,8,3]; % principal inertia components
+            
+            self.DISS_MAT = zeros(4,4);
             self.nPotentialInvariants = 0;
-
+            self.nConstraintInvariants = 1;
+            self.mMixedQuantities = 0;
             self.isCyclicCoordinate = [false;false;false;false];
 
         end
@@ -41,64 +42,91 @@ classdef RigidBodyRotatingQuaternions < System
         end
 
         function r_dot = get_cartesian_velocities(~, q, v)
-            
-            theta = q(2);
-            phi = q(3);
-            v_theta = v(2);
-            v_phi = v(3);
-            l = q(1);
-            l_dot = v(1);
 
-            r_dot = [l_dot*sin(theta)*cos(phi) + l*cos(theta)*cos(phi)*v_theta - l*sin(theta)*sin(phi)*v_phi; 
-                     l_dot*sin(theta)*sin(phi) + l*cos(theta)*sin(phi)*v_theta + l*sin(theta)*cos(phi)*v_phi; 
-                     -l_dot*cos(theta) + l*sin(theta)*v_theta];
+            r_dot = 0;
             
         end
         
         function M = get_mass_matrix(self, q)
             
-            l = q(1);
-            theta = q(2);
-            m =  self.MASS;
-            M = diag([m, m*l^2, m*l^2*(sin(theta))^2]);
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM);
+            
+            % singular mass matrix
+            M = 4*G_q'*inertia_tensor*G_q;
 
         end
 
         function Dq_T = kinetic_energy_gradient_from_velocity(self, q, v)
             
-            l = q(1);
-            theta = q(2);
-            m =  self.MASS;
-            v_theta = v(2);
-            v_phi = v(3);
+            %extract vector and scalar part form quaternion
+            v_vec = v(2:4);
+            v_scalar = v(1);
 
-            Dq_T = [m*l^2*v_theta^2 + m*l*sin(theta)^2*v_phi^2; m*l^2*sin(theta)*cos(theta)*v_phi^2 ;0];
+            %skew-sym matrix corresponding to vector part
+            v_hat = [0, -v_vec(3), v_vec(2);
+                    v_vec(3), 0, -v_vec(1);
+                    -v_vec(2), v_vec(1), 0];
+            
+            % transformation matrix
+            G_v = [-v_vec, v_scalar*eye(3) - v_hat];
+            
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM);
+            
+            % singular inertia matrix in v
+            M_4_hat = 4*G_v'*inertia_tensor*G_v;
+            
+            % partial derivativa of kinetic energy w.r.t. q(uat)
+            Dq_T = M_4_hat * q;
 
         end
 
         function Dq_T = kinetic_energy_gradient_from_momentum(self, q, p)
             
-            l = q(1);
-            theta = q(2);
-            m =  self.MASS;
-            p_theta = p(2);
-            p_phi = p(3);
-
-            Dq_T = -[p_theta^2/(m*l^3) + p_phi^2/(m*l^3*sin(theta)^2); p_phi^2*cos(theta)/(m*l^2*sin(theta)^3); 0];
-
+            Dq_T = [0; 0; 0];
 
         end
 
-        function L = get_cartesian_angular_momentum_from_momentum(~, q, p)
-            
-            theta = q(2);
-            phi = q(3);
-            p_theta = p(2);
-            p_phi = p(3);
 
-            L = [sin(phi)*p_theta + cos(theta)/sin(theta)*cos(phi)*p_phi;
-                 -p_theta*cos(phi)+ cos(theta)/sin(theta)*sin(phi)*p_phi;
-                 p_phi];
+        function L = get_cartesian_angular_momentum_from_momentum(~, q, p)            
+            
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+
+            if size(p,1) == 1 && size(p,2) == 4
+                p = p';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+            
+            L = 1/2 * E_q * p ;
 
         end
 
@@ -106,75 +134,58 @@ classdef RigidBodyRotatingQuaternions < System
 
         function V_ext = external_potential(self, q)
             % External potential
-            theta = q(2);
-            m =  self.MASS;
-            g =  self.EXT_ACC;
-            l = q(1);
-            V_ext = -m*g*l*cos(theta);
+            V_ext = 0;
 
         end
 
         function DV_ext = external_potential_gradient(self, q)
-            theta = q(2);
-            m =  self.MASS;
-            g =  self.EXT_ACC;
-            l = q(1);
-            DV_ext = [-m*g*cos(theta); m*g*l*sin(theta); 0];
+
+            DV_ext = [0; 0; 0; 0];
+
         end
 
         function D2V_ext = external_potential_hessian(self, q)
-            theta = q(2);
-            m =  self.MASS;
-            g =  self.EXT_ACC;
-            l = q(1);
-            D2V_ext = [0, m*g*sin(theta), 0;
-                       m*g*sin(theta), m*g*l*cos(theta), 0;
-                       0, 0, 0];
+
+            D2V_ext = zeros(4,4);
 
         end
 
         function V_int = internal_potential(self, q)
-            l = q(1);
-            l0 = self.GEOM(1);
-            EA = self.GEOM(2);
-            eps = (l^2-l0^2)/(2*l0^2);
-            V_int = 1/2*EA*eps^2;
+
+            V_int = 0;
+
         end
 
         function DV_int = internal_potential_gradient(self, q)
-            l = q(1);
-            l0 = self.GEOM(1);
-            EA = self.GEOM(2);
-            eps = (l^2-l0^2)/(2*l0^2);
-            DV_int = [EA*eps*l/l0^2; 0; 0];
+
+            DV_int = [0;0; 0; 0];
+
         end
 
         function D2V_int = internal_potential_hessian(self, q)
-            l = q(1);
-            l0 = self.GEOM(1);
-            EA = self.GEOM(2);
-            eps = (l^2-l0^2)/(2*l0^2);
-            D2V_int = diag([EA/l0^2*(l^2/l0^2+eps); 0; 0]);
+
+            D2V_int = diag([0; 0; 0; 0]);
+
         end
 
 
         %% Constraint on position level
 
-        function g = constraint(~, ~)
+        function g = constraint(~, q)
            
-            g=NaN;
+            g=1/2*(q'*q -1);
 
         end
 
-        function Dg = constraint_gradient(~, ~)
+        function Dg = constraint_gradient(~, q)
            
-            Dg=NaN;
+            Dg=q';
 
         end
 
         function D2g = constraint_hessian(~, ~, ~)
 
-             D2g=NaN;
+             D2g=eye(4);
 
         end
 
@@ -257,33 +268,35 @@ classdef RigidBodyRotatingQuaternions < System
     end
 
     % invariant of the position constraint
-    function zeta = constraint_invariant(~, ~, ~)
+    function zeta = constraint_invariant(~, q, ~)
 
-       error('not available.')
+       zeta = q'*q;
+
     end
 
     % gradient of the invariant of the position constraint w.r.t. q
-    function DzetaDq = constraint_invariant_gradient(~, ~, ~)
+    function DzetaDq = constraint_invariant_gradient(~, q, ~)
 
-        error('not available.')
+        DzetaDq = 2*q';
     end
 
     % gradient of the invariant of the position constraint w.r.t. q
-    function D2zetaDq2 = constraint_invariant_hessian(~, ~, ~)
+    function D2zetaDq2 = constraint_invariant_hessian(~, q, ~)
 
-      error('not available.')
+      D2zetaDq2 = 2*eye(4);
     end
 
     % position constrained computed with its invariant
-      function gs = constraint_from_invariant(~, ~, ~)
+      function gs = constraint_from_invariant(~, zeta, ~)
 
-            error('not available.')
+           gs = 1/2*(zeta -1);
       end
 
     % gradient of position constrained w.r.t. its invariant
-    function gs = constraint_gradient_from_invariant(~, ~, ~)
+    function Dgs = constraint_gradient_from_invariant(~, zeta, ~)
 
-        error('not available.')
+        Dgs = 1/2;
+
     end
 
      function analyzed_quantity = hconvergence_set(~, this_simulation)
