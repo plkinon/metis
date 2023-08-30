@@ -231,8 +231,9 @@ classdef Postprocess
             this_simulation.constraint_forces = constraint_forces;
             this_simulation.external_torque = external_torque;
             this_simulation.alpha_from_q = alpha_from_q;
-            this_simulation.mixed_quantity_difference = mixed_quantity_difference;
-
+            if this_system.mMixedQuantities > 0 && this_simulation.INDI_VELO
+                this_simulation.mixed_quantity_difference = mixed_quantity_difference;
+            end
         end
 
         %% Function: save results
