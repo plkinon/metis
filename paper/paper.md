@@ -31,46 +31,53 @@ bibliography: paper.bib
 
 The Matlab code framework `metis` is ...
 
+Structure of the summary:
+- High-level functionality
+  - Setting the scene: Mechanics and integration
+    - Mechanical system
+    - Differential equations
+    - Initial-boundary-value-problem
+    - Numerical solution based on discretization  
+- Purpose of the software for a diverse, non-specialist audience.  
+  - (Do not yet talk solely about content (integrators), but why you intent to distribute metis)
+  - Support papers
+  - Increase reproducibility
+  - Basis for object oriented integration code in cooperations and teaching
+  - Lower the barrier for students to contribute in the fields of ...
+  - Share research view on ...
+  - Close gap on state-of-the-art structure-preserving ....
+- Decision for Matlab
+  - Pros and cons
+  - Alternatives
+
+
 # Statement of need
 
-General introduct.
+- General introduction
+- Classification of numerical time integrators:
+  - *Geometric* or *structure-preserving* integration [@hairer_geometric_2006].
+  - *Energy-momentum* (EM) methods using *discrete gradients* (see, e.g. [@gonzalez_time_1996]) or variational integrators [@lew2016brief], [@marsden_discrete_2001], which have been extended to DAEs in [@leyendecker_variational_2008].
+- List alternative packages and highlight what they lack, i.e., which gap is closed by metis
 
-
-Classification of numerical time integrators:
-
-*Geometric* or *structure-preserving* integration [@hairer_geometric_2006].
-
-
-*Energy-momentum* (EM) methods using *discrete gradients* (see, e.g. [@gonzalez_time_1996]) or variational integrators [@lew2016brief], [@marsden_discrete_2001], which have been extended to DAEs in [@leyendecker_variational_2008].
-
-
-Pros and cons of Matlab.
 
 
 ## Applicability
 
-System classification:
-
-Hamiltonian dynamics with or without constraints [@leimkuhler_simulating_2005], also systems governed by differential-algebraic equations (DAEs) [@kunkel_differential-algebraic_2006] are feasible.
-
-Rigid body dynamics in terms of *directors* [@betsch2001constrained].
-
-
-Simulation of *port-Hamiltonian* systems [@duindam_modeling_2009].
+- System classification:
+  - Hamiltonian dynamics with or without constraints [@leimkuhler_simulating_2005], also systems governed by differential-algebraic equations (DAEs) [@kunkel_differential-algebraic_2006] are feasible.
+  - Rigid body dynamics in terms of *directors* [@betsch2001constrained].
+  - Simulation of *port-Hamiltonian* systems [@duindam_modeling_2009].
 
 
 ## Code structure
 
 ## Motivation by example
 
-Show major workflow.
-
-See this image \autoref{fig:dummy_image}.
-
-![ALT-text for dummy image: Random pixels \label{fig:dummy_image}](../logo.png){ width=80% }
+- Show major workflow.
+  - See this image \autoref{fig:dummy_image}.
+    ![ALT-text for dummy image: Random pixels \label{fig:dummy_image}](../logo.png){ width=80% }
 
 ## Usage so far
-
 
 `metis` has been recently used in the authors works (among others [@kinon_ggl_2023] and [@kinon_structure_2023]), where numerical schemes based on a mixed extension due to Livens principle [@livens_hamiltons_1919] have been derived for systems with holonomic constraints.
 
