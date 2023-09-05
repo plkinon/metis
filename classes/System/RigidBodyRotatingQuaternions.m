@@ -26,25 +26,11 @@ classdef RigidBodyRotatingQuaternions < System
             
             self.DISS_MAT = zeros(4,4);
             self.nPotentialInvariants = 0;
+            self.nKineticInvariants = 1;
             self.nConstraintInvariants = 1;
             self.mMixedQuantities = 0;
             self.isCyclicCoordinate = [false;false;false;false];
 
-        end
-
-        function r = get_cartesian_coordinates(~, q)
-
-            theta = q(2);
-            phi = q(3);
-            l = q(1);
-            r = [l*sin(theta)*cos(phi); l*sin(theta)*sin(phi); -l*cos(theta)];
-            
-        end
-
-        function r_dot = get_cartesian_velocities(~, q, v)
-
-            r_dot = 0;
-            
         end
         
         function M = get_mass_matrix(self, q)
@@ -98,7 +84,7 @@ classdef RigidBodyRotatingQuaternions < System
 
         end
 
-        function Dq_T = kinetic_energy_gradient_from_momentum(self, q, p)
+        function Dq_T = kinetic_energy_gradient_from_momentum(~, ~, ~)
             
             Dq_T = [0; 0; 0];
 
@@ -132,37 +118,37 @@ classdef RigidBodyRotatingQuaternions < System
 
         %% Potential functions
 
-        function V_ext = external_potential(self, q)
+        function V_ext = external_potential(~, ~)
             % External potential
             V_ext = 0;
 
         end
 
-        function DV_ext = external_potential_gradient(self, q)
+        function DV_ext = external_potential_gradient(~, ~)
 
             DV_ext = [0; 0; 0; 0];
 
         end
 
-        function D2V_ext = external_potential_hessian(self, q)
+        function D2V_ext = external_potential_hessian(~, ~)
 
             D2V_ext = zeros(4,4);
 
         end
 
-        function V_int = internal_potential(self, q)
+        function V_int = internal_potential(~, ~)
 
             V_int = 0;
 
         end
 
-        function DV_int = internal_potential_gradient(self, q)
+        function DV_int = internal_potential_gradient(~, ~)
 
             DV_int = [0;0; 0; 0];
 
         end
 
-        function D2V_int = internal_potential_hessian(self, q)
+        function D2V_int = internal_potential_hessian(~, ~)
 
             D2V_int = diag([0; 0; 0; 0]);
 
@@ -193,40 +179,110 @@ classdef RigidBodyRotatingQuaternions < System
         %  e.g. for EMS
 
         % Invariant of the internal potential
-        function pi = potential_invariant(~, q, ~)
+        function pi = potential_invariant(~, ~, ~)
 
-            pi = q(1)^2;
+            error('not available.')
 
         end
 
             % gradient of potential invariants w.r.t. q
-        function DpiDq = potential_invariant_gradient(~, q, ~)
+        function DpiDq = potential_invariant_gradient(~, ~, ~)
 
-            DpiDq = [2*q(1); 0; 0];
+            error('not available.')
         end
 
         % gradient of potential invariants w.r.t. q
         function D2piDq = potential_invariant_hessian(~, ~, ~)
 
-                 D2piDq = diag([2;0;0]);
+           error('not available.')
             
         end
 
         % internal potential computed with the invariant
-        function Vs = potential_from_invariant(self, pi, ~)
-            l0 = self.GEOM(1);
-            EA = self.GEOM(2);
-            eps = (pi-l0^2)/(2*l0^2);
-            Vs = 1/2 *EA*eps^2;
+        function Vs = potential_from_invariant(~, ~, ~)
+            error('not available.')
         end
 
         % gradient of internal potential w.r.t. the invariant
-        function DVsDpi = potential_gradient_from_invariant(self, pi, ~)
+        function DVsDpi = potential_gradient_from_invariant(~, ~, ~)
           
-            l0 = self.GEOM(1);
-            EA = self.GEOM(2);
-            eps = (pi-l0^2)/(2*l0^2);
-            DVsDpi = EA*eps/(2*l0^2);
+            error('not available.')
+        end
+
+        % Invariant of the internal potential
+        function omega = kinetic_energy_invariant(~, q, v, ~)
+            
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+
+            omega = 2*G_q*v;
+
+        end
+
+            % gradient of potential invariants w.r.t. q
+        function DomegaDq = kinetic_energy_invariant_gradient_q(~, ~, v, ~)
+            %extract vector and scalar part form quaternion
+            v_vec = v(2:4);
+            v_scalar = v(1);
+
+            %skew-sym matrix corresponding to vector part
+            v_hat = [0, -v_vec(3), v_vec(2);
+                    v_vec(3), 0, -v_vec(1);
+                    -v_vec(2), v_vec(1), 0];
+            
+            % transformation matrix
+            G_v = [-v_vec, v_scalar*eye(3) - v_hat];
+            DomegaDq = -2*G_v;
+        end
+
+         % gradient of kinetic energy invariants w.r.t. v
+        function DomegaDv = kinetic_energy_invariant_gradient_v(~, q, ~, ~)
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            DomegaDv = 2*G_q;
+        end
+
+        % internal potential computed with the invariant
+        function Ts = kinetic_energy_from_invariant(self, omega, ~)
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM);
+
+            Ts = 1/2 *omega'*inertia_tensor*omega;
+        end
+
+        % gradient of internal potential w.r.t. the invariant
+        function DTsDpi = kinetic_energy_gradient_from_invariant(self, omega, ~)
+          
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM);
+
+            DTsDpi = inertia_tensor*omega;
         end
 
         % invariant of the velocity invariant
@@ -281,7 +337,7 @@ classdef RigidBodyRotatingQuaternions < System
     end
 
     % gradient of the invariant of the position constraint w.r.t. q
-    function D2zetaDq2 = constraint_invariant_hessian(~, q, ~)
+    function D2zetaDq2 = constraint_invariant_hessian(~, ~, ~)
 
       D2zetaDq2 = 2*eye(4);
     end
@@ -293,7 +349,7 @@ classdef RigidBodyRotatingQuaternions < System
       end
 
     % gradient of position constrained w.r.t. its invariant
-    function Dgs = constraint_gradient_from_invariant(~, zeta, ~)
+    function Dgs = constraint_gradient_from_invariant(~, ~, ~)
 
         Dgs = 1/2;
 
@@ -302,9 +358,26 @@ classdef RigidBodyRotatingQuaternions < System
      function analyzed_quantity = hconvergence_set(~, this_simulation)
 
         if strcmp(this_simulation.CONV_QUANTITY,'q')
-            analyzed_quantity = this_simulation.z(end, 2); %position of 4th particle
+
+            q = this_simulation.z(end,1:4)';
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+
+            R_q = E_q*G_q';
+
+            analyzed_quantity = R_q; %rotation matrix at t_end
         elseif strcmp(this_simulation.CONV_QUANTITY,'p')
-            analyzed_quantity = this_simulation.z(end, 4); %momentum of 4th particle
+            error('not available.')
         elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
             error('not available.')
         else
@@ -316,7 +389,7 @@ classdef RigidBodyRotatingQuaternions < System
 
     function reference_solution = hconvergence_reference(~, ~, analyzed_quantity)
 
-        reference_solution = analyzed_quantity(:, end, end); %position
+        reference_solution = analyzed_quantity(:,:, end, end); %position
       
     end
 
