@@ -14,7 +14,7 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'EML_noCons_cyclic';
+INTEGRATOR = 'EML_noCons_cyclic'; %'EML_noCons' as comparison without accounting for cyclic coordinate
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
