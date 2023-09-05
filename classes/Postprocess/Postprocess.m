@@ -563,14 +563,22 @@ classdef Postprocess
         end
 
             %% Function: calculate error for error analysis
-                function error = calculate_errors(~, quantity, quantity_ref, num_A, num_B)
+            function error = calculate_errors(~, this_simulation, quantity, quantity_ref, num_A, num_B)
                     error = zeros(num_A, num_B);
+
                     for i = 1:num_A
                         for j = 1:num_B
-                            if norm(quantity_ref) ~= 0
+                            if norm(quantity_ref) ~= 0 && ~this_simulation.matrix_error_analysis
                                 error(i, j) = norm(quantity(:, i, j)-quantity_ref) / norm(quantity_ref);
-                            else
+                            elseif norm(quantity_ref) == 0
                                 error(i, j) = norm(quantity(:, i, j)-quantity_ref);
+                            elseif this_simulation.matrix_error_analysis
+                                quantity_matrix = reshape(quantity(:,i,j),[3,3]);
+                                ref_matrix = reshape(quantity_ref,[3,3]);
+                                error(i,j) = norm(ref_matrix*quantity_matrix' - eye(3),'fro');
+
+                            else
+                                error('error.')
                             end
                         end
                     end
