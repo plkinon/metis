@@ -25,11 +25,12 @@ classdef PendulumMinCoord < System
             self.GEOM(1) = 1; %length of the pendulum l
 
             self.nPotentialInvariants = 0;
-
+            self.mMixedQuantities = 0;
+            
             self.DISS_MAT = zeros(2,2);
 
             self.isCyclicCoordinate = [false;true];
-
+        
 
         end
         
