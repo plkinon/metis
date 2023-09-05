@@ -28,16 +28,18 @@ DIM = 3;
 clear Omega_0 Q0_hat Q0_vec Q0_scalar G_Q0
 
 %% Integrator
-% Name of routine in /classes/Integrator
-INTEGRATOR = 'EML';
+% Name of routines in /classes/Integrator to be analyzed
+INTEGRATOR = {'EML'};
 % Parameters of the method
 INT_PARA = [NaN, NaN];
-% time step size
-DT = 0.05;
+% time step sizes to be analyzed
+DT = [0.01, 0.005, 0.001, 0.0005];
+% quantity which is to be analyzed
+CONV_QUANTITY = 'q';
 % starting time
 T_0 = 0;
 % end time
-T_END = 2;
+T_END = 0.05;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
@@ -49,7 +51,7 @@ TOLERANCE = 1E-09;
 % Animation of trajectory [true/false]
 shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
-plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_velocity', 'constraint_position'};
+plot_quantities = {};
 % Export of simulation results in a .mat-file [true/false]
 should_export = true;
 % Export of figures in .eps- and .tikz-files
