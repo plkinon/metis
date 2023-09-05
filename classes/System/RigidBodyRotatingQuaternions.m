@@ -375,7 +375,9 @@ classdef RigidBodyRotatingQuaternions < System
 
             R_q = E_q*G_q';
 
-            analyzed_quantity = R_q; %rotation matrix at t_end
+            analyzed_quantity = R_q(:); %rotation matrix at t_end
+      
+
         elseif strcmp(this_simulation.CONV_QUANTITY,'p')
             error('not available.')
         elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
@@ -387,9 +389,10 @@ classdef RigidBodyRotatingQuaternions < System
     end
 
 
-    function reference_solution = hconvergence_reference(~, ~, analyzed_quantity)
+    function [reference_solution, this_simulation] = hconvergence_reference(~, this_simulation, analyzed_quantity)
 
-        reference_solution = analyzed_quantity(:,:, end, end); %position
+        reference_solution = analyzed_quantity(:, end, end); %position
+        this_simulation.matrix_error_analysis = true;
       
     end
 
