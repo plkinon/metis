@@ -64,6 +64,7 @@ classdef Metis
         % several timestep-sizes
         ALL_DT
         CONV_QUANTITY
+        matrix_error_analysis
 
     end
 
