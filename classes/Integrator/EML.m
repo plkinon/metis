@@ -150,7 +150,7 @@ classdef EML < Integrator
             else
                 DG_Vext = DVext_n05;
             end
-            % discrete gradient of internal potential based on invariants 
+            % discrete gradient of kinetic energy based on invariants 
             DG_T_q = zeros(nDOF, 1); % for the kinetic energy
             DG_T_v = zeros(nDOF, 1); % for the kinetic energy
             T_invariants_difference_too_small = false;
@@ -191,7 +191,7 @@ classdef EML < Integrator
     
                     % if invariants at n and n1 are approx. equal use the midpoint
                     % evaluated gradient instead
-                    if abs(omega_n1-omega_n) > 1e-09
+                    if abs((omega_n1-omega_n)'*(omega_n1-omega_n)) > 1e-09
                         % discrete gradient
                         DT_omega_n05 = this_system.kinetic_energy_gradient_from_invariant(omega_n05,k);
                         DT_omega = DT_omega_n05 + ((Ts_n1 - Ts_n - DT_omega_n05'*(omega_n1 -omega_n)) / ((omega_n1-omega_n)'*(omega_n1-omega_n))) * (omega_n1-omega_n); 
