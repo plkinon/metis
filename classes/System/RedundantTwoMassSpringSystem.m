@@ -25,6 +25,7 @@ classdef RedundantTwoMassSpringSystem < System
             m1 = CONFIG.MASS(1);
             m2 = CONFIG.MASS(2);
             self.nDOF = 3;
+            self.mMixedQuantities = 0;
             self.MASS_MAT = [m1 ,0, 0;
                              0, m2, m2;
                              0, m2, m2];
@@ -40,7 +41,6 @@ classdef RedundantTwoMassSpringSystem < System
 
             self.nPotentialInvariants = 2;
             self.nConstraintInvariants = 1;
-            self.mMixedQuantities = 0;
             self.DISS_MAT = zeros(3,3);
 
         end

@@ -23,6 +23,7 @@ classdef TwoMassSpringSystem < System
             self.DIM = CONFIG.DIM;
             self.MASS = CONFIG.MASS;
             self.nDOF = 2;
+            self.mMixedQuantities = 0;
             self.MASS_MAT = diag(CONFIG.MASS);
             self.EXT_ACC = [];
 

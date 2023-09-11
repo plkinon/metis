@@ -25,6 +25,7 @@ classdef HeavyTop < System
             self.MASS = CONFIG.MASS;
             % 3 coordinates of center of mass + 3*3 director coordinates
             self.nDOF = 12;
+            self.mMixedQuantities = 0;
             % ext. acceleration only acts on center of mass
             self.EXT_ACC = [CONFIG.EXT_ACC; zeros(9, 1)];
 
