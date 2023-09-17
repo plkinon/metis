@@ -1,4 +1,3 @@
-%% Class: Double Four Bar Linkage
 classdef DoubleFourBarLinkage < System
 % A system consisting of 5 bars. Makes use of 2D director formulation, 
 % e.g. described in [1]. Internal constraints plus a constraint which 

@@ -1,5 +1,3 @@
-%% Class: Rigid Body moving through space
-
 classdef RigidBodyMoving < System
 % A rigid body moving through space. Makes use of director formulation,
 % e.g. described in [1,2]. Only internal constraints.

@@ -1,16 +1,10 @@
-%% Class: Gyroscopic Top with steady precession ('heavy top')
-%
+classdef LagrangeTop < System
 % A rigid gyroscopic top. Uses d_3 director and angular momentum as
 % variables.
 %
 % References:
 % [1]: Bobenko & Suris. 1996.
 %
-
-classdef LagrangeTop < System
-% A rigid gyroscopic top. Uses d_3 director and angular momentum as
-% variables.
-
     %%
     methods
 

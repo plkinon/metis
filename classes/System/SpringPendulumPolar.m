@@ -1,4 +1,3 @@
-%% Class: PendulumMinCoord
 classdef SpringPendulumPolar < System
     % Spherical pendulum in minimal coordinates (two angles).
 

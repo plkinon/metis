@@ -1,4 +1,3 @@
-%% Class: TwoMassSpringSystem
 classdef TwoMassSpringSystem < System
 % Two masses, connected via elastic springs (yields internal potential).
 %

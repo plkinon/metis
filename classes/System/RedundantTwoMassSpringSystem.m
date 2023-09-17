@@ -1,10 +1,3 @@
-%% Class: TwoMassSpringSystem
-%
-% Two masses, connected via elastic springs (yields internal potential).
-%
-% Resting lengths of the springs determined from initial configuration.
-%
-
 classdef RedundantTwoMassSpringSystem < System
     % Two masses, connected via elastic springs (yields internal potential).
     %

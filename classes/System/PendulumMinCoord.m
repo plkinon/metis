@@ -1,4 +1,3 @@
-%% Class: PendulumMinCoord
 classdef PendulumMinCoord < System
     % Spherical pendulum in minimal coordinates (two angles).
 
