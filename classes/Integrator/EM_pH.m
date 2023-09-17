@@ -40,6 +40,8 @@ end
             % computes residual tangent
             %
             % :param zn1: input zn1
+            % :param zn: input zn
+            % :param this_system: input this_system
 
             %% Abbreviations
             h = self.DT;
