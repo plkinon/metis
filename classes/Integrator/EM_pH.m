@@ -42,6 +42,7 @@ end
             % :param zn1: input zn1
             % :param zn: input zn
             % :param this_system: input this_system
+            % :returns: [ResidualVector, TangentMatrix]
 
             %% Abbreviations
             h = self.DT;
