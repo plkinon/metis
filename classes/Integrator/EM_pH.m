@@ -30,6 +30,7 @@ end
 
         function z0 = set_initial_condition(~, this_simulation, this_system)
             % sets initial conditions
+            
 
             z0 = [this_simulation.Q_0', (this_system.get_mass_matrix(this_simulation.Q_0) * this_simulation.V_0)', this_simulation.V_0', this_simulation.ALPHA_0'];
 
@@ -37,6 +38,7 @@ end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
             % computes residual tangent
+            % :param zn1: input zn1
 
             %% Abbreviations
             h = self.DT;
