@@ -29,6 +29,7 @@ classdef DoubleFourBarLinkage < System
             self.MASS = CONFIG.MASS;
             % 3 coordinates of center of mass + 3*3 director coordinates
             self.nDOF = self.nBODIES*6;
+            self.mMixedQuantities = 0;
             % ext. acceleration only acts on center of mass
             self.EXT_ACC = [CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1)];
 
