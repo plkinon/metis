@@ -1,6 +1,5 @@
 classdef CSE_B < Integrator
-
-    %% Variational integration scheme for constrained DAE
+    % Variational integration scheme for constrained DAE
     %
     % - based on constraint on position level
     %
@@ -36,6 +35,12 @@ classdef CSE_B < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % computes residual tangent
+            %
+            % :param zn1: input zn1
+            % :param zn: input zn
+            % :param this_system: input this_system
+            % :returns: [ResidualVector, TangentMatrix]
 
             %% Abbreviations
             M = this_system.MASS_MAT;

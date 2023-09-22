@@ -1,6 +1,5 @@
 classdef Lagrange_top_ODE < Integrator
-
-    %% Integration scheme for Lagrange top 
+    % Integration scheme for Lagrange top 
     %
     % - based on angular momentum and director d3 (ODE approach)
     %
@@ -34,6 +33,12 @@ classdef Lagrange_top_ODE < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % computes residual tangent
+            %
+            % :param zn1: input zn1
+            % :param zn: input zn
+            % :param this_system: input this_system
+            % :returns: [ResidualVector, TangentMatrix]
 
             %% Abbreviations
             h = self.DT;

@@ -1,9 +1,6 @@
-%% Class: Pendulum
-%
+classdef Pendulum < System
 % A simple pendulum: point mass constrained by a rigid bar to the origin.
 % Length of the rod is determined from initial configuration.
-
-classdef Pendulum < System
 
     %% Pendulum system in 2 or 3 dimensions
 

@@ -1,6 +1,5 @@
 classdef EML_noCons_cyclic < Integrator
-
-    %% Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for standard constrained DAE
     %
     % - not derived from variational principle
     %
@@ -39,6 +38,12 @@ end
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % computes residual tangent
+            %
+            % :param zn1: input zn1
+            % :param zn: input zn
+            % :param this_system: input this_system
+            % :returns: [ResidualVector, TangentMatrix]
 
             %% Abbreviations
             h = self.DT;

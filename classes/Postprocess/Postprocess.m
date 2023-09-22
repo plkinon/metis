@@ -1,6 +1,6 @@
 %% Class: Postprocessing
-% Distributes animation, computation of postprocessing quantities and plots
 classdef Postprocess
+    % Distributes animation, computation of postprocessing quantities and plots
 
     properties
 

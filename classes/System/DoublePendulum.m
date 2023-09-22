@@ -1,9 +1,6 @@
-%% Class: Pendulum
-%
+classdef DoublePendulum < System
 % A double-pendulum: two point masses constrained by rigid bars.
 % Length of the bars are determined from initial configuration.
-
-classdef DoublePendulum < System
 
     %% Double Pendulum system in 2 or 3 dimensions
 

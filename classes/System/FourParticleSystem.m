@@ -1,5 +1,4 @@
-%% Class: Four-Particle-System
-%
+classdef FourParticleSystem < System
 % Four masses, two of them connected via rigid bars (yields constraints),
 % the other two with elastic springs (yields internal potential).
 %
@@ -11,8 +10,6 @@
 % Differential–algebraic formulations and conservative integration.
 % In: Physica D: Nonlinear Phenomena, 132(1-2): 165–174, 1999.
 % doi: 10.1016/S0167-2789(99)00054-8.
-
-classdef FourParticleSystem < System
 
     %% 4-particle system in 2 or 3 dimensions
     properties
