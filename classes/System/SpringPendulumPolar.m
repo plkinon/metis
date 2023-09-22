@@ -18,6 +18,7 @@ classdef SpringPendulumPolar < System
             self.DIM = CONFIG.DIM;
             self.MASS = CONFIG.MASS;
             self.nDOF = 3;
+            self.mMixedQuantities = 0;
             self.MASS_MAT = [];
             self.EXT_ACC = CONFIG.EXT_ACC;
 

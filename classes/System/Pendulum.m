@@ -16,6 +16,7 @@ classdef Pendulum < System
             self.MASS = CONFIG.MASS;
             self.MASS_MAT = self.MASS * eye(CONFIG.DIM);
             self.nDOF = self.nBODIES * CONFIG.DIM;
+            self.mMixedQuantities = 0;
             self.EXT_ACC = repmat(CONFIG.EXT_ACC, self.nBODIES, 1);
             self.GEOM(1) = norm(CONFIG.Q_0(1:CONFIG.DIM)); %length of pendulum
             self.nPotentialInvariants = 0;
