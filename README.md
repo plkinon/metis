@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/philipplk/metis"><img alt="metis" src="logo.png" width="100%"></a>
+  <a href="https://github.com/philipplk/metis"><img alt="metis" src="docs/images/logo.png" width="100%"></a>
   <p align="center">Metis: Matlab-based simulation of dynamical systems.</p>
 </p>
 
