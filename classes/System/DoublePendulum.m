@@ -17,6 +17,7 @@ classdef DoublePendulum < System
             % both masses in a vector
             self.MASS = CONFIG.MASS;
             self.nDOF = self.nBODIES * CONFIG.DIM;
+            self.mMixedQuantities = 0;
             self.MASS_MAT = diag([repmat(self.MASS(1), self.DIM, 1); repmat(self.MASS(2), self.DIM, 1)]);
             self.EXT_ACC = repmat(CONFIG.EXT_ACC, self.nBODIES, 1);
             %length of 1st rod

@@ -29,6 +29,7 @@ classdef DoubleFourBarLinkage < System
             self.MASS = CONFIG.MASS;
             % 3 coordinates of center of mass + 3*3 director coordinates
             self.nDOF = self.nBODIES*6;
+            self.mMixedQuantities = 0;
             % ext. acceleration only acts on center of mass
             self.EXT_ACC = [CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1)];
 
@@ -44,7 +45,7 @@ classdef DoubleFourBarLinkage < System
             mVec = [self.MASS(1), self.MASS(1), E1(1), E1(1), E2(1), E2(1), ...
                     self.MASS(2), self.MASS(2), E1(2), E1(2), E2(2), E2(2), ...
                     self.MASS(3), self.MASS(3), E1(3), E1(3), E2(3), E2(3), ...
-                    self.MASS(4), self.MASS(4), E1(1), E1(4), E2(4), E2(4), ...
+                    self.MASS(4), self.MASS(4), E1(4), E1(4), E2(4), E2(4), ...
                     self.MASS(5), self.MASS(5), E1(5), E1(5), E2(5), E2(5)];
 
             self.MASS_MAT = diag(mVec);
