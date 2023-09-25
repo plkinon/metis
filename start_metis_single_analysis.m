@@ -25,7 +25,8 @@ clearvars;
 % Add all subdirectories and to the current path
 addpath(genpath(fileparts(which(mfilename))));
 % Metis creates objects from input-file
-[simulation, system, integrator, solver] = Metis('input/published/XXX_kinon_betsch_2023/single_analysis_rigidBodyRotatingQuat', 1, 1);
+%[simulation, system, integrator, solver] = Metis('input/published/XXX_kinon_betsch_2023/single_analysis_rigidBodyRotatingQuat', 1, 1);
+[simulation, system, integrator, solver] = Metis('input/published/XXX_kinon_betsch_2023/single_analysis_HeavyTopQuat', 1, 1);
 %% METIS solver
 % Solve system with chosen solver and integration scheme
 simulation = solver.solve(simulation, system, integrator);
@@ -47,3 +48,9 @@ postprocess.plot(simulation);
 postprocess.save(simulation);
 
 % -------------------------- END OF CODE ----------------------------------
+figure()
+phi = zeros(size(simulation.t,2),3);
+for i = 1:size(simulation.t,2)
+    phi(i,:) = system.get_cartesian_coordinates_center_of_mass(simulation.z(i,1:4)');
+end
+plot(simulation.t,phi(:,3))
