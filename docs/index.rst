@@ -23,7 +23,7 @@ Contents
 --------
 
 .. toctree::
-   
+   :maxdepth: 3
 
    GettingStartet
    codestructure
