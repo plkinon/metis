@@ -23,7 +23,8 @@ clearvars;
 addpath(genpath(fileparts(which(mfilename))));
 
 % Metis creates a dummy simulation object, the system and solver from input-file
-[dummy_simulation, system, dummy_integrator, solver] = Metis('input/published/XXX_kinon_betsch_2023/error_analysis_rigidBodyRotatingQuat', 1, 1);
+[dummy_simulation, system, dummy_integrator, solver] = Metis('input/published/XXX_kinon_betsch_2023/error_analysis_HeavyTopQuat', 1, 1);
+%[dummy_simulation, system, dummy_integrator, solver] = Metis('input/published/XXX_kinon_betsch_2023/error_rigidBodyRotatingQuat', 1, 1);
 % Check how many different timestepsizes and integrators are analyzed
 n_DT = numel(dummy_simulation.ALL_DT);
 n_INT = numel(dummy_simulation.ALL_INTEGRATOR);
@@ -37,7 +38,8 @@ for i = 1:n_DT
     for j = 1:n_INT
 
         % Metis creates objects for current timestepsize and integrator
-        [current_simulation, ~, current_integrator, ~] = Metis('input/published/XXX_kinon_betsch_2023/error_analysis_rigidBodyRotatingQuat', i, j);
+        [current_simulation, ~, current_integrator, ~] = Metis('input/published/XXX_kinon_betsch_2023/error_analysis_HeavyTopQuat', i, j);
+        %[current_simulation, ~, current_integrator, ~] = Metis('input/published/XXX_kinon_betsch_2023/error_analysis_rigidBodyRotatingQuat', i, j);
 
         %% METIS solver
         % Solve system with solver and current integrator
