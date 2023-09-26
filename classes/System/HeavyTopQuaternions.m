@@ -420,27 +420,14 @@ classdef HeavyTopQuaternions < System
 
     end
 
-     function analyzed_quantity = hconvergence_set(~, this_simulation)
+     function analyzed_quantity = hconvergence_set(self, this_simulation)
 
         if strcmp(this_simulation.CONV_QUANTITY,'q')
 
             q = this_simulation.z(end,1:4)';
-            %extract vector and scalar part form quaternion
-            q_vec = q(2:4);
-            q_scalar = q(1);
+            phi = self.get_cartesian_coordinates_center_of_mass(q);
 
-            %skew-sym matrix corresponding to vector part
-            q_hat = [0, -q_vec(3), q_vec(2);
-                    q_vec(3), 0, -q_vec(1);
-                    -q_vec(2), q_vec(1), 0];
-            
-            % transformation matrix
-            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
-            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
-
-            R_q = E_q*G_q';
-
-            analyzed_quantity = R_q(:); %rotation matrix at t_end
+            analyzed_quantity = phi; 
       
 
         elseif strcmp(this_simulation.CONV_QUANTITY,'p')
@@ -454,10 +441,16 @@ classdef HeavyTopQuaternions < System
     end
 
 
-    function [reference_solution, this_simulation] = hconvergence_reference(~, this_simulation, analyzed_quantity)
-
-        reference_solution = analyzed_quantity(:, end, end); %position
-        this_simulation.matrix_error_analysis = true;
+    function [reference_solution, this_simulation] = hconvergence_reference(~, this_simulation, ~)
+        
+        L = self.GEOM(4);
+        theta_0 = pi/3;
+        omega_p = 10;
+        t=this_simulation.t(end);
+        reference_solution = [L*sin(theta_0)*sin(omega_p*t);
+                              -L*sin(theta_0)*cos(omega_p*t);
+                              L*cos(theta_0)];%position
+        this_simulation.matrix_error_analysis = false;
       
     end
 
