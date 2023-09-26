@@ -23,9 +23,9 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 3
 
    GettingStartet
+      test
    codestructure
    
    
