@@ -25,7 +25,7 @@ Contents
 .. toctree::
    :maxdepth: 4
 
-   GettingStartet
+   GettingStarted
    codestructure
    
    
