@@ -1,4 +1,4 @@
-Code Structure 
+Code structure 
 ============
 
 .. toctree::
