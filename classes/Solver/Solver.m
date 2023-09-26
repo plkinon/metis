@@ -50,7 +50,7 @@ classdef Solver
                     zn = zn1;
 
                     % Initial Guess
-                    % zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
+                    zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
 
                     % Print current time-step
                     fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'----------------------------------------------------');
