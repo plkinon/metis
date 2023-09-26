@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Metis's documentation!
+Welcome to metis's documentation!
 =====================================
 
 .. image:: images/logo.png
@@ -25,7 +25,6 @@ Contents
 .. toctree::
 
    GettingStartet
-      test
    codestructure
    
    
