@@ -441,7 +441,7 @@ classdef HeavyTopQuaternions < System
     end
 
 
-    function [reference_solution, this_simulation] = hconvergence_reference(~, this_simulation, ~)
+    function [reference_solution, this_simulation] = hconvergence_reference(self, this_simulation, ~)
         
         L = self.GEOM(4);
         theta_0 = pi/3;
