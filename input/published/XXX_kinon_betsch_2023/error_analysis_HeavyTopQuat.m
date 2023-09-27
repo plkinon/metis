@@ -1,7 +1,7 @@
 %% System Parameters
 % Name of system in /classes/System
-SYSTEM = 'RigidBodyRotatingQuaternions';
-%SYSTEM = 'RigidBodyRotatingQuaternionsRegularMassMatrix';
+SYSTEM = 'HeavyTopQuaternions';
+%SYSTEM = 'HeavyTopQuaternionsRegularMassMatrix';
 % External acceleration
 g = 9.81;
 EXT_ACC = [0; 0; -g];
