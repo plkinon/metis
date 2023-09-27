@@ -46,6 +46,7 @@ classdef Metis
         T
         V
         E
+        E_kin
         D
         L
         Hdiff

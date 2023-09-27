@@ -110,6 +110,7 @@ classdef Postprocess
             V = zeros(NT, 1);
             H = zeros(NT, 1);
             E = zeros(NT, 1);
+            E_kin = zeros(NT, 1);
             D = zeros(NT, 1);
             L = zeros(NT, 3);
             diffH = zeros(NT-1, 1);
@@ -146,6 +147,7 @@ classdef Postprocess
 
                 H(j) = T(j) + V(j);
                 E(j) = p(j,:)*v(j,:)' - 1 / 2 * v(j, :) * M * v(j, :)' + V(j);
+                E_kin(j) = E(j) - V(j);
                 D(j) = v(j, :) * this_system.DISS_MAT * v(j, :)';
                 F_ext = -this_system.external_potential_gradient(q(j, :)');
 
@@ -220,6 +222,7 @@ classdef Postprocess
             this_simulation.V = V;
             this_simulation.H = H;
             this_simulation.E = E;
+            this_simulation.E_kin = E_kin;
             this_simulation.D = D;
             this_simulation.diss_work = diss_work;
             this_simulation.L = L;
@@ -371,6 +374,7 @@ classdef Postprocess
 
             H = this_simulation.H;
             E = this_simulation.E;
+            E_kin = this_simulation.E_kin;
             V = this_simulation.V;
             T = this_simulation.T;
             t = this_simulation.t;
@@ -414,17 +418,18 @@ classdef Postprocess
 
                         %plots Energy quantities over time
                         if isnan(E(end))
-                            plotline = plot(t(1:end-1), E(1:end-1));
+                            plotline = plot(t(1:end-1), E_kin(1:end-1), t(1:end-1), V(1:end-1), t(1:end-1),  E(1:end-1));
                         else
-                            plotline = plot(t, E);
+                            plotline = plot(t, E_kin, t, V, t, E);
                         end
                         fig.Name = 'energy_functional';
-                        Mmin = min(E);
-                        Mmax = max(E);
+                        Mmin = min([min(V), min(E_kin), min(E)]);
+                        Mmax = max([max(V), max(E_kin), max(E)]);
                         ylim([Mmin - 0.1 * abs(Mmax-Mmin), Mmax + 0.1 * abs(Mmax-Mmin)]);
                         title(strcat(integrator_string, ': Energy'));
+                        legend('$E_{\mathrm{kin}}$', '$V$', '$E$', 'interpreter', 'latex')
                         xlabel('$t$', 'interpreter', 'latex')
-                        ylabel('$E(t)$', 'interpreter', 'latex')
+                        ylabel('energy', 'interpreter', 'latex')
 
                     case 'angular_momentum'
 
