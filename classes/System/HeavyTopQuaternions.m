@@ -58,10 +58,10 @@ classdef HeavyTopQuaternions < System
             
             % transformation matrix
             G_q = [-q_vec, q_scalar*eye(3) - q_hat];
-            
+
             % classical inertia tensor
             inertia_tensor = diag(self.GEOM(1:3));
-            
+
             % singular mass matrix
             M = 4*G_q'*inertia_tensor*G_q;
 
@@ -91,13 +91,12 @@ classdef HeavyTopQuaternions < System
             Dq_T = M_4_hat * q;
 
         end
-
+        
         function Dq_T = kinetic_energy_gradient_from_momentum(~, ~, ~)
             
             Dq_T = [0; 0; 0];
 
         end
-
 
         function L = get_cartesian_angular_momentum_from_momentum(~, q, p)            
             
@@ -223,12 +222,20 @@ classdef HeavyTopQuaternions < System
         %% Constraint on position level
 
         function g = constraint(~, q)
+
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
            
             g=1/2*(q'*q -1);
 
         end
 
         function Dg = constraint_gradient(~, q)
+
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
            
             Dg=q';
 
@@ -390,6 +397,10 @@ classdef HeavyTopQuaternions < System
 
     % invariant of the position constraint
     function zeta = constraint_invariant(~, q, ~)
+       
+       if size(q,1) == 1 && size(q,2) == 4
+            q = q';
+       end
 
        zeta = q'*q;
 
@@ -397,7 +408,9 @@ classdef HeavyTopQuaternions < System
 
     % gradient of the invariant of the position constraint w.r.t. q
     function DzetaDq = constraint_invariant_gradient(~, q, ~)
-
+        if size(q,1) == 1 && size(q,2) == 4
+            q = q';
+        end
         DzetaDq = 2*q';
     end
 
@@ -442,7 +455,7 @@ classdef HeavyTopQuaternions < System
 
 
     function [reference_solution, this_simulation] = hconvergence_reference(self, this_simulation, ~)
-        
+
         L = self.GEOM(4);
         theta_0 = pi/3;
         omega_p = 10;
