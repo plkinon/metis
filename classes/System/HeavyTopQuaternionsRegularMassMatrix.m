@@ -69,31 +69,6 @@ classdef HeavyTopQuaternionsRegularMassMatrix < System
             M4 = M + 2*trace(inertia_tensor)*(q*q');
 
         end
-
-        function Dq_T = kinetic_energy_gradient_from_velocity(self, q, v)
-            
-            %extract vector and scalar part form quaternion
-            v_vec = v(2:4);
-            v_scalar = v(1);
-
-            %skew-sym matrix corresponding to vector part
-            v_hat = [0, -v_vec(3), v_vec(2);
-                    v_vec(3), 0, -v_vec(1);
-                    -v_vec(2), v_vec(1), 0];
-            
-            % transformation matrix
-            G_v = [-v_vec, v_scalar*eye(3) - v_hat];
-            
-            % classical inertia tensor
-            inertia_tensor = diag(self.GEOM(1:3));
-            
-            % singular inertia matrix in v
-            M_4_hat = 4*G_v'*inertia_tensor*G_v;
-            
-            % partial derivativa of kinetic energy w.r.t. q(uat)
-            Dq_T = M_4_hat * q;
-
-        end
         
         % gradient of kinetic energy w.r.t. position formulated in momentum
         function Dq_T = kinetic_energy_gradient_from_momentum(self, q, p)
@@ -121,7 +96,12 @@ classdef HeavyTopQuaternionsRegularMassMatrix < System
             Dq_T = 1/4 * Ql_p * inv_ext_inertia_tensor * Ql_p' * q;
 
         end
+        
+        function Dq_T = kinetic_energy_gradient_from_velocity(~, ~, ~)
+            
+            Dq_T = [0; 0; 0];
 
+        end
 
         function L = get_cartesian_angular_momentum_from_momentum(~, q, p)            
             
