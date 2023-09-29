@@ -2,6 +2,7 @@
 % Name of system in /classes/System
 %SYSTEM = 'RigidBodyRotatingQuaternions';
 SYSTEM = 'RigidBodyRotatingQuaternionsRegularMassMatrix';
+
 % External acceleration
 EXT_ACC = 0;
 % Initial configuration
@@ -30,9 +31,9 @@ clear Omega_0 Q0_hat Q0_vec Q0_scalar G_Q0
 
 %% Integrator
 % Name of routine in /classes/Integrator
-%INTEGRATOR = 'EML';
-INTEGRATOR = 'EMS_std';
-%INTEGRATOR = 'test_integrator';
+INTEGRATOR = 'EML';
+%INTEGRATOR = 'EMS_std';
+
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
