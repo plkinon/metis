@@ -48,9 +48,3 @@ postprocess.plot(simulation);
 postprocess.save(simulation);
 
 % -------------------------- END OF CODE ----------------------------------
-figure()
-phi = zeros(size(simulation.t,2),3);
-for i = 1:size(simulation.t,2)
-    phi(i,:) = system.get_cartesian_coordinates_center_of_mass(simulation.z(i,1:4)');
-end
-plot(simulation.t,phi(:,3))
