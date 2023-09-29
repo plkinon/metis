@@ -50,6 +50,10 @@ classdef Postprocess
             q = this_simulation.z(:, 1:nDOF);
             p = this_simulation.z(:, nDOF+1:2*nDOF);
             v = zeros(NT, nDOF);
+
+            if ismethod(this_system,'get_cartesian_coordinates_center_of_mass')
+                x = zeros(NT,this_simulation.DIM);
+            end
             
             if this_system.mMixedQuantities > 0
                 alpha = this_simulation.z(:,3*nDOF+1:3*nDOF+this_system.mMixedQuantities);
@@ -132,6 +136,13 @@ classdef Postprocess
 
             % Compute quantities for every point in time
             for j = 1:NT
+                
+                if ismethod(this_system,'get_cartesian_coordinates_center_of_mass')
+                    x(j,:) = this_system.get_cartesian_coordinates_center_of_mass(q(j,:));
+                else
+                    x = [];
+                end
+
                 M = this_system.get_mass_matrix(q(j,:));
                 
                 % Kinetic and potential energy, Hamiltonian
@@ -218,6 +229,7 @@ classdef Postprocess
             end
 
             % Save computed quantities to simulation-object
+            this_simulation.x = x;
             this_simulation.T = T;
             this_simulation.V = V;
             this_simulation.H = H;
@@ -371,7 +383,8 @@ classdef Postprocess
         %% Function: plot specific quantities
         function plot(self, this_simulation)
             % Function for plotting postprocessing results
-
+            
+            x = this_simulation.x;
             H = this_simulation.H;
             E = this_simulation.E;
             E_kin = this_simulation.E_kin;
@@ -552,6 +565,25 @@ classdef Postprocess
                         title(strcat(integrator_string, ': mixed quantity difference'));
                         xlabel('$t$', 'interpreter', 'latex');
                         ylabel('$C - C (q) $', 'interpreter', 'latex');
+
+
+                    case 'cartesian_coordinates_center_of_mass'
+
+                        %plots the ang. Mom. about dim-axis over time
+                        plotline = plot(t, x(:, :));
+                        Lmin = min(x(:));
+                        Lmax = max(x(:));
+                        ylim([Lmin - 0.1 * abs(Lmax-Lmin), Lmax + 0.1 * abs(Lmax-Lmin)]);
+                        fig.Name = 'cart_coords';
+                        title(strcat(integrator_string, ': Cartesian coordinates'));
+                        if this_simulation.DIM == 3
+                            legend('$x_1$', '$x_2$', '$x_3$', 'interpreter', 'latex');
+                        else
+                            legend('$x$', 'interpreter', 'latex');
+                        end
+                        xlabel('$t$', 'interpreter', 'latex');
+                        ylabel('$x_i(t) \ \mathrm{[m]}$', 'interpreter', 'latex');
+
 
                     otherwise
 
