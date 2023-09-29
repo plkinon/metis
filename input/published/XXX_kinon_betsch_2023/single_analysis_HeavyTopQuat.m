@@ -68,7 +68,7 @@ TOLERANCE = 1E-09;
 % Animation of trajectory [true/false]
 shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
-plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_velocity', 'constraint_position'};
+plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_velocity', 'constraint_position','cartesian_coordinates_center_of_mass'};
 % Export of simulation results in a .mat-file [true/false]
 should_export = true;
 % Export of figures in .eps- and .tikz-files
