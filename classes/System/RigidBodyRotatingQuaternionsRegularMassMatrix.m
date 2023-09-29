@@ -62,6 +62,29 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
 
         end
 
+        function Dq_T = kinetic_energy_gradient_from_velocity(self, q, v)
+            
+            %extract vector and scalar part form quaternion
+            v_vec = v(2:4);
+            v_scalar = v(1);
+
+            %skew-sym matrix corresponding to vector part
+            v_hat = [0, -v_vec(3), v_vec(2);
+                    v_vec(3), 0, -v_vec(1);
+                    -v_vec(2), v_vec(1), 0];
+            
+            % transformation matrix
+            G_v = [-v_vec, v_scalar*eye(3) - v_hat];      
+            Ql_v = [v, G_v'];
+
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM);
+            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
+                                       zeros(1,3)', inertia_tensor];
+
+            Dq_T = 4 * Ql_v * extended_inertia_tensor * Ql_v' * q;
+
+        end
        
         % gradient of kinetic energy w.r.t. position formulated in momentum
         function Dq_T = kinetic_energy_gradient_from_momentum(self, q, p)
@@ -218,7 +241,7 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
         end
 
         % Invariant of the internal potential
-        function omega = kinetic_energy_invariant(~, q, p, ~)
+        function omega = kinetic_energy_invariant(~, q, momentum_or_velocity, ~)
             
             if size(q,1) == 1 && size(q,2) == 4
                 q = q';
@@ -238,26 +261,28 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
             
             Ql_q = [q, G_q'];
 
-            omega = Ql_q'*p;
+            omega = Ql_q'*momentum_or_velocity;
 
         end
 
+        
+
             % gradient of potential invariants w.r.t. q
-        function DomegaDq = kinetic_energy_invariant_gradient_q(~, ~, p, ~)
+            function DomegaDq = kinetic_energy_invariant_gradient_q(~, ~, momentum_or_velocity, ~)
             %extract vector and scalar part form quaternion
-            p_vec = p(2:4);
-            p_scalar = p(1);
+            pv_vec = momentum_or_velocity(2:4);
+            pv_scalar = momentum_or_velocity(1);
 
             %skew-sym matrix corresponding to vector part
-            p_hat = [0, -p_vec(3), p_vec(2);
-                    p_vec(3), 0, -p_vec(1);
-                    -p_vec(2), p_vec(1), 0];
+            pv_hat = [0, -pv_vec(3), pv_vec(2);
+                    pv_vec(3), 0, -pv_vec(1);
+                    -pv_vec(2), pv_vec(1), 0];
             
             % transformation matrix
-            G_p = [-p_vec, p_scalar*eye(3) - p_hat];
+            G_pv = [-pv_vec, pv_scalar*eye(3) - pv_hat];
 
-            DomegaDq = [p'; 
-                       -G_p]; %=Q_r(p)*I_quer;
+            DomegaDq = [momentum_or_velocity'; 
+                       -G_pv]; %=Q_r(p/v)*I_quer;
 
         end
 
@@ -283,14 +308,58 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
                         G_q];
         end
 
-        % kinetic energy computed with the invariant
-        function Ts = kinetic_energy_from_invariant(self, omega, ~)
+         % gradient of kinetic energy invariants w.r.t. v
+         % identical to the function above
+        function DomegaDp = kinetic_energy_invariant_gradient_v(~, q, ~, ~)
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+
+            DomegaDp = [q';
+                        G_q];
+        end
+
+        % kinetic energy computed with the invariant based on p
+        function Ts = kinetic_energy_from_invariant_Hamiltonian(self, omega, ~)
             % classical inertia tensor
             inertia_tensor = diag(self.GEOM);
             extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
             inv_ext_inertia_tensor = eye(size(extended_inertia_tensor)) / extended_inertia_tensor;
             Ts = 1/8 *omega'*inv_ext_inertia_tensor*omega;
+        end
+
+        % kinetic energy computed with the invariant based on v
+        function Ts = kinetic_energy_from_invariant(self, omega, ~)
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM);
+            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
+                                       zeros(1,3)', inertia_tensor];
+            Ts = 2 *omega'*extended_inertia_tensor*omega;
+        end
+
+        % gradient of kinetic energy w.r.t. the invariant
+        function DTsDpi = kinetic_energy_gradient_from_invariant_Hamiltonian(self, omega, ~)
+          
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM);
+            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
+                                       zeros(1,3)', inertia_tensor];
+            inv_ext_inertia_tensor = eye(size(extended_inertia_tensor)) / extended_inertia_tensor;
+
+            DTsDpi = 1/4*inv_ext_inertia_tensor*omega;
         end
 
         % gradient of kinetic energy w.r.t. the invariant
@@ -300,9 +369,8 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
             inertia_tensor = diag(self.GEOM);
             extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
-            inv_ext_inertia_tensor = eye(size(extended_inertia_tensor)) / extended_inertia_tensor;
 
-            DTsDpi = 1/4*inv_ext_inertia_tensor*omega;
+            DTsDpi = 4*extended_inertia_tensor*omega;
         end
 
         % invariant of the velocity invariant
