@@ -41,6 +41,7 @@ classdef Metis
         %% Solution quantities
         % Will be filled by Metis
         t
+        x
         z
         H
         T
