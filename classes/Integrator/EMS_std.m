@@ -152,14 +152,14 @@ classdef EMS_std < Integrator
                     % derivative of invariant w.r.t. v_n05
                     Domegap_n05 = this_system.kinetic_energy_invariant_gradient_p(q_n05, p_n05, k);
                     % evaluate internal potential depending on invariants
-                    Ts_n = this_system.kinetic_energy_from_invariant(omega_n, k);
-                    Ts_n1 = this_system.kinetic_energy_from_invariant(omega_n1, k);
+                    Ts_n = this_system.kinetic_energy_from_invariant_Hamiltonian(omega_n, k);
+                    Ts_n1 = this_system.kinetic_energy_from_invariant_Hamiltonian(omega_n1, k);
     
                     % if invariants at n and n1 are approx. equal use the midpoint
                     % evaluated gradient instead
                     if abs((omega_n1-omega_n)'*(omega_n1-omega_n)) > 1e-09
                         % discrete gradient
-                        DT_omega_n05 = this_system.kinetic_energy_gradient_from_invariant(omega_n05,k);
+                        DT_omega_n05 = this_system.kinetic_energy_gradient_from_invariant_Hamiltonian(omega_n05,k);
                         DT_omega = DT_omega_n05 + ((Ts_n1 - Ts_n - DT_omega_n05'*(omega_n1 -omega_n)) / ((omega_n1-omega_n)'*(omega_n1-omega_n))) * (omega_n1-omega_n); 
                         % if the kinetic energy is quadratic in this invariant, the second term vanishes
                         DG_T_q = DG_T_q + Domegaq_n05' * DT_omega;
