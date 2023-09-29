@@ -148,6 +148,10 @@ classdef HeavyTopQuaternionsRegularMassMatrix < System
         end
 
         function x = get_cartesian_coordinates_center_of_mass(self,q)
+
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
             
             % External potential
             L = self.GEOM(4);
