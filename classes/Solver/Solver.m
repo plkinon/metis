@@ -158,10 +158,6 @@ classdef Solver
 
             end
 
-            if num_iter >= self.MAX_ITERATIONS
-                error('Max. number of iterations reached. Quit simulation.')
-            end
-
         end
 
         %% Function: numerical tangent
