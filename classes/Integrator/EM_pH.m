@@ -8,8 +8,7 @@ classdef EM_pH < Integrator
     % - uses mixed variables (e.g. for strains) and has port-Hamiltonian
     %   structure
     %
-    % Author: Philipp Kinon
-    % Date  : 26.04.2023
+    % - more infos: https://doi.org/10.1002/pamm.202300144
 
     methods
 
