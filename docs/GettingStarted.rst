@@ -19,7 +19,7 @@ First steps
 2. Get `matlab2tikz <https://github.com/matlab2tikz/matlab2tikz>`_ (optional)
 3. Open the `MATLAB <https://www.mathworks.com/products/matlab.html>`_ editor or run it with the shell script metis.sh
 4. Open start_metis_single_analysis.m
-5. Adjust <input_file_name> corresponding to a file from /input, for more info look at README_inputz
+5. Adjust <input_file_name> corresponding to a file from /input, for more info look at README_input.md
 
     .. code-block:: console
 
@@ -29,3 +29,4 @@ First steps
 8. Edit or change input file or create a new one in /input
 9. For error analyses run start_metis_error_analysis.m with corresponding input-file
 10. Have fun!
+
