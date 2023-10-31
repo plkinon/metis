@@ -7,11 +7,8 @@ classdef Metis
 
     properties
 
-        % Computation parameters
-        % Have to be given in an input-file one-to-one. Leaving out one or
-        % another will immediately lead to wrong or non-existing results.
-        DIM
-        DT
+        DIM % Computation parameters
+        DT % fixed time step size
         EXT_ACC
         ALL_INTEGRATOR
         INTEGRATOR
