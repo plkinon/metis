@@ -270,8 +270,9 @@ classdef Metis
 
                     end
 
-                    %% Function: set up the matrix with simulation results
+                    
                     function self = set_solution_matrix(self, this_integrator, this_system)
+                    %% set up the matrix with simulation results
 
                         % Allocate space
                         self.z = zeros(this_integrator.NT+1, this_integrator.nVARS);
