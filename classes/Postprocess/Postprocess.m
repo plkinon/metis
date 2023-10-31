@@ -12,15 +12,15 @@ classdef Postprocess
 
     methods
 
-        %% Function: initialise the postprocessing
         function self = Postprocess()
-            % set default position of figure windows
+            % initialise the postprocessing, set default position of figure windows
             set(0, 'defaultfigureposition', [0, 450, 1000, 1000])
 
         end
 
-        %% Function: displays an animation of the trajectory
+
         function animation(~, this_system, this_simulation)
+        % displays an animation of the trajectory
 
             if this_simulation.shouldAnimate == true
 
@@ -35,8 +35,9 @@ classdef Postprocess
 
         end
 
-        %% Function: computes postprocessing quantities as function of time
+
         function this_simulation = compute(~, this_system, this_simulation, this_integrator)
+        % computes postprocessing quantities as function of time
 
             nDOF = this_system.nDOF;
             m = this_system.mCONSTRAINTS;
@@ -236,8 +237,8 @@ classdef Postprocess
             end
         end
 
-        %% Function: save results
         function save(~, export_simulation)
+        % save results
 
             % convert timestep-size to string
             DT_string = strrep(num2str(export_simulation.DT), '.', '');
@@ -365,7 +366,6 @@ classdef Postprocess
 
         end
 
-        %% Function: plot specific quantities
         function plot(self, this_simulation)
             % Function for plotting postprocessing results
 
@@ -562,8 +562,8 @@ classdef Postprocess
 
         end
 
-            %% Function: calculate error for error analysis
                 function error = calculate_errors(~, quantity, quantity_ref, num_A, num_B)
+                % calculate error for error analysis
                     error = zeros(num_A, num_B);
                     for i = 1:num_A
                         for j = 1:num_B
@@ -576,7 +576,6 @@ classdef Postprocess
                     end
             end
 
-                %% Function: plots convergence-diagram
                     function convergence_plot(self, h_values, y_values, num_A, legend_entries)
                         % plots convergence-diagram y(h) except for last pair of values
                         % since last pair of values might be the reference value
