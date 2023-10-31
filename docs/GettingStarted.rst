@@ -9,6 +9,12 @@ Requirements
 1. `MATLAB <https://www.mathworks.com/products/matlab.html>`_
 2. `matlab2tikz <https://github.com/matlab2tikz/matlab2tikz>`_ (optional)
 
+.. _General process:
+
+General process
+---------------
+
+A startscript loads the desired input-file. This input-file includes all necessary parameters for the given mechanical problem (geometry, loads, initial values,...), the chosen numerical integration scheme (time-step size, method, simulation time), the Postprocessing routine (plot quantities, animation, export) and the solution parameters for Newton's method. Metis creates all necessary objects and computes the approximate solution based on the given parameters. Eventually, one can choose to have an animation of the solution, some plots are created and the results are being exported.
 
 .. _First steps:
 
