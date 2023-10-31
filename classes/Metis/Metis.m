@@ -3,66 +3,68 @@
 % variables, initialises classes and solving methods
 classdef Metis
 % Conducts all the computations, stores Input-Parameters, sets up
-% variables, initialises classes and solving methods
+% variables, initialises classes and solving methods:
+% Computation parameters have to be given in an input-file one-to-one. Leaving out one or
+% another will immediately lead to wrong or non-existing results.
+% Postprocessing parameters can be given in an input-file (not necessary for computing).
+% Solution quantities will be filled by Metis.
+% Error analysis parameters are only necessary if you want to conduct an error analysis for 
+% several timestep-sizes.
 
     properties
 
-        DIM % Computation parameters
+        DIM % number of spatial dimensions
         DT % fixed time step size
-        EXT_ACC
-        ALL_INTEGRATOR
-        INTEGRATOR
-        INT_PARA
-        INDI_VELO
-        MASS
-        MAX_ITERATIONS
-        Q_0
-        SYSTEM
-        TOLERANCE
-        T_0
-        T_END
-        V_0
-        optime
-        NUM_ITER
-        MEAN_ITER
-        ALPHA_0
+        EXT_ACC % external acceleration vector
+        INTEGRATOR % name of desired integrator
+        INT_PARA % parameters of integrator  
+        INDI_VELO % Boolean if the integrators features independent velocities
+        MASS % masses of the system
+        MAX_ITERATIONS % maximal number of iterations for the Newton's method
+        Q_0 % initial configuration
+        SYSTEM % name of the desired system
+        TOLERANCE % tolerance of Newton's method
+        T_0 % start time
+        T_END % end time
+        V_0 % initial velocity
+        optime % saves time which was needed for the computation (in seconds)
+        NUM_ITER % saves number of iterations
+        MEAN_ITER % saves mean value of iterations per time step
+        ALPHA_0 % initial value for mixed variables (if present)
 
-        % Postprocessing parameters
-        % Can be given in an input-file (not necessary for computing)
-        plot_quantities
-        shouldAnimate
-        should_export
-        export_path
-        should_export_figures
-        matlab2tikz_directory
-        log_file_ID
+    
+        plot_quantities % determines which quantities will be plotted in the postprocessing
+        shouldAnimate % determines if there is an animation
+        should_export % determines if data should be exported
+        export_path % data path for export
+        should_export_figures % determines if figures should be exported
+        matlab2tikz_directory % path for the matlab2tikz extension
+        log_file_ID % ID of log file
 
-        % Solution quantities
-        % Will be filled by Metis
-        t
-        z
-        H
-        T
-        V
-        E
-        D
-        L
-        Hdiff
-        Ediff
-        Ldiff
-        diss_work
-        constraint_position
-        constraint_velocity
-        constraint_forces
-        external_torque
-        alpha_from_q
-        mixed_quantity_difference
+ 
+        t %time
+        z %solution vector
+        H % total energy
+        T %kinetic energy
+        V %potential energy
+        E %generalized energy function
+        D %dissipation work
+        L % angular momentum
+        Hdiff % incremental difference of total energy
+        Ediff % incremental difference of generalized energy function
+        Ldiff % incremental difference of angular momentum
+        diss_work % accumulated dissipated wprk
+        constraint_position % value of constraint on position level
+        constraint_velocity%  value of constraint on velocity/momentum level
+        constraint_forces % constraint forces
+        external_torque % external torques
+        alpha_from_q % determine mixed quantity from configuration
+        mixed_quantity_difference % % incremental difference of mixed quantity
 
-        % Error analysis parameters
-        % Only necessary if you want to conduct an error analysis for
-        % several timestep-sizes
-        ALL_DT
-        CONV_QUANTITY
+        
+        ALL_DT % all time step sizes for a convergence analysis
+        ALL_INTEGRATOR % all integrators for a convergence analysis
+        CONV_QUANTITY % determines which quantity should be analyzed in the convergence analysis
 
     end
 
