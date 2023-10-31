@@ -104,7 +104,7 @@ classdef SpringPendulumPolar < System
         %% Potential functions
 
         function V_ext = external_potential(self, q)
-            % External potential
+
             theta = q(2);
             m =  self.MASS;
             g =  self.EXT_ACC;
