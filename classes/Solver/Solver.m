@@ -1,16 +1,16 @@
 classdef Solver
-% Class: Solver that conducts the computation
+% Solver that conducts the computation,
 % Time-stepping, Newton Rhapson method and numerical tangent if needed
 
     properties
-        MAX_ITERATIONS
-        TOLERANCE
+        MAX_ITERATIONS % maximal number of Newton iterations
+        TOLERANCE % tolerance of Newton solver
     end
 
     methods
 
-        %% Function: Initialise the solver
         function self = Solver(this_simulation)
+        %Initialise the solver
 
             % Set Newton tolerance and max. iterations from simulation
             self.TOLERANCE = this_simulation.TOLERANCE;
@@ -18,9 +18,9 @@ classdef Solver
 
         end
 
-        %% Function: Procedure of time-stepping
-        function this_simulation = solve(self, this_simulation, this_system, this_integrator)
 
+        function this_simulation = solve(self, this_simulation, this_system, this_integrator)
+        % Procedure of time-stepping
             % Read solution vector and set present zn1 to initial value
             z = this_simulation.z;
             zn1 = z(1, :)';
@@ -94,9 +94,8 @@ classdef Solver
 
         end
 
-        %% Funxtion: Initial Guess for Newton-Rhapson-method
         function zn1_guess = newton_initial_guess(~, zn1, this_system, this_simulation, DT)
-            
+        % Initial Guess for Newton-Rhapson-method
             nDOF = this_system.nDOF;
             
 
@@ -124,8 +123,8 @@ classdef Solver
 
         end
 
-        %% Function: Conducts Newton-Rhapson-method to iterate z-vector
         function [zn1, num_iter] = newton_iterate(self, this_integrator, this_system, this_simulation, zn, zn1)
+        %  Conducts Newton-Rhapson-method to iterate z-vector
 
             % Set iteration-index to zero and residual above tolerance
             num_iter = 0;
@@ -160,10 +159,10 @@ classdef Solver
 
         end
 
-        %% Function: numerical tangent
+        
+        function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn1, zn)
         % Computes numerical tangent matrix for a given residual defined by
         % integrator and system zn1 and zn
-        function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn1, zn)
 
             % Pre-allocate tangent matrix, initialized with zeros:
             N = length(zn1);
