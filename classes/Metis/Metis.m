@@ -7,7 +7,7 @@ classdef Metis
 
     properties
 
-        %% Computation parameters
+        % Computation parameters
         % Have to be given in an input-file one-to-one. Leaving out one or
         % another will immediately lead to wrong or non-existing results.
         DIM
@@ -30,7 +30,7 @@ classdef Metis
         MEAN_ITER
         ALPHA_0
 
-        %% Postprocessing parameters
+        % Postprocessing parameters
         % Can be given in an input-file (not necessary for computing)
         plot_quantities
         shouldAnimate
@@ -40,7 +40,7 @@ classdef Metis
         matlab2tikz_directory
         log_file_ID
 
-        %% Solution quantities
+        % Solution quantities
         % Will be filled by Metis
         t
         z
@@ -61,7 +61,7 @@ classdef Metis
         alpha_from_q
         mixed_quantity_difference
 
-        %% Error analysis parameters
+        % Error analysis parameters
         % Only necessary if you want to conduct an error analysis for
         % several timestep-sizes
         ALL_DT
@@ -71,9 +71,9 @@ classdef Metis
 
     methods
 
-        %% Constructor: sets up the METIS workspace and loads all configurations
         function [self, this_system, this_integrator, this_solver] = Metis(INPUT_FILE, num_dt, num_int)
-
+        % Constructor: sets up the METIS workspace and loads all configurations
+            
             % Clear workspace, close all windows and clear command window
             close all;
             clc;
@@ -118,8 +118,9 @@ classdef Metis
 
         end
 
-        %% Function: Create log-file
+
         function self = create_log_file(self)
+        % Create log-file
 
             % Create new log file
                 if ~exist('metis.log', 'file')
@@ -149,8 +150,8 @@ classdef Metis
 
         end
 
-        %% Function: Check if user input is valid
         function check_user_input(self)
+        % Check if user input is valid
 
             % Check if all necessary input quantities are given by user
             necessary_input_list = {'DIM', 'DT', 'EXT_ACC', 'INTEGRATOR', 'MASS', 'MAX_ITERATIONS', 'Q_0', 'SYSTEM', 'TOLERANCE', 'T_0', 'T_END', 'V_0'};
@@ -198,8 +199,8 @@ classdef Metis
 
         end
 
-                    %% Function: Check if a class is available
                     function is_avaiable = is_class_available(~, directory, this_class)
+                    % Check if a class is available
 
                         % Get all present class-names
                         valid_classes = dir(fullfile(directory, '*.m'));
@@ -214,9 +215,8 @@ classdef Metis
 
                     end
 
-                    %% Function: reads input-file and stores it in the attributes
                     function self = get_config_input(self, INPUT_FILE, num_dt, num_int)
-
+                    % reads input-file and stores it in the attributes
                         % Define all the parameters that METIS needs to run a
                         % simulation in a .m-file
                         run(INPUT_FILE);
@@ -250,9 +250,8 @@ classdef Metis
 
                     end
 
-                    %% Function: Defines system, integrator and solver objects
                     function [self, this_system, this_integrator, this_solver] = define_classes(self)
-
+                    % Defines system, integrator and solver objects
                         % System: Takes user-defined string and evaluates it as the
                         % constructor of a class system
                         this_system = feval(self.SYSTEM, self);
