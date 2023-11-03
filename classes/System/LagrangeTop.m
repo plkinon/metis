@@ -1,11 +1,6 @@
 classdef LagrangeTop < System
-% A rigid gyroscopic top. Uses d_3 director and angular momentum as
-% variables.
-%
-% References:
-% [1]: Bobenko & Suris. 1996.
-%
-    %%
+% A rigid gyroscopic top. Uses d_3 director and angular momentum as variables. See Bobenko & Suris (1996).
+ 
     methods
 
         function self = LagrangeTop(CONFIG)

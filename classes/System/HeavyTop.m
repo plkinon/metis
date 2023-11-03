@@ -2,15 +2,11 @@ classdef HeavyTop < System
 % A rigid gyroscopic top. Makes use of director formulation, e.g. described
 % in [1,2]. Internal constraints plus a constraint which fixes the top to
 % the floor. Subject to initial velocities and external acceleration.
-
-% References:
-% [1]: Betsch, P. and Steinmann, P. Constrained integration of rigid body dynamics.
-%      In: Computer Methods in Applied Mechanics and Engineering, 191(3-5): 467–488,
-%      2001. doi: 10.1016/S0045-7825(01)00283-3.
 %
-% [2]: Krenk, S. and Nielsen, M. B. Conservative rigid body dynamics by convected
-%      base vectors with implicit constraints. In: Computer Methods in Applied Mechanics
-%      and Engineering, 269: 437–453, 2014. doi: 10.1016/j.cma.2013.10.028.
+% References:
+% [1]: Betsch, P. and Steinmann, P. Constrained integration of rigid body dynamics. In: Computer Methods in Applied Mechanics and Engineering, 191(3-5): 467–488, 2001. doi: 10.1016/S0045-7825(01)00283-3.
+%
+% [2]: Krenk, S. and Nielsen, M. B. Conservative rigid body dynamics by convected base vectors with implicit constraints. In: Computer Methods in Applied Mechanics and Engineering, 269: 437–453, 2014. doi: 10.1016/j.cma.2013.10.028.
     %%
     methods
 

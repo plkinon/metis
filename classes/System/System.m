@@ -1,6 +1,6 @@
 %% Class: abstract system
 classdef System
-    % Contains all system described parameters
+    % Abstract system class. Contains all system described parameters
 
     %% Properties: generic ones inherited by child classes
     properties

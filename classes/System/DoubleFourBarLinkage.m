@@ -7,11 +7,7 @@ classdef DoubleFourBarLinkage < System
 % [1]: Betsch, P. and Uhlar, S.: Energy-momentum conserving integration of 
 % multibody dynamics, In: Multibody Syst Dyn, 17: 243–289, 2007. doi: 10.1007/s11044-007-9043-9.
 %
-% [2]: Ivo Roupa, Sérgio B. Gonçalves, Miguel Tavares da Silva: 
-%      Kinematics and dynamics of planar multibody systems with fully 
-%      Cartesian coordinates and a generic rigid body, 
-%      In: Mechanism and Machine Theory, 180: 105134, 2023. 
-%      doi: 10.1016/j.mechmachtheory.2022.105134.
+% [2]: Ivo Roupa, Sérgio B. Gonçalves, Miguel Tavares da Silva: Kinematics and dynamics of planar multibody systems with fully  Cartesian coordinates and a generic rigid body, In: Mechanism and Machine Theory, 180: 105134, 2023, doi: 10.1016/j.mechmachtheory.2022.105134 .
 
     methods
 
