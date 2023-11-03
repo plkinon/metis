@@ -12,7 +12,6 @@ classdef DoubleFourBarLinkage < System
     methods
 
         function self = DoubleFourBarLinkage(CONFIG)
-            % This function contructs the desired system
 
             self.nBODIES = 5; % Number of bodies
             
@@ -60,28 +59,24 @@ classdef DoubleFourBarLinkage < System
         end
 
         function M = get_mass_matrix(self, ~)
-            % Collects the mass of the system
             
             M = self.MASS_MAT;
 
         end
 
         function Dq_T = kinetic_energy_gradient_from_momentum(~, q, ~)
-            % Calculates kinetic energy from momentum
 
             Dq_T = zeros(size(q));
 
         end
 
         function Dq_T = kinetic_energy_gradient_from_velocity(~, q, ~)
-            % Calculates kinetic energy from velocity
 
             Dq_T = zeros(size(q));
 
         end
 
         function V_ext = external_potential(self, q)
-            % given by external acceleration acting on center of mass
             V_ext = 0;
             g = self.EXT_ACC(1:2);
 
@@ -92,7 +87,6 @@ classdef DoubleFourBarLinkage < System
         end
 
         function DV_ext = external_potential_gradient(self, ~)
-            % calculates the potential gradient given an external force
             g = self.EXT_ACC(1:2);
             DV_ext = zeros(self.nDOF, 1);
             for i = 1:self.nBODIES
@@ -162,8 +156,6 @@ classdef DoubleFourBarLinkage < System
 
         function Dg = constraint_gradient(self, q)
 
-            % Gradient of constraint w.r.t q
-
             d1  = NaN(self.nBODIES,2);
             phi = NaN(self.nBODIES,2);
             d2  = NaN(self.nBODIES,2);
@@ -199,7 +191,6 @@ classdef DoubleFourBarLinkage < System
 
         function D2g = constraint_hessian(~, ~, m)
 
-            % Hessian of g_k w.r.t. q vanish (only linear constraints)
 
             D2g = zeros(30, 30);
             if ismember(m, [1,4,7,10,13])
