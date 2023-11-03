@@ -292,8 +292,8 @@ classdef RigidBodyMoving < System
 
                                                             function zeta = constraint_invariant(self, q, i)
                                                                 
-                                                                
-                                                                d1 = q(self.DIM+1:2*self.DIM);
+                                                  
+                                                           d1 = q(self.DIM+1:2*self.DIM);
                                                                 d2 = q(2*self.DIM+1:3*self.DIM);
                                                                 d3 = q(3*self.DIM+1:4*self.DIM);
 
