@@ -1,12 +1,11 @@
 classdef DoubleFourBarLinkage < System
-% A system consisting of 5 bars. Makes use of 2D director formulation, 
-% e.g. described in [1]. Internal constraints plus a constraint which 
+% A system consisting of 5 bars. Makes use of 2D director formulation, e.g. described in [1]. Internal constraints plus a constraint which 
 % fixes the top to the floor. Subject to initial velocities and external 
 % acceleration. More details can be found in [2].
 % References:
+%
 % [1]: Betsch, P. and Uhlar, S.: Energy-momentum conserving integration of 
-%      multibody dynamics, In: Multibody Syst Dyn, 17: 243–289,
-%      2007. doi: 10.1007/s11044-007-9043-9.
+% multibody dynamics, In: Multibody Syst Dyn, 17: 243–289, 2007. doi: 10.1007/s11044-007-9043-9.
 %
 % [2]: Ivo Roupa, Sérgio B. Gonçalves, Miguel Tavares da Silva: 
 %      Kinematics and dynamics of planar multibody systems with fully 
