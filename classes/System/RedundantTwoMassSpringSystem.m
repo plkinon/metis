@@ -58,13 +58,13 @@ classdef RedundantTwoMassSpringSystem < System
         end
 
         function V_ext = external_potential(~, ~)
-            % External potential
+
             V_ext = 0;
 
         end
 
         function V_int = internal_potential(self, q)
-            % Internal potential
+
             q1 = q(1);
             q3 = q(3);
 
@@ -94,7 +94,6 @@ classdef RedundantTwoMassSpringSystem < System
 
         function D2V_int = internal_potential_hessian(self, q)
 
-            % Extract single positions
             q1 = q(1);
             q3 = q(3);
 
@@ -117,7 +116,6 @@ classdef RedundantTwoMassSpringSystem < System
 
         function g = constraint(self, q)
            
-            % Extract single positions
             q1 = q(1);
             q2 = q(2);
             q3 = q(3);
@@ -131,7 +129,6 @@ classdef RedundantTwoMassSpringSystem < System
 
         function Dg = constraint_gradient(~, q)
            
-            % Extract single positions
             q1 = q(1);
             q2 = q(2);
             q3 = q(3);

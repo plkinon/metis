@@ -51,7 +51,6 @@ classdef SpringPendulum < System
         %% Potential functions
 
         function V_ext = external_potential(self, q)
-            % External potential
 
             m =  self.MASS;
             b =  self.EXT_ACC;

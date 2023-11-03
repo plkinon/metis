@@ -68,17 +68,17 @@ classdef Pendulum < System
 
 
         function g = constraint(self, q)
-            % Constraint on position level
+
             g = 0.5 * (q' * q / self.GEOM(1)^2 - 1);
         end
 
         function Dg = constraint_gradient(self, q)
-            % Gradient of constraint w.r.t q
+
             Dg = q'/ self.GEOM(1)^2 ;
         end
 
         function D2g = constraint_hessian(self, q, ~)
-            % Hessian of g_1 w.r.t. q
+
             D2g = eye(size(q, 1))/ self.GEOM(1)^2;
         end
 

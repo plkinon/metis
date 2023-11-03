@@ -54,13 +54,13 @@ classdef TwoMassSpringSystem < System
         end
 
         function V_ext = external_potential(~, ~)
-            % External potential
+
             V_ext = 0;
 
         end
 
         function V_int = internal_potential(self, q)
-            % Internal potential
+
             x1 = q(1);
             x2 = q(2);
 
@@ -89,7 +89,7 @@ classdef TwoMassSpringSystem < System
 
         function D2V_int = internal_potential_hessian(self, q)
 
-            % Extract single positions
+
             x1 = q(1);
             x2 = q(2);
 

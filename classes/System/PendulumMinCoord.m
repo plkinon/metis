@@ -133,7 +133,7 @@ classdef PendulumMinCoord < System
         %% Potential functions
 
         function V_ext = external_potential(self, q)
-            % External potential
+
             theta = q(1);
             m =  self.MASS;
             g =  self.EXT_ACC;
@@ -143,7 +143,7 @@ classdef PendulumMinCoord < System
         end
 
         function V_ext = external_potential_cyclic(self, x)
-            % External potential
+
             theta = x(1);
             m =  self.MASS;
             g =  self.EXT_ACC;

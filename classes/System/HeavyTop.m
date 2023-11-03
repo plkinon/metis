@@ -73,7 +73,7 @@ classdef HeavyTop < System
 
 
         function V_ext = external_potential(self, q)
-            % given by external acceleration acting on center of mass
+
             V_ext = -self.MASS * self.EXT_ACC(1:3)' * q(1:3);
 
         end
@@ -104,7 +104,6 @@ classdef HeavyTop < System
 
         function g = constraint(self, q)
 
-            % Constraint on position level
             phi = q(1:self.DIM);
             L = self.GEOM(4);
             d1 = q(self.DIM+1:2*self.DIM);
@@ -123,7 +122,6 @@ classdef HeavyTop < System
 
         function Dg = constraint_gradient(self, q)
 
-            % Gradient of constraint w.r.t q
             d1 = q(self.DIM+1:2*self.DIM);
             d2 = q(2*self.DIM+1:3*self.DIM);
             d3 = q(3*self.DIM+1:4*self.DIM);
@@ -135,7 +133,6 @@ classdef HeavyTop < System
 
         function D2g = constraint_hessian(~, ~, m)
 
-            % Hessian of g_1 w.r.t. q
             D2g = zeros(12, 12);
             if m == 1
                 D2g(4, 4) = 1;
