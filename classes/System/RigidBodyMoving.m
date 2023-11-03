@@ -4,6 +4,7 @@ classdef RigidBodyMoving < System
 % Subject to initial velocities and external acceleration.
 %
 % References:
+%
 % [1]: Betsch, P. and Steinmann, P. Constrained integration of rigid body dynamics.
 % In: Computer Methods in Applied Mechanics and Engineering, 191(3-5): 467–488, 2001. doi: 10.1016/S0045-7825(01)00283-3.
 %
@@ -290,7 +291,8 @@ classdef RigidBodyMoving < System
                                                         %%%%%%%%%%%%%%%%%%%%%%%%%
 
                                                             function zeta = constraint_invariant(self, q, i)
-                                                                % Constraint on position level
+                                                                
+                                                                
                                                                 d1 = q(self.DIM+1:2*self.DIM);
                                                                 d2 = q(2*self.DIM+1:3*self.DIM);
                                                                 d3 = q(3*self.DIM+1:4*self.DIM);

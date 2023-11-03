@@ -2,6 +2,7 @@ classdef DoubleFourBarLinkage < System
 % A system consisting of 5 bars. Makes use of 2D director formulation, e.g. described in [1]. Internal constraints plus a constraint which 
 % fixes the top to the floor. Subject to initial velocities and external 
 % acceleration. More details can be found in [2].
+%
 % References:
 %
 % [1]: Betsch, P. and Uhlar, S.: Energy-momentum conserving integration of 
@@ -404,7 +405,8 @@ classdef DoubleFourBarLinkage < System
                                                         %%%%%%%%%%%%%%%%%%%%%%%%%
 
                                                             function zeta = constraint_invariant(self, q, i)
-                                                                % Constraint on position level
+                                                                
+                                                                
                                                                 phi = q(1:self.DIM);
                                                                 d1 = q(self.DIM+1:2*self.DIM);
                                                                 d2 = q(2*self.DIM+1:3*self.DIM);

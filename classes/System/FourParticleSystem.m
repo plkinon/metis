@@ -13,10 +13,9 @@ classdef FourParticleSystem < System
 
     %% 4-particle system in 2 or 3 dimensions
     properties
-        % spring stiffnesses
+
         K1
         K2
-        % power of spring potential
         p
     end
 

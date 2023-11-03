@@ -2,7 +2,6 @@ classdef TwoMassSpringSystem < System
 % Two masses, connected via elastic springs (yields internal potential). Resting lengths of the springs determined from initial configuration.
 
     properties
-        % spring stiffnesses
         K1
         K2
     end
