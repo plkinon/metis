@@ -127,6 +127,11 @@ classdef HeavyTopQuaternions < System
             
             % External potential
             L = self.GEOM(4);
+
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+            
             %extract vector and scalar part form quaternion
             q_vec = q(2:4);
             q_scalar = q(1);
