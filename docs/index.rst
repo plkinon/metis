@@ -6,6 +6,8 @@
 Welcome to metis's documentation!
 =====================================
 
+This is the documentation for `Metis <https://github.com/philipplk/metis>`_ .
+
 .. image:: images/logo.png
 
 **Metis** is an object-oriented MATLAB code package that allows to carry out dynamical simulations of mechanical systems. The main feature is the possibility to use and compare different integration schemes. In principle, two different types of analysis can be carried out:
