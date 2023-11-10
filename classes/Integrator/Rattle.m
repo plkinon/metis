@@ -32,7 +32,7 @@ classdef Rattle < Integrator
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
             % Computes residual vector & tangent matrix
             %
-            % :param zn1: state vector and next time step
+            % :param zn1: state vector for next time step
             % :param zn: state vector at current time step
             % :param this_system: System object
             % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
