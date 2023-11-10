@@ -71,11 +71,13 @@ Structure of the summary:
 
 ## Code structure
 
-## Motivation by example
-
 - Show major workflow.
   - See this image \autoref{fig:dummy_image}.
     ![ALT-text for dummy image: Random pixels \label{fig:dummy_image}](../logo.png){ width=80% }
+
+## Motivation by example
+
+
 
 ## Usage so far
 
