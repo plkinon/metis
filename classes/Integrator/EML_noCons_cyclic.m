@@ -1,5 +1,5 @@
 classdef EML_noCons_cyclic < Integrator
-    % Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for ODE with cyclic coordinate
     %
     % - not derived from variational principle
     %
@@ -11,9 +11,7 @@ classdef EML_noCons_cyclic < Integrator
     %
     % - splits up for cyclic coordinates! import for conservation of
     %   corresponding conjugate momenta
-    %
-    % Author: Philipp Kinon
-    % Date  : 25.04.2023
+
 
     methods
 

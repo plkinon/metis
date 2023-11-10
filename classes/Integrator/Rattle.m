@@ -6,8 +6,6 @@ classdef Rattle < Integrator
     %
     % - constraints are enforced at t_{n+1}
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
 
     methods
 

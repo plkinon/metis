@@ -13,8 +13,6 @@ classdef GGL_std < Integrator
     %
     % - rather bad performance
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
 
     methods
 

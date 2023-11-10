@@ -10,8 +10,7 @@ classdef GGL_VI_theta_A < Integrator
     %
     % - symplectic method
     %
-    % Author: Philipp Kinon
-    % Date  : 28.01.2021
+    % - more info: https://doi.org/10.1007/s11071-023-08522-7
 
     methods
 

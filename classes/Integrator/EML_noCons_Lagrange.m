@@ -1,5 +1,5 @@
 classdef EML_noCons_Lagrange < Integrator
-    % Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for ODEs
     %
     % - not derived from variational principle
     %
@@ -8,9 +8,7 @@ classdef EML_noCons_Lagrange < Integrator
     % - uses discrete gradient for Lagrangians
     %
     % - takes account of non-constant mass-matrices
-    %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2022
+
 
     methods
 

@@ -8,9 +8,7 @@ classdef GGL_theta_mod < Integrator
     %
     % - derived from one-stage thetat method (constraints have been modified)
     %
-    %
-    % Author: Philipp Kinon
-    % Date  : 28.01.2021
+    % - still from masters thesis, not used further
 
     methods
 

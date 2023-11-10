@@ -1,13 +1,11 @@
 classdef MP_noCons < Integrator
-    % Midpoint-Integration scheme for unconstrained dynamics
+    % Midpoint-Integration scheme for unconstrained dynamics (ODEs)
     %
     % - based on momenta and positions (Hamiltonian approach)
     %
     % - not derived from variational principle but simply evaluates RHS at
     %   t_{n+1/2}
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
 
     methods
 

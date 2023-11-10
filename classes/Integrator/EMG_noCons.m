@@ -1,17 +1,15 @@
 classdef EMG_noCons < Integrator
-    % Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for ODE
     %
     % - not derived from variational principle
     %
     % - taken from Gonzales 1996
     %
-    % - uses standard gradient for ext. potential and discrete gradient for
+    % - uses standard midpoint gradient for ext. potential and discrete gradient for
     %   internal potential
     %
     % - takes account of non-constant mass-matrices
-    %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2022
+
 
     methods
 

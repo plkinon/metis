@@ -1,5 +1,5 @@
 classdef EM_pH < Integrator
-    % Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for PH mechanical system
     %
     % - not derived from variational principle
     %
@@ -8,7 +8,7 @@ classdef EM_pH < Integrator
     % - uses mixed variables (e.g. for strains) and has port-Hamiltonian
     %   structure
     %
-    % - more infos: https://doi.org/10.1002/pamm.202300144
+    % - more info: https://doi.org/10.1002/pamm.202300144
 
     methods
 
@@ -28,8 +28,6 @@ classdef EM_pH < Integrator
 end
 
         function z0 = set_initial_condition(~, this_simulation, this_system)
-            % sets initial conditions
-            
 
             z0 = [this_simulation.Q_0', (this_system.get_mass_matrix(this_simulation.Q_0) * this_simulation.V_0)', this_simulation.V_0', this_simulation.ALPHA_0'];
 

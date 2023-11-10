@@ -11,9 +11,7 @@ classdef EML < Integrator
     % - G-equivarient versions for constraint and int. pot. gradients
     %
     % - takes account of non-constant mass-matrices
-    %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2022
+
 
     methods
 

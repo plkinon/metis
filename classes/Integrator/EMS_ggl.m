@@ -1,5 +1,5 @@
 classdef EMS_ggl < Integrator
-    % Energy_Momentum-Integration scheme for constrained DAE with GGL stabilisation
+    % Energy_Momentum-Integration scheme for constrained DAE with GGL principle
     %
     % - based only on constraints on position and velocity level
     %
@@ -13,8 +13,8 @@ classdef EMS_ggl < Integrator
     % - uses standard gradient for ext. potential and discrete gradient for
     %   internal potential and constraints
     %
-    % Author: Philipp Kinon
-    % Date  : 20.12.2020
+    % - more info: https://doi.org/10.1007/s11071-023-08522-7
+
 
     methods
 

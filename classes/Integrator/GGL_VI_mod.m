@@ -5,15 +5,14 @@ classdef GGL_VI_mod < Integrator
     %
     % - independent momenta variables (Livens approach)
     %
-    % - derived from variational principle by Peter Betsch (easy (2nd) attempt for
-    %   new 'GGL-functional'
+    % - derived from variational principle 
     %
     % - symplectic
     %
     % - constraints are enforced at t_{n+1}
     %
-    % Author: Philipp Kinon
-    % Date  : 30.11.2021
+    % - more info: https://doi.org/10.1007/s11044-023-09889-6
+
 
     methods
 

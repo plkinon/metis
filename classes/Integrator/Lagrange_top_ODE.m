@@ -5,10 +5,8 @@ classdef Lagrange_top_ODE < Integrator
     %
     % - not derived from variational principle 
     %
-    % - used for NODY publication, taken from Bobenko & Suris, 1999
-    %
-    % Author: Philipp Kinon
-    % Date  : 24.01.2023
+    % - used for NODY publication(https://doi.org/10.1007/s11071-023-08522-7), taken from Bobenko & Suris, 1999
+
 
     methods
 

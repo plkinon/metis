@@ -3,17 +3,12 @@ classdef EMS_std < Integrator
     %
     % - based only on constraint on position level
     %
-    % - independent momenta variables (Hamilton Potryagin approach)
-    %
     % - not derived from variational principle
     %
-    % - taken from Gonzales 1999
+    % - taken from Gonzales 1999, Hamiltonian framework
     %
     % - uses standard gradient for ext. potential and discrete gradient for
     %   internal potential and constraint
-    %
-    % Author: Philipp Kinon
-    % Date  : 17.12.2020
 
     methods
 

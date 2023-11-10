@@ -8,13 +8,9 @@ classdef GGL_VI_theta_B < Integrator
     %
     % - derived from variational principle
     %
-    % - from symplectic-theta-framework but equivalent to GGL-VI-RK from P.B.
-    %   notes
-    % - postprocessing with T(p) yields large oscillations, with T(v) gives
-    %   error in 1st timestep, since v0 is unknown for given p0
+    % - from symplectic-theta-framework 
     %
-    % Author: Philipp Kinon
-    % Date  : 28.01.2021
+    % - more info: https://doi.org/10.1007/s11071-023-08522-7
 
     methods
 

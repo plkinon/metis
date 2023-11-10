@@ -1,5 +1,5 @@
 classdef MP_std < Integrator
-    % Gen-Alpha-typed-Integration scheme for standard constrained DAE
+    % midpoint-Integration scheme for standard constrained DAE
     %
     % - based only on constraint on position level
     %
@@ -8,8 +8,6 @@ classdef MP_std < Integrator
     % - not derived from variational principle but simply evaluates RHS at
     %   t_{n+1/2}
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
 
     methods
 
