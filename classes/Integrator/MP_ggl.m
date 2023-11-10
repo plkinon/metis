@@ -1,5 +1,5 @@
 classdef MP_ggl < Integrator
-    % midpoint-Integration scheme for standard constrained DAE
+    % Midpoint-Integration scheme for standard constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)

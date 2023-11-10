@@ -1,5 +1,5 @@
 classdef MP_std < Integrator
-    % midpoint-Integration scheme for standard constrained DAE
+    % Midpoint-Integration scheme for standard constrained DAE
     %
     % - based only on constraint on position level
     %

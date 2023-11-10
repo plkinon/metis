@@ -39,12 +39,13 @@ classdef GGL_VI_mod < Integrator
 
         function z_rearranged = rearrange_unknowns(~, this_simulation, this_system)
 
-            % v_n is an unknown of this scheme, has to be shifted backwards
-            % by 1 after computation
             n = this_system.nDOF;
             z_rearranged = this_simulation.z;
             z_rearranged(1:(end -1), 2*n+1:3*n) = this_simulation.z(2:end, 2*n+1:3*n);
             z_rearranged(end, 2*n+1:3*n) = NaN;
+
+            % v_n is an unknown of this scheme, has to be shifted backwards
+            % by 1 after computation
 
         end
 
