@@ -33,12 +33,12 @@ end
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
-            % computes residual tangent
+            % Computes residual vector & tangent matrix
             %
-            % :param zn1: input zn1
-            % :param zn: input zn
-            % :param this_system: input this_system
-            % :returns: [ResidualVector, TangentMatrix]
+            % :param zn1: state vector and next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             h = self.DT;

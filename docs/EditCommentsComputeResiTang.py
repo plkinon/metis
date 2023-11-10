@@ -4,12 +4,12 @@ import os
 folder_path = "../classes/Integrator"
 
 # Define the text to insert
-text_to_insert = """            % computes residual tangent
+text_to_insert = """            % Computes residual vector & tangent matrix
             %
-            % :param zn1: input zn1
-            % :param zn: input zn
-            % :param this_system: input this_system
-            % :returns: [ResidualVector, TangentMatrix]
+            % :param zn1: state vector and next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
 """
 text_lines = text_to_insert.splitlines()
