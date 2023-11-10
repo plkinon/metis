@@ -72,8 +72,9 @@ Structure of the summary:
 ## Code structure
 
 - Show major workflow.
-  - See this image \autoref{fig:dummy_image}.
-    ![Metis code structure \label{fig:dummy_image}](./figures/MetisStructureImage.png){ width=80% }
+- See this image \autoref{fig:structure_image}.
+
+![Metis code structure \label{fig:structure_image}](./figures/MetisStructureImage.png){ width=70% }
 
 ## Motivation by example
 
