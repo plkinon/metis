@@ -73,7 +73,7 @@ Structure of the summary:
 
 - Show major workflow.
   - See this image \autoref{fig:dummy_image}.
-    ![ALT-text for dummy image: Random pixels \label{fig:dummy_image}](../logo.png){ width=80% }
+    ![Metis code structure \label{fig:dummy_image}](./figures/MetisStructureImage.png){ width=80% }
 
 ## Motivation by example
 
