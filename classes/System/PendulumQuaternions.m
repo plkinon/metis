@@ -131,15 +131,26 @@ classdef PendulumQuaternions < System
 
         %% Potential functions
 
-        function V_ext = external_potential(~, ~)
+        function V_ext = external_potential(self, q)
             % External potential
-            V_ext = 0;
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            m = self.GEOM(1);
+            l = self.GEOM(2);
+            g = self.EXT_ACC;
+            V_ext = 2*m*g*l*(q_vec(1)^2+q_vec(2)^2);
 
         end
 
-        function DV_ext = external_potential_gradient(~, ~)
+        function DV_ext = external_potential_gradient(self, q)
+            
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            m = self.GEOM(1);
+            l = self.GEOM(2);
+            g = self.EXT_ACC;
 
-            DV_ext = [0; 0; 0; 0];
+            DV_ext = 4*m*g*l*[0; q_vec(1); q_vec(2); 0];
 
         end
 

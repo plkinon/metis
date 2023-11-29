@@ -4,7 +4,7 @@ SYSTEM = 'PendulumQuaternions';
 %SYSTEM = 'RigidBodyRotatingQuaternionsRegularMassMatrix';
 
 % External acceleration
-EXT_ACC = 0;
+EXT_ACC = 9.81;
 % Initial configuration
 theta_0 = pi/4;
 phi_0 = pi/4;
