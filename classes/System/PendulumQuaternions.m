@@ -13,7 +13,7 @@ classdef PendulumQuaternions < System
 
         function self = PendulumQuaternions(CONFIG)
 
-            self.mCONSTRAINTS = 1;
+            self.mCONSTRAINTS = 2;
             self.nBODIES = 1;
             self.DIM = CONFIG.DIM;
             self.MASS = CONFIG.MASS;
@@ -27,7 +27,7 @@ classdef PendulumQuaternions < System
             self.DISS_MAT = zeros(4,4);
             self.nPotentialInvariants = 0;
             self.nKineticInvariants = 0;
-            self.nConstraintInvariants = 1;
+            self.nConstraintInvariants = 2;
             self.mMixedQuantities = 0;
             self.isCyclicCoordinate = [false;false;false;false];
 
@@ -183,20 +183,29 @@ classdef PendulumQuaternions < System
 
         function g = constraint(~, q)
            
-            g=1/2*(q'*q -1);
+            g1=1/2*(q'*q -1);
+            g2= q(1)*q(2)+q(3)*q(4);
+            g = [g1;g2];
 
         end
 
         function Dg = constraint_gradient(~, q)
            
-            Dg=q';
+            Dg1 = q';
+            Dg2 = [q(2) q(1) q(4) q(3)];
+            Dg = [Dg1; Dg2];
 
         end
 
-        function D2g = constraint_hessian(~, ~, ~)
-
-             D2g=eye(4);
-
+        function D2g = constraint_hessian(~, ~, i)
+             if i ==1
+                 D2g=eye(4);
+             elseif i ==2
+                 D2g= [0 1 0 0;
+                       1 0 0 0;
+                       0 0 0 1;
+                       0 0 1 0];
+             end
         end
 
         %% Invariant formulations
@@ -305,34 +314,51 @@ classdef PendulumQuaternions < System
     end
 
     % invariant of the position constraint
-    function zeta = constraint_invariant(~, q, ~)
-
-       zeta = q'*q;
-
+    function zeta = constraint_invariant(~, q, j)
+        if j == 1
+           zeta = q'*q;
+        elseif j == 2
+           zeta = q(1)*q(2)+q(3)*q(4);
+        end
     end
 
     % gradient of the invariant of the position constraint w.r.t. q
-    function DzetaDq = constraint_invariant_gradient(~, q, ~)
-
-        DzetaDq = 2*q';
+    function DzetaDq = constraint_invariant_gradient(~, q, j)
+        if j == 1
+            DzetaDq = 2*q';
+        elseif j ==2
+            DzetaDq = [q(2) q(1) q(4) q(3)];
+        end
     end
 
     % gradient of the invariant of the position constraint w.r.t. q
-    function D2zetaDq2 = constraint_invariant_hessian(~, ~, ~)
-
-      D2zetaDq2 = 2*eye(4);
+    function D2zetaDq2 = constraint_invariant_hessian(~, ~, j)
+        if j ==1
+            D2zetaDq2 = 2*eye(4);
+        elseif j ==2
+            D2zetaDq2 = [0 1 0 0;
+                       1 0 0 0;
+                       0 0 0 1;
+                       0 0 1 0];
+        end
     end
 
     % position constrained computed with its invariant
-      function gs = constraint_from_invariant(~, zeta, ~)
-
-           gs = 1/2*(zeta -1);
+      function gs = constraint_from_invariant(~, zeta, j)
+           if j == 1
+               gs = 1/2*(zeta -1);
+           elseif j == 2
+               gs = zeta;
+           end
       end
 
     % gradient of position constrained w.r.t. its invariant
-    function Dgs = constraint_gradient_from_invariant(~, ~, ~)
-
-        Dgs = 1/2;
+    function Dgs = constraint_gradient_from_invariant(~, ~, j)
+        if j == 1
+            Dgs = 1/2;
+        elseif j ==2
+            Dgs = 1;
+        end
 
     end
 
