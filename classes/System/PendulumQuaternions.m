@@ -129,6 +129,33 @@ classdef PendulumQuaternions < System
 
         end
 
+        function x = get_cartesian_coordinates_center_of_mass(self,q)
+            
+            % External potential
+            L = self.GEOM(2);
+
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+            
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+            R_q = E_q * G_q';
+            d3 = R_q*[0;0;1];
+            x = L * d3;
+
+        end
+
         %% Potential functions
 
         function V_ext = external_potential(self, q)
@@ -138,7 +165,7 @@ classdef PendulumQuaternions < System
             m = self.GEOM(1);
             l = self.GEOM(2);
             g = self.EXT_ACC;
-            V_ext = 2*m*g*l*(q_vec(1)^2+q_vec(2)^2);
+            V_ext = 2*m*g*l*(q_vec(2)^2+q_vec(3)^2);
 
         end
 
@@ -150,7 +177,7 @@ classdef PendulumQuaternions < System
             l = self.GEOM(2);
             g = self.EXT_ACC;
 
-            DV_ext = 4*m*g*l*[0; q_vec(1); q_vec(2); 0];
+            DV_ext = 4*m*g*l*[0; q_vec(2); q_vec(3); 0];
 
         end
 
