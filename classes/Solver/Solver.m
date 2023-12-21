@@ -158,6 +158,10 @@ classdef Solver
 
             end
 
+            if num_iter >= self.MAX_ITERATIONS
+                warning('Maximum number of Newton iterations has been reached!')
+            end
+
         end
 
         %% Function: numerical tangent
