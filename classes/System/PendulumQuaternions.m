@@ -22,7 +22,7 @@ classdef PendulumQuaternions < System
             self.EXT_ACC = CONFIG.EXT_ACC;
 
            % parameters
-            self.GEOM = [self.MASS,1]; % mass / length
+            self.GEOM = [self.MASS,5]; % mass / length
             
             self.DISS_MAT = zeros(4,4);
             self.nPotentialInvariants = 0;
@@ -44,16 +44,16 @@ classdef PendulumQuaternions < System
             q_scalar = q(1);
 
             % transformation matrix
-            H = [-q_vec(3) -q_vec(2);
-                 -q_vec(2) -q_vec(3);
-                 q_vec(1) q_scalar;
-                 q_scalar q_vec(1)];
+            H = [-q_vec(1) -q_vec(2);
+                 q_scalar  -q_vec(3);
+                 -q_vec(3) q_scalar;
+                 q_vec(2)  q_vec(1)];
             
             % classical mass matrix
             m = self.GEOM(1);
             l = self.GEOM(2);
-            s = 2*(q_scalar*q_vec(2)-q_vec(1)*q_vec(3));
-            M2 = m*l^2*diag([1;s^2]);
+            c = 1-2*(q_vec(3)^2+q_vec(2)^2);
+            M2 = m*l^2*diag([c^2;1]);
             
             % singular mass matrix
             M4 = 4*H*M2*H';
@@ -71,29 +71,29 @@ classdef PendulumQuaternions < System
             q_scalar = q(1);
 
             % transformation matrix
-            H_q = [-q_vec(3) -q_vec(2);
-                 -q_vec(2) -q_vec(3);
-                 q_vec(1) q_scalar;
-                 q_scalar q_vec(1)];
+            H_q = [-q_vec(1) -q_vec(2);
+                 q_scalar  -q_vec(3);
+                 -q_vec(3) q_scalar;
+                 q_vec(2)  q_vec(1)];
 
             % transformation matrix
-            H_v = [-v_vec(3) -v_vec(2);
-                 -v_vec(2) -v_vec(3);
-                 v_vec(1) v_scalar;
-                 v_scalar v_vec(1)];
-            
+            H_v = [-v_vec(1) -v_vec(2);
+                 v_scalar  -v_vec(3);
+                 -v_vec(3) v_scalar;
+                 v_vec(2)  v_vec(1)];
+
             % classical mass matrix
             m = self.GEOM(1);
             l = self.GEOM(2);
-            s = 2*(q_scalar*q_vec(2)-q_vec(1)*q_vec(3));
-            M2 = m*l^2*diag([1;s^2]);
-            dM2ds = m*l^2*diag([0;2*s]);
+            c = 1-2*(q_vec(3)^2+q_vec(2)^2);
+            M2 = m*l^2*diag([c^2;1]);
+            dM2dc = m*l^2*diag([2*c;0]);
 
             % derivative of s w.r.t. quaternion q
-            Ds_q = 2*[q_vec(2) -q_vec(3) q_scalar -q_vec(1)]';
+            Dc_q = [0 0 -4*q_vec(2) -4*q_vec(3)]';
             
             % partial derivativa of kinetic energy w.r.t. q(uat)
-            Dq_T = 4*H_v*M2*H_v'*q + 1/2*2*v'*H_q*dM2ds*2*H_q'*v*Ds_q;
+            Dq_T = 4*H_v*M2*H_v'*q + 1/2*q'*4*H_v*dM2dc*H_v'*q*Dc_q;
 
         end
 
@@ -142,17 +142,26 @@ classdef PendulumQuaternions < System
             q_vec = q(2:4);
             q_scalar = q(1);
 
-            %skew-sym matrix corresponding to vector part
-            q_hat = [0, -q_vec(3), q_vec(2);
-                    q_vec(3), 0, -q_vec(1);
-                    -q_vec(2), q_vec(1), 0];
-            
-            % transformation matrix
-            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
-            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
-            R_q = E_q * G_q';
-            d3 = R_q*[0;0;1];
-            x = L * d3;
+            % %skew-sym matrix corresponding to vector part
+            % q_hat = [0, -q_vec(3), q_vec(2);
+            %         q_vec(3), 0, -q_vec(1);
+            %         -q_vec(2), q_vec(1), 0];
+            % 
+            % % transformation matrix
+            % G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            % E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+            % R_q = E_q * G_q';
+            % d3 = R_q*[0;0;1];
+            % x = L * d3;
+
+            sin_theta = 2*(q_scalar*q_vec(2)+q_vec(1)*q_vec(3));
+            cos_theta = 1-2*(q_vec(3)^2+q_vec(2)^2);
+            sin_phi = 2*(q_scalar*q_vec(1)+q_vec(2)*q_vec(3));
+            cos_phi = 1-2*(q_vec(1)^2+q_vec(3)^2);
+
+            x = [L*sin_theta;
+                 -L*cos_theta*sin_phi;
+                 L*cos_theta*cos_phi];
 
         end
 
@@ -161,11 +170,22 @@ classdef PendulumQuaternions < System
         function V_ext = external_potential(self, q)
             % External potential
             %extract vector and scalar part form quaternion
+            q_scalar = q(1);
             q_vec = q(2:4);
             m = self.GEOM(1);
             l = self.GEOM(2);
             g = self.EXT_ACC;
-            V_ext = 2*m*g*l*(q_vec(2)^2+q_vec(3)^2);
+            
+            sin_theta = 2*(q_scalar*q_vec(2)+q_vec(1)*q_vec(3));
+            cos_theta = 1-2*(q_vec(3)^2+q_vec(2)^2);
+            sin_phi = 2*(q_scalar*q_vec(1)+q_vec(2)*q_vec(3));
+            cos_phi = 1-2*(q_vec(1)^2+q_vec(3)^2);
+
+            x = [l*sin_theta;
+                 -l*cos_theta*sin_phi;
+                 l*cos_theta*cos_phi];
+
+            V_ext = m*g*x(3);
 
         end
 
@@ -177,7 +197,12 @@ classdef PendulumQuaternions < System
             l = self.GEOM(2);
             g = self.EXT_ACC;
 
-            DV_ext = 4*m*g*l*[0; q_vec(2); q_vec(3); 0];
+            cos_theta = 1-2*(q_vec(3)^2+q_vec(2)^2);
+            cos_phi = 1-2*(q_vec(1)^2+q_vec(3)^2);
+            Dc_theta_q = [0;0;-4*q_vec(2);-4*q_vec(3)];
+            Dc_phi_q = [0; -4*q_vec(1); 0; -4*q_vec(3) ];
+
+            DV_ext = m*g*l*(Dc_theta_q*cos_phi + cos_theta*Dc_phi_q);
 
         end
 
@@ -195,7 +220,7 @@ classdef PendulumQuaternions < System
 
         function DV_int = internal_potential_gradient(~, ~)
 
-            DV_int = [0;0; 0; 0];
+            DV_int = [0; 0; 0; 0];
 
         end
 
@@ -210,8 +235,8 @@ classdef PendulumQuaternions < System
 
         function g = constraint(~, q)
            
-            g1=1/2*(q'*q -1);
-            g2= q(1)*q(2)+q(3)*q(4);
+            g1=1/2*(q'*q - 1);
+            g2= q(1)*q(4)-q(2)*q(3);
             g = [g1;g2];
 
         end
@@ -219,7 +244,7 @@ classdef PendulumQuaternions < System
         function Dg = constraint_gradient(~, q)
            
             Dg1 = q';
-            Dg2 = [q(2) q(1) q(4) q(3)];
+            Dg2 = [q(4) -q(3) -q(2) q(1)];
             Dg = [Dg1; Dg2];
 
         end
@@ -228,10 +253,10 @@ classdef PendulumQuaternions < System
              if i ==1
                  D2g=eye(4);
              elseif i ==2
-                 D2g= [0 1 0 0;
-                       1 0 0 0;
-                       0 0 0 1;
-                       0 0 1 0];
+                 D2g= [0 0 0 1;
+                       0 0 -1 0;
+                       0 -1 0 1;
+                       1 0 0 0];
              end
         end
 
@@ -345,7 +370,7 @@ classdef PendulumQuaternions < System
         if j == 1
            zeta = q'*q;
         elseif j == 2
-           zeta = q(1)*q(2)+q(3)*q(4);
+           zeta = q(1)*q(4)-q(2)*q(3);
         end
     end
 
@@ -354,7 +379,7 @@ classdef PendulumQuaternions < System
         if j == 1
             DzetaDq = 2*q';
         elseif j ==2
-            DzetaDq = [q(2) q(1) q(4) q(3)];
+            DzetaDq = [q(4) -q(3) -q(2) q(1)];
         end
     end
 
@@ -363,10 +388,10 @@ classdef PendulumQuaternions < System
         if j ==1
             D2zetaDq2 = 2*eye(4);
         elseif j ==2
-            D2zetaDq2 = [0 1 0 0;
-                       1 0 0 0;
-                       0 0 0 1;
-                       0 0 1 0];
+            D2zetaDq2 = [0 0 0 1;
+                       0 0 -1 0;
+                       0 -1 0 1;
+                       1 0 0 0];
         end
     end
 
