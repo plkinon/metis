@@ -1,13 +1,11 @@
 %% System Parameters
 % Name of system in /classes/System
 SYSTEM = 'PendulumQuaternions';
-%SYSTEM = 'RigidBodyRotatingQuaternionsRegularMassMatrix';
-
 % External acceleration
 EXT_ACC = 9.81;
 % Initial configuration
-theta_0 = pi/4;
 phi_0 = pi/2;%pi/4;
+theta_0 = pi/4;
 Q_0 = [cos(phi_0/2)*cos(theta_0/2);
        sin(phi_0/2)*cos(theta_0/2);
        cos(phi_0/2)*sin(theta_0/2);
@@ -43,7 +41,7 @@ DT = 0.05;
 % starting time
 T_0 = 0;
 % end time
-T_END = 4;
+T_END = 40;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
@@ -53,7 +51,7 @@ TOLERANCE = 1E-09;
 
 %% Postprocessing
 % Animation of trajectory [true/false]
-shouldAnimate = false;
+shouldAnimate = true;
 % List of desired quantities for plotting in postprocessing
 plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_velocity', 'constraint_position','cartesian_coordinates_center_of_mass'};
 % Export of simulation results in a .mat-file [true/false]
