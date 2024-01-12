@@ -2,7 +2,7 @@
 % Name of system in /classes/System
 SYSTEM = 'PendulumQuaternions';
 % External acceleration
-EXT_ACC = 9.81;
+EXT_ACC = 0;
 % Initial configuration
 phi_0 = pi/2;%pi/4;
 theta_0 = pi/4;
