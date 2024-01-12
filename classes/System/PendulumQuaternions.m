@@ -170,22 +170,15 @@ classdef PendulumQuaternions < System
         function V_ext = external_potential(self, q)
             % External potential
             %extract vector and scalar part form quaternion
-            q_scalar = q(1);
             q_vec = q(2:4);
             m = self.GEOM(1);
             l = self.GEOM(2);
             g = self.EXT_ACC;
             
-            sin_theta = 2*(q_scalar*q_vec(2)+q_vec(1)*q_vec(3));
             cos_theta = 1-2*(q_vec(3)^2+q_vec(2)^2);
-            sin_phi = 2*(q_scalar*q_vec(1)+q_vec(2)*q_vec(3));
             cos_phi = 1-2*(q_vec(1)^2+q_vec(3)^2);
 
-            x = [l*sin_theta;
-                 -l*cos_theta*sin_phi;
-                 l*cos_theta*cos_phi];
-
-            V_ext = m*g*x(3);
+            V_ext = m*g*l*cos_theta*cos_phi;
 
         end
 
@@ -199,6 +192,7 @@ classdef PendulumQuaternions < System
 
             cos_theta = 1-2*(q_vec(3)^2+q_vec(2)^2);
             cos_phi = 1-2*(q_vec(1)^2+q_vec(3)^2);
+
             Dc_theta_q = [0;0;-4*q_vec(2);-4*q_vec(3)];
             Dc_phi_q = [0; -4*q_vec(1); 0; -4*q_vec(3) ];
 
