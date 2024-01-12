@@ -31,8 +31,8 @@ clear Omega_0 Q0_hat Q0_vec Q0_scalar H0 phi_0 theta_0
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'EML';
-%INTEGRATOR = 'EMS_std';
+%INTEGRATOR = 'EML';
+INTEGRATOR = 'MP_Livens';
 
 % Parameters of the method
 INT_PARA = [NaN, NaN];
