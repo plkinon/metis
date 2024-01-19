@@ -1,8 +1,9 @@
 %% System Parameters
 % Name of system in /classes/System
-SYSTEM = 'PendulumQuaternions';
+%SYSTEM = 'PendulumQuaternions';
+SYSTEM = 'PendulumQuaternionsRot';
 % External acceleration
-EXT_ACC = 0;
+EXT_ACC = -9.81;
 % Initial configuration
 phi_0 = pi/2;%pi/4;
 theta_0 = pi/4;
@@ -41,7 +42,7 @@ DT = 0.05;
 % starting time
 T_0 = 0;
 % end time
-T_END = 10;
+T_END = 12;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
