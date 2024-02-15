@@ -30,17 +30,20 @@ clear Omega_0 Q0_hat Q0_vec Q0_scalar G_Q0
 
 %% Integrator
 % Name of routines in /classes/Integrator to be analyzed
-INTEGRATOR = {'EMS_std'}; %EML
+%INTEGRATOR = {'EML'};
+INTEGRATOR = {'EMS_std'};
+%INTEGRATOR = {'MP_Livens'};
+%INTEGRATOR = {'MP_std'};
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step sizes to be analyzed
-DT = [0.01, 0.005, 0.001, 0.0005];
+DT = [0.01, 0.005, 0.001, 0.0005, 0.0001, 0.00001];
 % quantity which is to be analyzed
 CONV_QUANTITY = 'q';
 % starting time
 T_0 = 0;
 % end time
-T_END = 0.05;
+T_END = 0.1;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method

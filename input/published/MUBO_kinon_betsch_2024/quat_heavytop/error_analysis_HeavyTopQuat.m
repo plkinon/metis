@@ -1,7 +1,7 @@
 %% System Parameters
 % Name of system in /classes/System
-SYSTEM = 'HeavyTopQuaternions';
-%SYSTEM = 'HeavyTopQuaternionsRegularMassMatrix';
+%SYSTEM = 'HeavyTopQuaternions';
+SYSTEM = 'HeavyTopQuaternionsRegularMassMatrix';
 % External acceleration
 g = 9.81;
 EXT_ACC = [0; 0; -g];
@@ -46,7 +46,9 @@ clear omega_0 Q0_hat Q0_vec Q0_scalar E_Q0 omega_s omega_p theta_0 J1 J3 L R H r
 
 %% Integrator
 % Name of routines in /classes/Integrator to be analyzed
-INTEGRATOR = {'EML'}; %EMS_std
+%INTEGRATOR = {'EML'}; %EMS_std
+%INTEGRATOR = {'MP_Livens'};
+INTEGRATOR = {'MP_std'};
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step sizes to be analyzed

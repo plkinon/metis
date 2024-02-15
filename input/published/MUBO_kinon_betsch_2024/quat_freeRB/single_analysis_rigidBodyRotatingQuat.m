@@ -51,7 +51,7 @@ TOLERANCE = 1E-09;
 
 %% Postprocessing
 % Animation of trajectory [true/false]
-shouldAnimate = false;
+shouldAnimate = true;
 % List of desired quantities for plotting in postprocessing
 plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_velocity', 'constraint_position'};
 % Export of simulation results in a .mat-file [true/false]
