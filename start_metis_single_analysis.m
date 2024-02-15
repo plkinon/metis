@@ -25,7 +25,9 @@ clearvars;
 % Add all subdirectories and to the current path
 addpath(genpath(fileparts(which(mfilename))));
 % Metis creates objects from input-file
-[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_freeRB/single_analysis_rigidBodyRotatingQuat', 1, 1);
+%[simulation, system, integrator, solver] = Metis('input/single_analysis_HeavyTopQuat', 1, 1);
+[simulation, system, integrator, solver] = Metis('input/single_analysis_rigidBodyRotatingQuat', 1, 1);
+%[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_freeRB/single_analysis_rigidBodyRotatingQuat', 1, 1);
 %[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_heavytop/single_analysis_HeavyTopQuat', 1, 1);
 %[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_pendulum/single_analysis_pendulumQuat', 1, 1);
 %[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_pendulum/single_analysis_pendulumQuatRot', 1, 1);

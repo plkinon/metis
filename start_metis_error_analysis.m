@@ -23,8 +23,8 @@ clearvars;
 addpath(genpath(fileparts(which(mfilename))));
 
 % Metis creates a dummy simulation object, the system and solver from input-file
-[dummy_simulation, system, dummy_integrator, solver] = Metis('input/published/XXX_kinon_betsch_2023/error_analysis_HeavyTopQuat', 1, 1);
-%[dummy_simulation, system, dummy_integrator, solver] = Metis('input/published/XXX_kinon_betsch_2023/error_rigidBodyRotatingQuat', 1, 1);
+[dummy_simulation, system, dummy_integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_heavytop/error_analysis_HeavyTopQuat', 1, 1);
+%[dummy_simulation, system, dummy_integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_freeRB/error_analysis_rigidBodyRotatingQuat', 1, 1);
 % Check how many different timestepsizes and integrators are analyzed
 n_DT = numel(dummy_simulation.ALL_DT);
 n_INT = numel(dummy_simulation.ALL_INTEGRATOR);
@@ -38,8 +38,8 @@ for i = 1:n_DT
     for j = 1:n_INT
 
         % Metis creates objects for current timestepsize and integrator
-        [current_simulation, ~, current_integrator, ~] = Metis('input/published/XXX_kinon_betsch_2023/error_analysis_HeavyTopQuat', i, j);
-        %[current_simulation, ~, current_integrator, ~] = Metis('input/published/XXX_kinon_betsch_2023/error_analysis_rigidBodyRotatingQuat', i, j);
+        [current_simulation, ~, current_integrator, ~] = Metis('input/published/MUBO_kinon_betsch_2024/quat_heavytop/error_analysis_HeavyTopQuat', i, j);
+        %[current_simulation, ~, current_integrator, ~] = Metis('input/published/MUBO_kinon_betsch_2024/quat_freeRB/error_analysis_rigidBodyRotatingQuat', i, j);
 
         %% METIS solver
         % Solve system with solver and current integrator
@@ -56,8 +56,9 @@ end
 
 %% Error computation
 % Compute relative error w.r.t. to smalles h (last entry in ALL_DT)
-[reference_solution, dummy_simulation] = system.hconvergence_reference(dummy_simulation, analyzed_quantity);
-error              = postprocess.calculate_errors(dummy_simulation,analyzed_quantity,reference_solution,n_DT,n_INT);
+[reference_solution1, dummy_simulation] = system.hconvergence_reference(dummy_simulation, analyzed_quantity);
+%load('EML_ref_sol.mat');
+error              = postprocess.calculate_errors(dummy_simulation,analyzed_quantity,reference_solution1,n_DT,n_INT);
 
 %% Plot and export
 postprocess.convergence_plot(dummy_simulation.ALL_DT, error, n_INT, dummy_simulation.ALL_INTEGRATOR);
