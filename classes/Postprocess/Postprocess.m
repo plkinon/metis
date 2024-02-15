@@ -4,8 +4,9 @@ classdef Postprocess
 
     properties
 
-        % Color scheme also for colorblind readers
-        color_scheme = {'#EE6677', '#228833', '#4477AA', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB'};
+        % Qualitative color palette for all color-vision deficiencies (Okabe and Ito 2008)
+        % https://clauswilke.com/dataviz/color-pitfalls.html#not-designing-for-color-vision-deficiency
+        color_scheme = {'#E69F00', '#56B4E9', '#CC79A7', '#009E73', '#F0E442', '#0072B2', '#D55E00'};
 
     end
 
