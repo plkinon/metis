@@ -132,7 +132,7 @@ classdef Solver
             residual = self.TOLERANCE * 10;
 
             % Newton-Rhapson-Method
-            while (residual > self.TOLERANCE) && (num_iter <= self.MAX_ITERATIONS)
+            while (residual > self.TOLERANCE) && (num_iter < self.MAX_ITERATIONS)
 
                 % increment iteration index
                 num_iter = num_iter + 1;
@@ -153,9 +153,10 @@ classdef Solver
                 zn1 = zn1 + delta_z;
 
                 % Compute the residual norm and print current iteration
-                residual = max(max(abs(resi)), max(abs(delta_z)));
+                residual = max(abs(resi));
                 fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Iteration ',num2str(num_iter),', residual = ',num2str(residual)]);
-
+                
+     
             end
 
             if num_iter >= self.MAX_ITERATIONS
