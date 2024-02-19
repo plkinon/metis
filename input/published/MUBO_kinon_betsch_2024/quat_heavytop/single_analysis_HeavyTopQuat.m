@@ -48,7 +48,9 @@ clear omega_0 Q0_hat Q0_vec Q0_scalar E_Q0 omega_s omega_p theta_0 J1 J3 L R H r
 %% Integrator
 % Name of routine in /classes/Integrator
 %INTEGRATOR = 'EML';
-INTEGRATOR = 'EMS_std';
+%INTEGRATOR = 'EMS_std';
+%INTEGRATOR = 'MP_Livens';
+INTEGRATOR = 'MP_std';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
@@ -68,7 +70,7 @@ TOLERANCE = 1E-09;
 % Animation of trajectory [true/false]
 shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
-plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_velocity', 'constraint_position','cartesian_coordinates_center_of_mass'};
+plot_quantities = {'energy', 'energy_difference','energy_difference_abs','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_velocity', 'constraint_position','cartesian_coordinates_center_of_mass'};
 % Export of simulation results in a .mat-file [true/false]
 should_export = true;
 % Export of figures in .eps- and .tikz-files
