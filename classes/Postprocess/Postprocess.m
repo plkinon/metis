@@ -478,6 +478,22 @@ classdef Postprocess
                         xlabel('$t$', 'interpreter', 'latex');
                         ylabel('$H^\mathrm{n+1}-H^\mathrm{n} \ \mathrm{[J]}$', 'interpreter', 'latex');
 
+                    case 'energy_difference_abs'
+
+                        %plots the increments of Hamiltonian over time
+                        plotline = plot(t(1:end-1), abs(diffE), 'color', self.color_scheme{3});
+                        max_diff = max(diffH);
+                        max_rounded = 10^(real(floor(log10(max_diff))) + 1);
+                        min_diff = min(diffH);
+                        min_rounded = -10^(real(floor(log10(min_diff))) + 1);
+                        hold on
+                        plot([t(1), t(end)], [max_rounded, max_rounded], 'k--', [t(1), t(end)], [min_rounded, min_rounded], 'k--');
+                        ylim([2 * min_rounded, 2 * max_rounded]);
+                        fig.Name = 'E_diff_abs';
+                        title(strcat(integrator_string, ': Energy difference'));
+                        xlabel('$t$', 'interpreter', 'latex');
+                        ylabel('$|E^\mathrm{n+1}-E^\mathrm{n}| \ \mathrm{[J]}$', 'interpreter', 'latex');
+
                     case 'energy_function_difference'
 
                         %plots the increments of Hamiltonian over time
