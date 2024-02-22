@@ -47,10 +47,10 @@ clear omega_0 Q0_hat Q0_vec Q0_scalar E_Q0 omega_s omega_p theta_0 J1 J3 L R H r
 
 %% Integrator
 % Name of routine in /classes/Integrator
-%INTEGRATOR = 'EML';
+INTEGRATOR = 'EML';
 %INTEGRATOR = 'EMS_std';
 %INTEGRATOR = 'MP_Livens';
-INTEGRATOR = 'MP_std';
+%INTEGRATOR = 'MP_std';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size

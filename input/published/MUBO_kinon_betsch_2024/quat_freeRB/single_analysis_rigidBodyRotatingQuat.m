@@ -33,6 +33,7 @@ clear Omega_0 Q0_hat Q0_vec Q0_scalar G_Q0
 % Name of routine in /classes/Integrator
 INTEGRATOR = 'EML';
 %INTEGRATOR = 'EMS_std';
+%INTEGRATOR = 'EML_reduced';
 
 % Parameters of the method
 INT_PARA = [NaN, NaN];
@@ -41,7 +42,7 @@ DT = 0.05;
 % starting time
 T_0 = 0;
 % end time
-T_END = 2;
+T_END = 2; %10
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
