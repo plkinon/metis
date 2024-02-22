@@ -213,7 +213,7 @@ classdef Postprocess
                 diss_work(j+1) = diss_work(j)+D(j+1);
 
                 if m > 0
-                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens')
+                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens') || strcmp(this_simulation.INTEGRATOR, 'EML_reduced')
         
                         constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
                         

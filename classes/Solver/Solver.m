@@ -50,7 +50,7 @@ classdef Solver
                     zn = zn1;
 
                     % Initial Guess
-                    zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
+                    %zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
 
                     % Print current time-step
                     fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'----------------------------------------------------');
@@ -137,26 +137,38 @@ classdef Solver
                 % increment iteration index
                 num_iter = num_iter + 1;
 
+                if this_integrator.reduced
+                    xn1 = this_integrator.get_reduced_state(this_system, zn1);
+                    xn = this_integrator.get_reduced_state(this_system, zn);
+                else
+                    xn1 = zn1;
+                    xn = zn;
+                end
+
                 % Calculate residual and tangent matrix of present integrator
                 % for present system
-                [resi, tang] = this_integrator.compute_resi_tang(zn1, zn, this_system);
+                [resi, tang] = this_integrator.compute_resi_tang(xn1, zn, this_system);
 
                 % Check if an analytic tangent matrix is implemented
                 if isempty(tang)
                     % if not, compute a numerical one
-                    tang_num = self.compute_numerical_tangent(this_integrator, this_system, zn1, zn);
+                    tang_num = self.compute_numerical_tangent(this_integrator, this_system, zn1, zn, xn1, xn);
                     tang = tang_num;
                 end
 
                 % Incrementation of the solution vector
-                delta_z = -tang \ resi;
-                zn1 = zn1 + delta_z;
+                delta_x = -tang \ resi;
+                xn1 = xn1 + delta_x;
 
                 % Compute the residual norm and print current iteration
                 residual = max(abs(resi));
                 fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Iteration ',num2str(num_iter),', residual = ',num2str(residual)]);
                 
-     
+                if this_integrator.reduced
+                    zn1 = this_integrator.update_eliminated_quantities(this_system, zn, xn1);
+                else
+                    zn1 = xn1;
+                end
             end
 
             if num_iter >= self.MAX_ITERATIONS
@@ -168,10 +180,10 @@ classdef Solver
         %% Function: numerical tangent
         % Computes numerical tangent matrix for a given residual defined by
         % integrator and system zn1 and zn
-        function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn1, zn)
+        function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn1, zn, xn1, xn)
 
             % Pre-allocate tangent matrix, initialized with zeros:
-            N = length(zn1);
+            N = length(xn1);
             tang_num = zeros(N, N);
 
             % Define epsilon which manipulates solution vector
@@ -181,19 +193,22 @@ classdef Solver
             for j = 1:N
 
                 % Save current entry of solution vector
-                zsave = zn1(j);
+                xsave = xn1(j);
 
                 % Increment the jth component of the solution vector
-                delp = epsilon * (1.0 + abs(zn1(j)));
-                zn1(j) = zsave + delp;
-                [R1, ~] = this_integrator.compute_resi_tang(zn1, zn, this_system);
+                delp = epsilon * (1.0 + abs(xn1(j)));
+                xn1(j) = xsave + delp;
+                %xn1 = this_integrator.get_reduced_state(this_system,zn1);
+                [R1, ~] = this_integrator.compute_resi_tang(xn1, zn, this_system);
 
                 % Decrement the jth component of the solution vector
-                zn1(j) = zsave - delp;
-                [R2, ~] = this_integrator.compute_resi_tang(zn1, zn, this_system);
+                xn1(j) = xsave - delp;
+                %xn1 = this_integrator.get_reduced_state(this_system,zn1);
+
+                [R2, ~] = this_integrator.compute_resi_tang(xn1, zn, this_system);
 
                 % Restore the original vector
-                zn1(j) = zsave;
+                xn1(j) = xsave;
 
                 % Compute the approximate tangent matrix entry
                 tang_num(:, j) = (R1 - R2) / (2 * delp);
