@@ -1,4 +1,4 @@
-classdef EML_reduced < Integrator
+classdef EML_null < Integrator
 
     %% Energy_Momentum-Integration scheme for standard constrained DAE
     %
@@ -20,24 +20,24 @@ classdef EML_reduced < Integrator
 
     methods
 
-        function self = EML_reduced(this_simulation, this_system)
+        function self = EML_null(this_simulation, this_system)
             self.DT = this_simulation.DT;
             self.T_0 = this_simulation.T_0;
             self.T_END = this_simulation.T_END;
             self.t = this_simulation.T_0:this_simulation.DT:this_simulation.T_END;
             self.NT = size(self.t, 2) - 1;
-            self.nVARS = 3*this_system.nDOF + this_system.mCONSTRAINTS;
+            self.nVARS = 3*this_system.nDOF;
             self.INDI_VELO = true;
             self.LM0 = zeros(this_system.mCONSTRAINTS, 1);
             self.hasPARA = false;
-            self.NAME = 'EML-reduced';
+            self.NAME = 'EML-null';
             self.has_enhanced_constraint_force = [];
             self.reduced = true;
         end
 
-        function z0 = set_initial_condition(self, this_simulation, this_system)
+        function z0 = set_initial_condition(~, this_simulation, this_system)
             p0 = (this_system.get_mass_matrix(this_simulation.Q_0) * this_simulation.V_0);
-            z0 = [this_simulation.Q_0',p0', this_simulation.V_0', self.LM0'];
+            z0 = [this_simulation.Q_0',p0', this_simulation.V_0'];
         end
 
         function [resi, tang] = compute_resi_tang(self, xn1, zn, this_system)
@@ -57,12 +57,11 @@ classdef EML_reduced < Integrator
             Mn = this_system.get_mass_matrix(qn);
 
              %% Unknows which will be iterated
-            qn1 = xn1(1:nDOF);
+
+            qn1 = this_system.get_coordinate_update(xn1,qn);
             vn1 = 2/h*(qn1-qn)-vn;
-            lambdan1 = xn1(nDOF+1:nDOF+mConstraints);
             Vext_n1 = this_system.external_potential(qn1);
             Mn1 = this_system.get_mass_matrix(qn1);
-            g_n1 = this_system.constraint(qn1);
 
             %% MP evaluated quantities
             q_n05 = 0.5 * (qn + qn1);
@@ -70,6 +69,9 @@ classdef EML_reduced < Integrator
             DVext_n05 = this_system.external_potential_gradient(q_n05);
             D_1_T_n05 = this_system.kinetic_energy_gradient_from_velocity(q_n05, v_n05);
             Mn05 = this_system.get_mass_matrix(q_n05);
+            
+            % Null space matrix
+            Pn05 = this_system.get_null_space_matrix(q_n05);
 
             % kinetic energy with mixed evaluations
             T_qn1vn  = 0.5 * vn'  * Mn1 * vn;
@@ -219,25 +221,20 @@ classdef EML_reduced < Integrator
             pn1 = 2 * DG_T_v - pn;
 
             %% Residual vector
-            resi = [pn1 - pn + h * DG_Vext + h * DG_Vint - h * DG_T_q + h * DG_g' * lambdan1; 
-                    g_n1];
+            resi = Pn05*(pn1 - pn + h * DG_Vext + h * DG_Vint - h * DG_T_q);
             %% Tangent matrix
             tang = [];
 
         end
 
-        function xn1 = initialize_reduced_state(~,this_system,zn1)
-            nDOF = this_system.nDOF;
-            mConstraints = this_system.mCONSTRAINTS;
-            qn1 = zn1(1:nDOF);
-            lambdan1 = zn1(3*nDOF+1:3*nDOF+mConstraints);
-            xn1 = [qn1;lambdan1];
+        function xn1 = initialize_reduced_state(~,~,~)
+
+            xn1 = zeros(3,1);
 
         end
 
         function zn1 = update_eliminated_quantities(self, this_system, zn, xn1)
             nDOF = this_system.nDOF;
-            mConstraints = this_system.mCONSTRAINTS;
             h = self.DT;
             nKinInv = this_system.nKineticInvariants;
 
@@ -245,8 +242,7 @@ classdef EML_reduced < Integrator
             pn = zn(nDOF+1:2*nDOF);
             vn = zn(2*nDOF+1:3*nDOF);
             
-            qn1 = xn1(1:nDOF);
-            lambdan1 = xn1(nDOF+1:nDOF+mConstraints);
+            qn1 = this_system.get_coordinate_update(xn1,qn);
             vn1 = 2/h*(qn1-qn)-vn;
 
             q_n05 = 0.5 * (qn + qn1);
@@ -261,7 +257,7 @@ classdef EML_reduced < Integrator
                                        
                     % discrete gradient of kinetic energy w.r.t velocity 
                     DG_T_v = 0.5*(Mn + Mn1)*v_n05;
-            
+           
             else
 
 
@@ -300,8 +296,7 @@ classdef EML_reduced < Integrator
             end
 
             pn1 = 2 * DG_T_v - pn;
-            
-            zn1 = [qn1; pn1; vn1; lambdan1];
+            zn1 = [qn1; pn1; vn1];
 
         end
 

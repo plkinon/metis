@@ -131,19 +131,19 @@ classdef Solver
             num_iter = 0;
             residual = self.TOLERANCE * 10;
 
+            % Initialize reduced state vector in case where integrator
+            % eliminates quantities
+            if this_integrator.reduced
+                xn1 = this_integrator.initialize_reduced_state(this_system, zn1);
+            else
+                xn1 = zn1;
+            end
+
             % Newton-Rhapson-Method
             while (residual > self.TOLERANCE) && (num_iter < self.MAX_ITERATIONS)
 
                 % increment iteration index
                 num_iter = num_iter + 1;
-
-                if this_integrator.reduced
-                    xn1 = this_integrator.get_reduced_state(this_system, zn1);
-                    xn = this_integrator.get_reduced_state(this_system, zn);
-                else
-                    xn1 = zn1;
-                    xn = zn;
-                end
 
                 % Calculate residual and tangent matrix of present integrator
                 % for present system
@@ -152,7 +152,7 @@ classdef Solver
                 % Check if an analytic tangent matrix is implemented
                 if isempty(tang)
                     % if not, compute a numerical one
-                    tang_num = self.compute_numerical_tangent(this_integrator, this_system, zn1, zn, xn1, xn);
+                    tang_num = self.compute_numerical_tangent(this_integrator, this_system, zn, xn1);
                     tang = tang_num;
                 end
 
@@ -164,15 +164,18 @@ classdef Solver
                 residual = max(abs(resi));
                 fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Iteration ',num2str(num_iter),', residual = ',num2str(residual)]);
                 
-                if this_integrator.reduced
-                    zn1 = this_integrator.update_eliminated_quantities(this_system, zn, xn1);
-                else
-                    zn1 = xn1;
-                end
             end
 
             if num_iter >= self.MAX_ITERATIONS
                 warning('Maximum number of Newton iterations has been reached!')
+            end
+
+            % update eliminated quantities if integrator works with
+            % reduced state
+            if this_integrator.reduced
+                zn1 = this_integrator.update_eliminated_quantities(this_system, zn, xn1);
+            else
+                zn1 = xn1;
             end
 
         end
@@ -180,7 +183,7 @@ classdef Solver
         %% Function: numerical tangent
         % Computes numerical tangent matrix for a given residual defined by
         % integrator and system zn1 and zn
-        function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn1, zn, xn1, xn)
+        function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn, xn1)
 
             % Pre-allocate tangent matrix, initialized with zeros:
             N = length(xn1);

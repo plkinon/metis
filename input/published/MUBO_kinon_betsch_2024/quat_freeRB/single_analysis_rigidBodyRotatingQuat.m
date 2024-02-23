@@ -34,6 +34,7 @@ clear Omega_0 Q0_hat Q0_vec Q0_scalar G_Q0
 INTEGRATOR = 'EML';
 %INTEGRATOR = 'EMS_std';
 %INTEGRATOR = 'EML_reduced';
+%INTEGRATOR = 'EML_null';
 
 % Parameters of the method
 INT_PARA = [NaN, NaN];

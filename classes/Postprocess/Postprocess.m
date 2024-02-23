@@ -74,8 +74,10 @@ classdef Postprocess
                     v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
                 end
 
-                if m > 0
+                if m > 0 && ~strcmp(this_integrator.NAME,'EML-null')
                     lambda = this_simulation.z(:,3*nDOF+1:3*nDOF+m);
+                else 
+                    lambda = NaN(NT,m);
                 end
 
                 if this_integrator.has_enhanced_constraint_force
@@ -213,7 +215,7 @@ classdef Postprocess
                 diss_work(j+1) = diss_work(j)+D(j+1);
 
                 if m > 0
-                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens') || strcmp(this_simulation.INTEGRATOR, 'EML_reduced')
+                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens') || strcmp(this_simulation.INTEGRATOR, 'EML_reduced') || strcmp(this_simulation.INTEGRATOR, 'EML_null')
         
                         constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
                         

@@ -355,6 +355,48 @@ classdef RigidBodyRotatingQuaternions < System
 
     end
 
+    function qn1 = get_coordinate_update(~,theta,qn)
+
+        abs_theta = norm(theta);
+        if abs_theta == 0
+            expS3 = [1;0;0;0];
+        else
+            expS3 = [cos(1/2*abs_theta); 1/abs_theta * sin(1/2*abs_theta) * theta];
+        end
+        
+
+        exp_vec = expS3(2:4);
+        exp_scalar = expS3(1);
+
+        %skew-sym matrix corresponding to vector part
+        exp_hat = [0, -exp_vec(3), exp_vec(2);
+                exp_vec(3), 0, -exp_vec(1);
+                -exp_vec(2), exp_vec(1), 0];
+        
+        % transformation matrix
+        G_exp = [-exp_vec, exp_scalar*eye(3) - exp_hat];
+
+        Ql_exp = [expS3, G_exp'];
+
+        qn1 = Ql_exp*qn;
+
+    end
+
+    function P = get_null_space_matrix(~,q)
+
+        q_vec = q(2:4);
+        q_scalar = q(1);
+
+        %skew-sym matrix corresponding to vector part
+        q_hat = [0, -q_vec(3), q_vec(2);
+                q_vec(3), 0, -q_vec(1);
+                -q_vec(2), q_vec(1), 0];
+        
+        % transformation matrix
+        P = [-q_vec, q_scalar*eye(3) - q_hat];
+
+    end
+
      function analyzed_quantity = hconvergence_set(~, this_simulation)
 
         if strcmp(this_simulation.CONV_QUANTITY,'q')
