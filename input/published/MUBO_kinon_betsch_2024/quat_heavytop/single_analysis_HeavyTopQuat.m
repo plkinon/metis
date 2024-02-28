@@ -1,7 +1,7 @@
 %% System Parameters
 % Name of system in /classes/System
-%SYSTEM = 'HeavyTopQuaternions';
-SYSTEM = 'HeavyTopQuaternionsRegularMassMatrix';
+SYSTEM = 'HeavyTopQuaternions';
+%SYSTEM = 'HeavyTopQuaternionsRegularMassMatrix';
 
 % External acceleration
 g = 9.81;
