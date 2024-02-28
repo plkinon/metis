@@ -1,9 +1,9 @@
-%% Class: PendulumMinCoord
+%% Class: RigidBodyRotatingQuaternions
 %
-% Spherical pendulum in minimal coordinates (two angles).
+% The rotation of a rigid body in terms of unit-quaternions.
 %
 
-classdef PendulumMinCoord < System
+classdef HeavyTopQuaternions < System
 
     properties
 
@@ -11,127 +11,142 @@ classdef PendulumMinCoord < System
 
     methods
 
-        function self = PendulumMinCoord(CONFIG)
+        function self = HeavyTopQuaternions(CONFIG)
 
-            self.mCONSTRAINTS = 0;
+            self.mCONSTRAINTS = 1;
             self.nBODIES = 1;
             self.DIM = CONFIG.DIM;
             self.MASS = CONFIG.MASS;
-            self.nDOF = 2;
-            self.mMixedQuantities = 0;
+            self.nDOF = 4;
             self.MASS_MAT = [];
             self.EXT_ACC = CONFIG.EXT_ACC;
 
-           % Resting lengths of the springs
-            self.GEOM(1) = 1; %length of the pendulum l
-
-            self.nPotentialInvariants = 0;
-            self.mMixedQuantities = 0;
+           % parameters
+            rho = 2700; % mass density
+            H = 0.1; % length of the gyro top
+            R = 0.05; % radius of the gyro top
+            L = 3 * H / 4; % location of center of mass along sym. axis
+            MASS = rho * pi * R^2 * H / 3; % total mass of the gyro top
+            J1 = 3 / 80 * MASS * (4 * R^2 + H^2)+MASS*L^2; % inertia moment w.r.t. d1-axis (J1 = J2)
+            J2 = J1;
+            J3 = 3 / 10 * MASS * R^2; % inertia moment w.r.t. d3-axis (sym. axis)
+            self.GEOM = [J1,J2,J3,L]; % principal inertia components
             
-            self.DISS_MAT = zeros(2,2);
-
-            self.isCyclicCoordinate = [false;true];
-        
+            self.DISS_MAT = zeros(4,4);
+            self.nPotentialInvariants = 0;
+            self.nKineticInvariants = 1;
+            self.nConstraintInvariants = 1;
+            self.mMixedQuantities = 0;
+            self.isCyclicCoordinate = [false;false;false;false];
 
         end
         
         function M = get_mass_matrix(self, q)
             
-            theta = q(1);
-            m =  self.MASS;
-            l = self.GEOM(1);
-            M = diag([m*l^2, m*l^2*(sin(theta))^2]);
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
 
-        end
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
 
-                function M = get_mass_matrix_cyclic(self, x)
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
             
-            theta = x(1);
-            m =  self.MASS;
-            l = self.GEOM(1);
-            M = diag([m*l^2, m*l^2*(sin(theta))^2]);
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
 
-        end
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM(1:3));
 
-        function r = get_cartesian_coordinates(self, q)
+            % singular mass matrix
+            M = 4*G_q'*inertia_tensor*G_q;
 
-            theta = q(1);
-            phi = q(2);
-            l = self.GEOM(1);
-            r = [l*sin(theta)*cos(phi); l*sin(theta)*sin(phi); -l*cos(theta)];
-            
-        end
-
-        function r_dot = get_cartesian_velocities(self, q, v)
-            
-            theta = q(1);
-            phi = q(2);
-            v_theta = v(1);
-            v_phi = v(2);
-            l = self.GEOM(1);
-            r_dot = [l*cos(theta)*cos(phi)*v_theta - l*sin(theta)*sin(phi)*v_phi; l*cos(theta)*sin(phi)*v_theta + l*sin(theta)*cos(phi)*v_phi; l*sin(theta)*v_theta];
-            
-        end
-
-        function r_dot = get_cartesian_velocities_from_momentum(self, q, p)
-            
-            theta = q(1);
-            phi = q(2);
-            l = self.GEOM(1);
-            m = self.MASS;
-            p_theta = p(1);
-            v_theta = 1/(m*l^2)*p_theta;
-            p_phi = p(2);
-            v_phi = 1/(m*l^2*sin(theta)^2)*p_phi;
-            r_dot = [l*cos(theta)*cos(phi)*v_theta - l*sin(theta)*sin(phi)*v_phi; 
-                     l*cos(theta)*sin(phi)*v_theta + l*sin(theta)*cos(phi)*v_phi; 
-                     l*sin(theta)*v_theta];
-            
         end
 
         function Dq_T = kinetic_energy_gradient_from_velocity(self, q, v)
             
-            theta = q(1);
-            v_phi = v(2);
-            m =  self.MASS;
-            l = self.GEOM(1);
+            %extract vector and scalar part form quaternion
+            v_vec = v(2:4);
+            v_scalar = v(1);
 
-            Dq_T = [m*l^2*sin(theta)*cos(theta)*v_phi^2; 0];
+            %skew-sym matrix corresponding to vector part
+            v_hat = [0, -v_vec(3), v_vec(2);
+                    v_vec(3), 0, -v_vec(1);
+                    -v_vec(2), v_vec(1), 0];
+            
+            % transformation matrix
+            G_v = [-v_vec, v_scalar*eye(3) - v_hat];
+            
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM(1:3));
+            
+            % singular inertia matrix in v
+            M_4_hat = 4*G_v'*inertia_tensor*G_v;
+            
+            % partial derivativa of kinetic energy w.r.t. q(uat)
+            Dq_T = M_4_hat * q;
+
+        end
+        
+        function Dq_T = kinetic_energy_gradient_from_momentum(~, ~, ~)
+            
+            Dq_T = [0; 0; 0];
 
         end
 
-        function Dq_T = kinetic_energy_gradient_from_velocity_cyclic(self, x, v)
+        function L = get_cartesian_angular_momentum_from_momentum(~, q, p)            
             
-            theta = x(1);
-            v_phi = v(2);
-            m =  self.MASS;
-            l = self.GEOM(1);
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
 
-            Dq_T = [m*l^2*sin(theta)*cos(theta)*v_phi^2];
+            if size(p,1) == 1 && size(p,2) == 4
+                p = p';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+            
+            L = 1/2 * E_q * p ;
 
         end
 
-        function Dq_T = kinetic_energy_gradient_from_momentum(self, q, p)
+        function x = get_cartesian_coordinates_center_of_mass(self,q)
             
-            theta = q(1);
-            p_phi = p(2);
-            m =  self.MASS;
-            l = self.GEOM(1);
+            % External potential
+            L = self.GEOM(4);
 
-            Dq_T = [-cos(theta)/(m*l^2*(sin(theta))^3)*p_phi^2; 0];
-
-        end
-
-        function L = get_cartesian_angular_momentum_from_momentum(~, q, p)
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
             
-            theta = q(1);
-            phi = q(2);
-            p_theta = p(1);
-            p_phi = p(2);
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
 
-            L = [sin(phi)*p_theta + cos(theta)/sin(theta)*cos(phi)*p_phi;
-                 -p_theta*cos(phi)+ cos(theta)/sin(theta)*sin(phi)*p_phi;
-                 p_phi];
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+            R_q = E_q * G_q';
+            d3 = R_q*[0;0;1];
+            x = L * d3;
 
         end
 
@@ -139,79 +154,101 @@ classdef PendulumMinCoord < System
 
         function V_ext = external_potential(self, q)
             % External potential
-            theta = q(1);
-            m =  self.MASS;
-            g =  self.EXT_ACC;
-            l = self.GEOM(1);
-            V_ext = -m*g*l*cos(theta);
+            L = self.GEOM(4);
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
 
-        end
-
-        function V_ext = external_potential_cyclic(self, x)
-            % External potential
-            theta = x(1);
-            m =  self.MASS;
-            g =  self.EXT_ACC;
-            l = self.GEOM(1);
-            V_ext = -m*g*l*cos(theta);
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+            R_q = E_q * G_q';
+            V_ext = -self.MASS * self.EXT_ACC(3) * L * [0;0;1]' * R_q * [0;0;1];
 
         end
 
         function DV_ext = external_potential_gradient(self, q)
-            theta = q(1);
-            m =  self.MASS;
-            g =  self.EXT_ACC;
-            l = self.GEOM(1);
-            DV_ext = [m*g*l*sin(theta); 0];
+
+            % External potential
+            L = self.GEOM(4);
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+            
+            e_3 = [0;0;1];
+            e_hat = [0, -e_3(3), e_3(2);
+                    e_3(3), 0, -e_3(1);
+                    -e_3(2), e_3(1), 0];
+            e_bar = [0, -e_3';
+                     e_3, -e_hat];
+
+            DV_ext = 2*self.MASS*self.EXT_ACC(3)*L*e_bar*E_q'*e_3;
+
         end
 
-        function DV_ext = external_potential_gradient_cyclic(self, x)
-            theta = x(1);
-            m =  self.MASS;
-            g =  self.EXT_ACC;
-            l = self.GEOM(1);
-            DV_ext = [m*g*l*sin(theta)];
-        end
+        function D2V_ext = external_potential_hessian(~, ~)
 
-        function D2V_ext = external_potential_hessian(self, q)
-            theta = q(1);
-            m =  self.MASS;
-            g =  self.EXT_ACC;
-            l = self.GEOM(1);
-            D2V_ext = [m*g*l*cos(theta), 0; 0, 0];
+            D2V_ext = zeros(4,4);
 
         end
 
         function V_int = internal_potential(~, ~)
+
             V_int = 0;
+
         end
 
-        function DV_int = internal_potential_gradient(~, q)
-            DV_int = zeros(size(q));
+        function DV_int = internal_potential_gradient(~, ~)
+
+            DV_int = [0;0; 0; 0];
+
         end
 
-        function D2V_int = internal_potential_hessian(~, q)
-            D2V_int = zeros(size(q, 1));
+        function D2V_int = internal_potential_hessian(~, ~)
+
+            D2V_int = diag([0; 0; 0; 0]);
+
         end
 
 
         %% Constraint on position level
 
-        function g = constraint(~, ~)
+        function g = constraint(~, q)
+
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
            
-            g=NaN;
+            g=1/2*(q'*q -1);
 
         end
 
-        function Dg = constraint_gradient(~, ~)
+        function Dg = constraint_gradient(~, q)
+
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
            
-            Dg=NaN;
+            Dg=q';
 
         end
 
         function D2g = constraint_hessian(~, ~, ~)
 
-             D2g=NaN;
+             D2g=eye(4);
 
         end
 
@@ -219,37 +256,110 @@ classdef PendulumMinCoord < System
         %  e.g. for EMS
 
         % Invariant of the internal potential
-        function pi = potential_invariant(~, q, i)
+        function pi = potential_invariant(~, ~, ~)
 
-            
-                error('system has no invariants for the potential.');
-     
+            error('not available.')
 
         end
 
             % gradient of potential invariants w.r.t. q
-        function DpiDq = potential_invariant_gradient(~, q, i)
-            
-                error('system has no invariants for the potential.');
+        function DpiDq = potential_invariant_gradient(~, ~, ~)
 
+            error('not available.')
         end
 
         % gradient of potential invariants w.r.t. q
-        function D2piDq = potential_invariant_hessian(~, ~, i)
+        function D2piDq = potential_invariant_hessian(~, ~, ~)
 
-            
-                error('system has no invariants for the potential.');
+           error('not available.')
             
         end
 
         % internal potential computed with the invariant
-        function Vs = potential_from_invariant(self, pi, i)
-            error('system has no invariants for the potential.');
+        function Vs = potential_from_invariant(~, ~, ~)
+            error('not available.')
         end
 
         % gradient of internal potential w.r.t. the invariant
-        function DVsDpi = potential_gradient_from_invariant(self, pi, i)
-            error('system has no invariants for the potential.');
+        function DVsDpi = potential_gradient_from_invariant(~, ~, ~)
+          
+            error('not available.')
+        end
+
+        % Invariant of the internal potential
+        function omega = kinetic_energy_invariant(~, q, v, ~)
+            
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+
+            omega = 2*G_q*v;
+
+        end
+
+            % gradient of potential invariants w.r.t. q
+        function DomegaDq = kinetic_energy_invariant_gradient_q(~, ~, v, ~)
+            %extract vector and scalar part form quaternion
+            v_vec = v(2:4);
+            v_scalar = v(1);
+
+            %skew-sym matrix corresponding to vector part
+            v_hat = [0, -v_vec(3), v_vec(2);
+                    v_vec(3), 0, -v_vec(1);
+                    -v_vec(2), v_vec(1), 0];
+            
+            % transformation matrix
+            G_v = [-v_vec, v_scalar*eye(3) - v_hat];
+            DomegaDq = -2*G_v;
+        end
+
+         % gradient of kinetic energy invariants w.r.t. v
+        function DomegaDv = kinetic_energy_invariant_gradient_v(~, q, ~, ~)
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            DomegaDv = 2*G_q;
+        end
+
+        % internal potential computed with the invariant
+        function Ts = kinetic_energy_from_invariant(self, omega, ~)
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM(1:3));
+
+            Ts = 1/2 *omega'*inertia_tensor*omega;
+        end
+
+        % gradient of internal potential w.r.t. the invariant
+        function DTsDpi = kinetic_energy_gradient_from_invariant(self, omega, ~)
+          
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM(1:3));
+
+            DTsDpi = inertia_tensor*omega;
         end
 
         % invariant of the velocity invariant
@@ -291,41 +401,55 @@ classdef PendulumMinCoord < System
     end
 
     % invariant of the position constraint
-    function zeta = constraint_invariant(~, ~, ~)
+    function zeta = constraint_invariant(~, q, ~)
+       
+       if size(q,1) == 1 && size(q,2) == 4
+            q = q';
+       end
 
-       error('not available.')
+       zeta = q'*q;
+
     end
 
     % gradient of the invariant of the position constraint w.r.t. q
-    function DzetaDq = constraint_invariant_gradient(~, ~, ~)
-
-        error('not available.')
+    function DzetaDq = constraint_invariant_gradient(~, q, ~)
+        if size(q,1) == 1 && size(q,2) == 4
+            q = q';
+        end
+        DzetaDq = 2*q';
     end
 
     % gradient of the invariant of the position constraint w.r.t. q
     function D2zetaDq2 = constraint_invariant_hessian(~, ~, ~)
 
-      error('not available.')
+      D2zetaDq2 = 2*eye(4);
     end
 
     % position constrained computed with its invariant
-      function gs = constraint_from_invariant(~, ~, ~)
+      function gs = constraint_from_invariant(~, zeta, ~)
 
-            error('not available.')
+           gs = 1/2*(zeta -1);
       end
 
     % gradient of position constrained w.r.t. its invariant
-    function gs = constraint_gradient_from_invariant(~, ~, ~)
+    function Dgs = constraint_gradient_from_invariant(~, ~, ~)
 
-        error('not available.')
+        Dgs = 1/2;
+
     end
 
-     function analyzed_quantity = hconvergence_set(~, this_simulation)
+     function analyzed_quantity = hconvergence_set(self, this_simulation)
 
         if strcmp(this_simulation.CONV_QUANTITY,'q')
-            analyzed_quantity = this_simulation.z(end, 2); %position of 4th particle
+
+            q = this_simulation.z(end,1:4)';
+            phi = self.get_cartesian_coordinates_center_of_mass(q);
+
+            analyzed_quantity = phi; 
+      
+
         elseif strcmp(this_simulation.CONV_QUANTITY,'p')
-            analyzed_quantity = this_simulation.z(end, 4); %momentum of 4th particle
+            error('not available.')
         elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
             error('not available.')
         else
@@ -335,9 +459,16 @@ classdef PendulumMinCoord < System
     end
 
 
-    function reference_solution = hconvergence_reference(~, ~, analyzed_quantity)
+    function [reference_solution, this_simulation] = hconvergence_reference(self, this_simulation, ~)
 
-        reference_solution = analyzed_quantity(:, end, end); %position
+        L = self.GEOM(4);
+        theta_0 = pi/3;
+        omega_p = 10;
+        t=this_simulation.t(end);
+        reference_solution = [L*sin(theta_0)*sin(omega_p*t);
+                              -L*sin(theta_0)*cos(omega_p*t);
+                              L*cos(theta_0)];%position
+        this_simulation.matrix_error_analysis = false;
       
     end
 

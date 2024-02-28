@@ -33,43 +33,54 @@ classdef EMS_std < Integrator
         end
 
         function z0 = set_initial_condition(self, this_simulation, this_system)
-
-            z0 = [this_simulation.Q_0', (this_system.MASS_MAT * this_simulation.V_0)', self.LM0'];
+            q0 = this_simulation.Q_0;
+            M0 = this_system.get_mass_matrix(q0);
+            v0 = this_simulation.V_0;
+            z0 = [q0', (M0 * v0)', self.LM0'];
 
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
 
             %% Abbreviations
-            M = this_system.MASS_MAT;
-            IM = M \ eye(size(M));
             h = self.DT;
-            n = this_system.nDOF;
+            nDOF = this_system.nDOF;
             m = this_system.mCONSTRAINTS;
             p = this_system.nPotentialInvariants;
+            nKinInv = this_system.nKineticInvariants;
 
             %% Unknows which will be iterated
-            qn1 = zn1(1:n);
-            pn1 = zn1(n+1:2*n);
-            lambda_n1 = zn1(2*n+1:2*n+m);
-            G_n1 = this_system.constraint_gradient(qn1);
+            qn1 = zn1(1:nDOF);
+            pn1 = zn1(nDOF+1:2*nDOF);
+            lambda_n1 = zn1(2*nDOF+1:2*nDOF+m);
             g_n1 = this_system.constraint(qn1);
+            Mn1 = this_system.get_mass_matrix(qn1);
+            IMn1 = eye(size(Mn1)) / Mn1;
 
             %% Known quantities from last time-step
-            qn = zn(1:n);
-            pn = zn(n+1:2*n);
+            qn = zn(1:nDOF);
+            pn = zn(nDOF+1:2*nDOF);
+            Mn = this_system.get_mass_matrix(qn);
+            IMn = eye(size(Mn)) / Mn;
 
             %% MP evaluated quantities
             q_n05 = 0.5 * (qn + qn1);
             p_n05 = 0.5 * (pn + pn1);
+            Mn05 = this_system.get_mass_matrix(q_n05);
+            IMn05 = eye(size(Mn05)) / Mn05;
+
             DVext_n05 = this_system.external_potential_gradient(q_n05);
-            D2Vext_n05 = this_system.external_potential_hessian(q_n05);
-            D2Vint_n05 = this_system.internal_potential_hessian(q_n05);
+            D_1_T_n05 = this_system.kinetic_energy_gradient_from_momentum(q_n05, p_n05);
+
+            % kinetic energy with mixed evaluations
+            T_qn1pn  = 0.5 * pn'  * IMn1 * pn;
+            T_qnpn   = 0.5 * pn'  * IMn  * pn;
+            T_qn1pn1 = 0.5 * pn1' * IMn1 * pn1;
+            T_qnpn1  = 0.5 * pn1' * IMn  * pn1;
 
             %% Discrete gradients
             % for the internal potential
-            DG_Vint = zeros(n, 1);
-            K21_DG_V = zeros(n, n);
+            DG_Vint = zeros(nDOF, 1);
             V_invariants_difference_too_small = false;
 
             % for every invariant individually
@@ -104,12 +115,75 @@ classdef EMS_std < Integrator
             if V_invariants_difference_too_small
                 % else use MP evaluation of gradient
                 DG_Vint = this_system.internal_potential_gradient(q_n05);
-                K21_DG_V = 1 / 2 * D2Vint_n05;
+            end
+            
+            % kinetic energy discrete gradient
+            DG_T_q = zeros(nDOF, 1); % for the kinetic energy
+            DG_T_p = zeros(nDOF, 1); % for the kinetic energy
+            T_invariants_difference_too_small = false;
+
+            if  ~any(nKinInv)
+                   % discrete gradients of kinetic energy and of external
+                    % potential energy
+                    D_1_T_qn05_pn = this_system.kinetic_energy_gradient_from_momentum(q_n05, pn);
+                    D_1_T_qn05_pn1 = this_system.kinetic_energy_gradient_from_momentum(q_n05, pn1);
+                    if abs((qn1-qn)'*(qn1-qn)) > 1e-9
+                        % discrete gradient of kinetic energy w.r.t position 
+                        DG_1_T_q_pn = D_1_T_qn05_pn + ((T_qn1pn - T_qnpn - D_1_T_qn05_pn'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn))) * (qn1-qn); 
+                        DG_1_T_q_pn1 = D_1_T_qn05_pn1 + ((T_qn1pn1 - T_qnpn1 - D_1_T_qn05_pn1'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn))) * (qn1-qn); 
+                        DG_T_q = 0.5*(DG_1_T_q_pn + DG_1_T_q_pn1);
+                    else
+                        % use MP evaluation if qn1 is approx. qn
+                        DG_T_q = D_1_T_n05;
+                    end
+                    
+                    % discrete gradient of kinetic energy w.r.t velocity 
+                    DG_T_p = 0.5*(IMn + IMn1)*p_n05;
+            else
+
+
+                for k = 1:nKinInv % loop over all quadratic invariants
+                    %compute i-th invariants
+                    omega_n = this_system.kinetic_energy_invariant(qn, pn, k);
+                    omega_n1 = this_system.kinetic_energy_invariant(qn1, pn1, k);
+                    omega_n05 = 1/2*(omega_n+omega_n1);
+                    % derivative of invariant w.r.t. q_n05
+                    Domegaq_n05 = this_system.kinetic_energy_invariant_gradient_q(q_n05, p_n05, k);
+                    % derivative of invariant w.r.t. v_n05
+                    Domegap_n05 = this_system.kinetic_energy_invariant_gradient_p(q_n05, p_n05, k);
+                    % evaluate internal potential depending on invariants
+                    Ts_n = this_system.kinetic_energy_from_invariant_Hamiltonian(omega_n, k);
+                    Ts_n1 = this_system.kinetic_energy_from_invariant_Hamiltonian(omega_n1, k);
+    
+                    % if invariants at n and n1 are approx. equal use the midpoint
+                    % evaluated gradient instead
+                    if abs((omega_n1-omega_n)'*(omega_n1-omega_n)) > 1e-09
+                        % discrete gradient
+                        DT_omega_n05 = this_system.kinetic_energy_gradient_from_invariant_Hamiltonian(omega_n05,k);
+                        DT_omega = DT_omega_n05 + ((Ts_n1 - Ts_n - DT_omega_n05'*(omega_n1 -omega_n)) / ((omega_n1-omega_n)'*(omega_n1-omega_n))) * (omega_n1-omega_n); 
+                        % if the kinetic energy is quadratic in this invariant, the second term vanishes
+                        DG_T_q = DG_T_q + Domegaq_n05' * DT_omega;
+                        DG_T_p = DG_T_p + Domegap_n05' * DT_omega;
+
+                    else
+                        T_invariants_difference_too_small = true;
+                        break
+                    end
+    
+                end
+    
+                if T_invariants_difference_too_small
+                    % else use MP evaluation of gradient
+                    DG_T_q = this_system.kinetic_energy_gradient_from_momentum(q_n05, p_n05);
+                    DG_T_p = IMn05*p_n05;
+                end
+            
+
             end
 
             % for the gradients of the constraints
-            DG_g = zeros(m, n);
-            K21_DG_g = zeros(n, n);
+            DG_g = zeros(m, nDOF);
+            K21_DG_g = zeros(nDOF, nDOF);
             g_invariants_difference_too_small = false;
 
             % for every invariant individually
@@ -153,11 +227,16 @@ classdef EMS_std < Integrator
             end
 
             %% Residual vector
-            resi = [qn1 - qn - h * IM * p_n05; pn1 - pn + h * DVext_n05 + h * DG_Vint + h * DG_g' * lambda_n1; g_n1];
+% for constant mass matrix:
+%             resi = [qn1 - qn - h * IM * p_n05; 
+%                     pn1 - pn + h * DVext_n05 + h * DG_Vint + h * DG_g' * lambda_n1; 
+%                     g_n1];
+            resi = [qn1 - qn - h * DG_T_p; 
+                    pn1 - pn + h * DG_T_q + h * DVext_n05 + h * DG_Vint + h * DG_g' * lambda_n1; 
+                    g_n1];
 
             %% Tangent matrix
-            %           tang = [];
-            tang = [eye(n), -h * 0.5 * IM, zeros(n, m); h * 0.5 * D2Vext_n05 + h * K21_DG_V + h * K21_DG_g, eye(n), h * DG_g'; G_n1, zeros(n, m)', zeros(m)];
+            tang = [];
 
         end
 

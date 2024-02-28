@@ -4,8 +4,9 @@ classdef Postprocess
 
     properties
 
-        % Color scheme also for colorblind readers
-        color_scheme = {'#EE6677', '#228833', '#4477AA', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB'};
+        % Qualitative color palette for all color-vision deficiencies (Okabe and Ito 2008)
+        % https://clauswilke.com/dataviz/color-pitfalls.html#not-designing-for-color-vision-deficiency
+        color_scheme = {'#E69F00', '#56B4E9', '#CC79A7', '#009E73', '#F0E442', '#0072B2', '#D55E00'};
 
     end
 
@@ -50,6 +51,10 @@ classdef Postprocess
             q = this_simulation.z(:, 1:nDOF);
             p = this_simulation.z(:, nDOF+1:2*nDOF);
             v = zeros(NT, nDOF);
+
+            if ismethod(this_system,'get_cartesian_coordinates_center_of_mass')
+                x = zeros(NT,this_simulation.DIM);
+            end
             
             if this_system.mMixedQuantities > 0
                 alpha = this_simulation.z(:,3*nDOF+1:3*nDOF+this_system.mMixedQuantities);
@@ -69,8 +74,10 @@ classdef Postprocess
                     v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
                 end
 
-                if m > 0
+                if m > 0 && ~strcmp(this_integrator.NAME,'EML-null')
                     lambda = this_simulation.z(:,3*nDOF+1:3*nDOF+m);
+                else 
+                    lambda = NaN(NT,m);
                 end
 
                 if this_integrator.has_enhanced_constraint_force
@@ -110,6 +117,7 @@ classdef Postprocess
             V = zeros(NT, 1);
             H = zeros(NT, 1);
             E = zeros(NT, 1);
+            E_kin = zeros(NT, 1);
             D = zeros(NT, 1);
             L = zeros(NT, 3);
             diffH = zeros(NT-1, 1);
@@ -131,6 +139,13 @@ classdef Postprocess
 
             % Compute quantities for every point in time
             for j = 1:NT
+                
+                if ismethod(this_system,'get_cartesian_coordinates_center_of_mass')
+                    x(j,:) = this_system.get_cartesian_coordinates_center_of_mass(q(j,:));
+                else
+                    x = [];
+                end
+
                 M = this_system.get_mass_matrix(q(j,:));
                 
                 % Kinetic and potential energy, Hamiltonian
@@ -146,6 +161,7 @@ classdef Postprocess
 
                 H(j) = T(j) + V(j);
                 E(j) = p(j,:)*v(j,:)' - 1 / 2 * v(j, :) * M * v(j, :)' + V(j);
+                E_kin(j) = E(j) - V(j);
                 D(j) = v(j, :) * this_system.DISS_MAT * v(j, :)';
                 F_ext = -this_system.external_potential_gradient(q(j, :)');
 
@@ -199,7 +215,7 @@ classdef Postprocess
                 diss_work(j+1) = diss_work(j)+D(j+1);
 
                 if m > 0
-                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML')
+                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens') || strcmp(this_simulation.INTEGRATOR, 'EML_reduced') || strcmp(this_simulation.INTEGRATOR, 'EML_null')
         
                         constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
                         
@@ -216,10 +232,12 @@ classdef Postprocess
             end
 
             % Save computed quantities to simulation-object
+            this_simulation.x = x;
             this_simulation.T = T;
             this_simulation.V = V;
             this_simulation.H = H;
             this_simulation.E = E;
+            this_simulation.E_kin = E_kin;
             this_simulation.D = D;
             this_simulation.diss_work = diss_work;
             this_simulation.L = L;
@@ -368,9 +386,11 @@ classdef Postprocess
         %% Function: plot specific quantities
         function plot(self, this_simulation)
             % Function for plotting postprocessing results
-
+            
+            x = this_simulation.x;
             H = this_simulation.H;
             E = this_simulation.E;
+            E_kin = this_simulation.E_kin;
             V = this_simulation.V;
             T = this_simulation.T;
             t = this_simulation.t;
@@ -414,17 +434,18 @@ classdef Postprocess
 
                         %plots Energy quantities over time
                         if isnan(E(end))
-                            plotline = plot(t(1:end-1), E(1:end-1));
+                            plotline = plot(t(1:end-1), E_kin(1:end-1), t(1:end-1), V(1:end-1), t(1:end-1),  E(1:end-1));
                         else
-                            plotline = plot(t, E);
+                            plotline = plot(t, E_kin, t, V, t, E);
                         end
                         fig.Name = 'energy_functional';
-                        Mmin = min(E);
-                        Mmax = max(E);
+                        Mmin = min([min(V), min(E_kin), min(E)]);
+                        Mmax = max([max(V), max(E_kin), max(E)]);
                         ylim([Mmin - 0.1 * abs(Mmax-Mmin), Mmax + 0.1 * abs(Mmax-Mmin)]);
                         title(strcat(integrator_string, ': Energy'));
+                        legend('$E_{\mathrm{kin}}$', '$V$', '$E$', 'interpreter', 'latex')
                         xlabel('$t$', 'interpreter', 'latex')
-                        ylabel('$E(t)$', 'interpreter', 'latex')
+                        ylabel('energy', 'interpreter', 'latex')
 
                     case 'angular_momentum'
 
@@ -458,6 +479,22 @@ classdef Postprocess
                         title(strcat(integrator_string, ': Energy difference'));
                         xlabel('$t$', 'interpreter', 'latex');
                         ylabel('$H^\mathrm{n+1}-H^\mathrm{n} \ \mathrm{[J]}$', 'interpreter', 'latex');
+
+                    case 'energy_difference_abs'
+
+                        %plots the increments of Hamiltonian over time
+                        plotline = plot(t(1:end-1), abs(diffE), 'color', self.color_scheme{3});
+                        max_diff = max(diffH);
+                        max_rounded = 10^(real(floor(log10(max_diff))) + 1);
+                        min_diff = min(diffH);
+                        min_rounded = -10^(real(floor(log10(min_diff))) + 1);
+                        hold on
+                        plot([t(1), t(end)], [max_rounded, max_rounded], 'k--', [t(1), t(end)], [min_rounded, min_rounded], 'k--');
+                        ylim([2 * min_rounded, 2 * max_rounded]);
+                        fig.Name = 'E_diff_abs';
+                        title(strcat(integrator_string, ': Energy difference'));
+                        xlabel('$t$', 'interpreter', 'latex');
+                        ylabel('$|E^\mathrm{n+1}-E^\mathrm{n}| \ \mathrm{[J]}$', 'interpreter', 'latex');
 
                     case 'energy_function_difference'
 
@@ -548,6 +585,25 @@ classdef Postprocess
                         xlabel('$t$', 'interpreter', 'latex');
                         ylabel('$C - C (q) $', 'interpreter', 'latex');
 
+
+                    case 'cartesian_coordinates_center_of_mass'
+
+                        %plots the ang. Mom. about dim-axis over time
+                        plotline = plot(t, x(:, :));
+                        Lmin = min(x(:));
+                        Lmax = max(x(:));
+                        ylim([Lmin - 0.1 * abs(Lmax-Lmin), Lmax + 0.1 * abs(Lmax-Lmin)]);
+                        fig.Name = 'cart_coords';
+                        title(strcat(integrator_string, ': Cartesian coordinates'));
+                        if this_simulation.DIM == 3
+                            legend('$x_1$', '$x_2$', '$x_3$', 'interpreter', 'latex');
+                        else
+                            legend('$x$', 'interpreter', 'latex');
+                        end
+                        xlabel('$t$', 'interpreter', 'latex');
+                        ylabel('$x_i(t) \ \mathrm{[m]}$', 'interpreter', 'latex');
+
+
                     otherwise
 
                         error(strcat('No plotting routine for ', quantity, '  this quantity defined'));
@@ -563,14 +619,22 @@ classdef Postprocess
         end
 
             %% Function: calculate error for error analysis
-                function error = calculate_errors(~, quantity, quantity_ref, num_A, num_B)
+            function error = calculate_errors(~, this_simulation, quantity, quantity_ref, num_A, num_B)
                     error = zeros(num_A, num_B);
+
                     for i = 1:num_A
                         for j = 1:num_B
-                            if norm(quantity_ref) ~= 0
+                            if norm(quantity_ref) ~= 0 && ~this_simulation.matrix_error_analysis
                                 error(i, j) = norm(quantity(:, i, j)-quantity_ref) / norm(quantity_ref);
-                            else
+                            elseif norm(quantity_ref) == 0
                                 error(i, j) = norm(quantity(:, i, j)-quantity_ref);
+                            elseif this_simulation.matrix_error_analysis
+                                quantity_matrix = reshape(quantity(:,i,j),[3,3]);
+                                ref_matrix = reshape(quantity_ref,[3,3]);
+                                error(i,j) = norm(ref_matrix*quantity_matrix' - eye(3),'fro');
+
+                            else
+                                error('error.')
                             end
                         end
                     end

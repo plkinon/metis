@@ -41,11 +41,13 @@ classdef Metis
         %% Solution quantities
         % Will be filled by Metis
         t
+        x
         z
         H
         T
         V
         E
+        E_kin
         D
         L
         Hdiff
@@ -64,6 +66,7 @@ classdef Metis
         % several timestep-sizes
         ALL_DT
         CONV_QUANTITY
+        matrix_error_analysis
 
     end
 

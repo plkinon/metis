@@ -30,7 +30,7 @@ classdef MP_std < Integrator
 
         function z0 = set_initial_condition(self, this_simulation, this_system)
 
-            z0 = [this_simulation.Q_0', (this_system.MASS_MAT * this_simulation.V_0)', self.LM0'];
+            z0 = [this_simulation.Q_0', (this_system.get_mass_matrix(this_simulation.Q_0) * this_simulation.V_0)', self.LM0'];
 
         end
 
@@ -60,9 +60,12 @@ classdef MP_std < Integrator
             p_n05 = 0.5 * pn + 0.5 * pn1;
             lambda_n05 = 0.5 * lambdan + 0.5 * lambda_n1;
             DV_n05 = this_system.internal_potential_gradient(q_n05) + this_system.external_potential_gradient(q_n05);
-            D2V_n05 = this_system.internal_potential_hessian(q_n05) + this_system.external_potential_hessian(q_n05);
             G_n05 = this_system.constraint_gradient(q_n05);
             t_n05 = zeros(n);
+            Mn05 = this_system.get_mass_matrix(q_n05);
+            IMn05 =  Mn05 \ eye(size(Mn05));
+            DT_q_n05 = this_system.kinetic_energy_gradient_from_momentum(q_n05, p_n05);
+
 
             % Hessian of constraints are multiplied by LMs for each
             % Constraint (avoid 3rd order tensor)
@@ -71,10 +74,12 @@ classdef MP_std < Integrator
             end
 
             %% Residual vector
-            resi = [qn1 - qn - h * IM * p_n05; pn1 - pn + h * DV_n05 + h * G_n05' * lambda_n05; g_n1];
+            resi = [qn1 - qn - h * IMn05 * p_n05; 
+                pn1 - pn + h * DV_n05 + h * DT_q_n05 + h * G_n05' * lambda_n05; 
+                g_n1];
 
             %% Tangent matrix
-            tang = [eye(n), -h * 0.5 * IM, zeros(n, m); h * 0.5 * D2V_n05 + h * 0.5 * t_n05, eye(n), 0.5 * h * G_n05'; G_n1, zeros(n, m)', zeros(m)];
+            tang = [];
 
         end
 
