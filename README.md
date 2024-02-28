@@ -34,11 +34,9 @@ If you used this code (partially) in your project or found it somehow useful, pl
 
 ## Description
 
-Metis was a mythical Titaness who became the goddess of wisdom, prudence and ingenuity. Ingenuity being the "practical, complex and implicit" kind differs from the other types of wisdom.
+This project targets the efficient and easy numerical computation of dynamical systems with or without holonomic constraints: particle systems as well as rigid body systems and multibody dynamics.
 
-Likewise, this project targets the efficient and aesthetically pleasing numerical computation of dynamical systems with or without holonomic constraints: particle systems as well as rigid body systems.
-
-Metis is an object-oriented MATLAB code package - tested with the R2021b version.
+Metis is an object-oriented MATLAB code package - tested with the R2023b version.
 
 A startscript loads the desired input-file. This input-file includes all necessary parameters for the given mechanical problem (geometry, loads, initial values,...), the chosen numerical integration scheme (time-step size, method, simulation time), the Postprocessing routine (plot quantities, animation, export) and the solution technique (max. iterations, tolerance). Metis creates all necessary objects and computes the approximate solution based on the given parameters. Eventually, one can choose to have an animation of the solution, some plots are created and the results are being exported.
 The simulation is will be tracked by a log-file `./metis.log`.
@@ -56,6 +54,7 @@ The simulation is will be tracked by a log-file `./metis.log`.
 -   Newton-Rhapson Method
 -   Particle Systems
 -   Rigid Body Dynamics
+-   Multibody Dynamics
 
 [Back To The Top](#description)
 
@@ -97,8 +96,9 @@ Numerical Integration:
 - [Leyendecker, Marsden, Ortiz: Variational integrators for constrained dynamical systems, 2008](https://doi.org/10.1002/zamm.200700173)
 - [Gonzalez: Time integration and discrete Hamiltonian systems, 1996](https://doi.org/10.1007/BF02440162)
 
-Rigid Body Dynamics with Directors:
+Rigid Body Dynamics:
 - [Betsch, Steinmann: Constrained integration of rigid body dynamics, 2001](https://doi.org/10.1016/S0045-7825(01)00283-3)
+- [Betsch, Siebert: Rigid body dynamics in terms of quaternions: Hamiltonian formulation and conserving numerical integration, 2009](https://doi.org/10.1002/nme.2586)
 
 [Back To The Top](#description)
 
