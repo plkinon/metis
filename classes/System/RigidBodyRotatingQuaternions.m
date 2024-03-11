@@ -439,10 +439,8 @@ classdef RigidBodyRotatingQuaternions < System
     end
 
         %% Animation method
-            function give_animation(self, fig, this_simulation)
+            function give_animation(~, fig, this_simulation)
 
-
-                DIM = self.DIM;
                 q = this_simulation.z(:, 1:4);
                 qa = q(1,:);
                 NT = size(q, 1);
