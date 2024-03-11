@@ -28,7 +28,7 @@ addpath(genpath(fileparts(which(mfilename))));
 %[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/single_analysis_RedundantMassSpring', 1, 1);
 %[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/single_analysis_SpringPendulumPolar', 1, 1);
 %[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_freeRB/single_analysis_rigidBodyRotatingQuat', 1, 1);
-[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_heavytop/single_analysis_HeavyTopQuat', 1, 1);
+[simulation, system, integrator, solver] = Metis('input/single_analysis_HeavyTopQuat', 1, 1);
 
 %% METIS solver
 % Solve system with chosen solver and integration scheme
