@@ -16,7 +16,7 @@ classdef Postprocess
         %% Function: initialise the postprocessing
         function self = Postprocess()
             % set default position of figure windows
-            set(0, 'defaultfigureposition', [0, 450, 1000, 1000])
+            set(0, 'defaultfigureposition', [0, 0, 1512, 982])
 
         end
 

@@ -503,13 +503,13 @@ classdef HeavyTopQuaternions < System
                 p1a = R_q*P1;
                 p2a = R_q*P2;
                 
-                d1 = R_q*[1;0;0];
-                d2 = R_q*[0;1;0];
-                d3 = R_q*[0;0;1];
+                d1 = R_q*[0.8;0;0];
+                d2 = R_q*[0;0.8;0];
+                d3 = R_q*[0;0;0.8];
 
-                h1 = mArrow3(p2a,p2a'+d1', 'facealpha', 0.5, 'color', [70/255 100/255 170/255], 'stemWidth', 0.02);
-                h2 = mArrow3(p2a,p2a'+d2', 'facealpha', 0.5, 'color', [70/255 100/255 170/255], 'stemWidth', 0.02);
-                h3 = mArrow3(p2a,p2a'+d3', 'facealpha', 0.5, 'color', [70/255 100/255 170/255], 'stemWidth', 0.02);
+                h1 = mArrow3(p2a,p2a'+d1', 'facealpha', 0.5, 'color', [70/255 100/255 170/255], 'stemWidth', 0.015);
+                h2 = mArrow3(p2a,p2a'+d2', 'facealpha', 0.5, 'color', [70/255 100/255 170/255], 'stemWidth', 0.015);
+                h3 = mArrow3(p2a,p2a'+d3', 'facealpha', 0.5, 'color', [70/255 100/255 170/255], 'stemWidth', 0.015);
                 hold on
                 % [X,Y,Z]=cylinder([0 1],1000);
                 % M=makehgtform('translate',[-1,-1,-1],'xrotate',pi/4,'yrotate',pi/4);
@@ -521,12 +521,12 @@ classdef HeavyTopQuaternions < System
                 surf(X3,Y3,Z3,'LineStyle','none','FaceColor',[0 150/255 130/255],'FaceAlpha',0.8);
 
                 axis equal
-                xmin = -1.5;
-                xmax = 1.5;
-                ymin = -1.5;
-                ymax = 1.5;
-                zmin =-0.4;
-                zmax =1.6;
+                xmin = -1.4;
+                xmax = 1.4;
+                ymin = -1.4;
+                ymax = 1.4;
+                zmin =-0.3;
+                zmax =1.2;
                 axis([xmin, xmax, ymin, ymax, zmin, zmax]);
 
                 grid on;
@@ -555,13 +555,13 @@ classdef HeavyTopQuaternions < System
                     p1a = R_q*P1;
                     p2a = R_q*P2;
 
-                    d1 = R_q*[1;0;0];
-                    d2 = R_q*[0;1;0];
-                    d3 = R_q*[0;0;1];
+                    d1 = R_q*[0.8;0;0];
+                    d2 = R_q*[0;0.8;0];
+                    d3 = R_q*[0;0;0.8];
 
-                    h1 = mArrow3(p2a,p2a'+d1', 'facealpha', 0.8, 'color', [70/255 100/255 170/255], 'stemWidth', 0.02);
-                    h2 = mArrow3(p2a,p2a'+d2', 'facealpha', 0.8, 'color', [70/255 100/255 170/255], 'stemWidth', 0.02);
-                    h3 = mArrow3(p2a,p2a'+d3', 'facealpha', 0.8, 'color', [70/255 100/255 170/255], 'stemWidth', 0.02);
+                    h1 = mArrow3(p2a,p2a'+d1', 'facealpha', 0.8, 'color', [70/255 100/255 170/255], 'stemWidth', 0.015);
+                    h2 = mArrow3(p2a,p2a'+d2', 'facealpha', 0.8, 'color', [70/255 100/255 170/255], 'stemWidth', 0.015);
+                    h3 = mArrow3(p2a,p2a'+d3', 'facealpha', 0.8, 'color', [70/255 100/255 170/255], 'stemWidth', 0.015);
                     hold on
                     % [X,Y,Z]=cylinder([0 1],1000);
                     % M=makehgtform('translate',[-1,-1,-1],'xrotate',pi/4,'yrotate',pi/4);
@@ -570,7 +570,7 @@ classdef HeavyTopQuaternions < System
                     d(1,:) = zeros(3,1); 
                     d(2,:) = p1a;
                     [X3,Y3,Z3,~,~,~] = cone(atan(r/a)/(2*pi)*360,d,a);
-                    surf(X3,Y3,Z3,'FaceColor',[0 150/255 130/255],'FaceAlpha',0.8, 'EdgeColor',[0 0 0], 'LineWidth',1);
+                    surf(X3,Y3,Z3,'LineStyle','none','FaceColor',[0 150/255 130/255],'FaceAlpha',0.8, 'EdgeColor',[0 0 0], 'LineWidth',1);
 
                     view(136, 23)
                     drawnow
