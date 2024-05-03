@@ -1,6 +1,7 @@
 %% System Parameters
 % Name of system in /classes/System
 SYSTEM = 'RigidBodyRotatingQuaternions';
+%SYSTEM = 'RigidBodyRotatingQuaternionsRegularMassMatrix';
 
 % External acceleration
 EXT_ACC = 0;
@@ -33,15 +34,16 @@ clear Omega_0 Q0_hat Q0_vec Q0_scalar G_Q0
 INTEGRATOR = 'EML';
 %INTEGRATOR = 'EML_reduced';
 %INTEGRATOR = 'EML_null';
+%INTEGRATOR = 'EMS_std';
 
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.05;
+DT = 0.01;
 % starting time
 T_0 = 0;
 % end time
-T_END = 2; %10
+T_END = 10; %2
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method

@@ -62,6 +62,38 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
 
         end
 
+        function M4inv = get_inverse_mass_matrix(self, q)
+
+            if size(q,1) == 1 && size(q,2) == 4
+                q = q';
+            end
+
+            %extract vector and scalar part form quaternion
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            Q_lq = [q, G_q'];
+
+            % classical inertia tensor
+            inertia_tensor = diag(self.GEOM);
+            J1 = inertia_tensor(1,1);
+            J2 = inertia_tensor(2,2);
+            J3 = inertia_tensor(3,3);
+            J0 = 1/2*(J1+J2+J3);
+
+            J_4inv = diag([1/J0, 1/J1, 1/J2, 1/J3]);
+
+            M4inv = 1/4*Q_lq*J_4inv*Q_lq';
+
+        end
+
         function Dq_T = kinetic_energy_gradient_from_velocity(self, q, v)
             
             %extract vector and scalar part form quaternion
@@ -79,7 +111,12 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
 
             % classical inertia tensor
             inertia_tensor = diag(self.GEOM);
-            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
+            J1 = inertia_tensor(1,1);
+            J2 = inertia_tensor(2,2);
+            J3 = inertia_tensor(3,3);
+            J0 = J1+J2*J3;
+
+            extended_inertia_tensor = [J0, zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
 
             Dq_T = 4 * Ql_v * extended_inertia_tensor * Ql_v' * q;
@@ -105,7 +142,12 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
 
             % classical inertia tensor
             inertia_tensor = diag(self.GEOM);
-            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
+            J1 = inertia_tensor(1,1);
+            J2 = inertia_tensor(2,2);
+            J3 = inertia_tensor(3,3);
+            J0 = J1+J2*J3;
+
+            extended_inertia_tensor = [J0, zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
             inv_ext_inertia_tensor = eye(size(extended_inertia_tensor)) / extended_inertia_tensor;
 
@@ -334,10 +376,14 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
         % kinetic energy computed with the invariant based on p
         function Ts = kinetic_energy_from_invariant_Hamiltonian(self, omega, ~)
             % classical inertia tensor
-            inertia_tensor = diag(self.GEOM);
-            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
-                                       zeros(1,3)', inertia_tensor];
-            inv_ext_inertia_tensor = eye(size(extended_inertia_tensor)) / extended_inertia_tensor;
+            inertia_tensor = diag(self.GEOM);          
+            J1 = inertia_tensor(1,1);
+            J2 = inertia_tensor(2,2);
+            J3 = inertia_tensor(3,3);
+            J0 = 1/2*(J1+J2+J3);
+
+            inv_ext_inertia_tensor = diag([1/J0, 1/J1, 1/J2, 1/J3]);
+            
             Ts = 1/8 *omega'*inv_ext_inertia_tensor*omega;
         end
 
@@ -345,7 +391,12 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
         function Ts = kinetic_energy_from_invariant(self, omega, ~)
             % classical inertia tensor
             inertia_tensor = diag(self.GEOM);
-            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
+            J1 = inertia_tensor(1,1);
+            J2 = inertia_tensor(2,2);
+            J3 = inertia_tensor(3,3);
+            J0 = J1+J2*J3;
+
+            extended_inertia_tensor = [J0, zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
             Ts = 2 *omega'*extended_inertia_tensor*omega;
         end
@@ -355,9 +406,12 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
           
             % classical inertia tensor
             inertia_tensor = diag(self.GEOM);
-            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
-                                       zeros(1,3)', inertia_tensor];
-            inv_ext_inertia_tensor = eye(size(extended_inertia_tensor)) / extended_inertia_tensor;
+            J1 = inertia_tensor(1,1);
+            J2 = inertia_tensor(2,2);
+            J3 = inertia_tensor(3,3);
+            J0 = 1/2*(J1+J2+J3);
+
+            inv_ext_inertia_tensor = diag([1/J0, 1/J1, 1/J2, 1/J3]);
 
             DTsDpi = 1/4*inv_ext_inertia_tensor*omega;
         end
@@ -367,7 +421,12 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
           
             % classical inertia tensor
             inertia_tensor = diag(self.GEOM);
-            extended_inertia_tensor = [1/2*trace(inertia_tensor), zeros(3,1)';
+            J1 = inertia_tensor(1,1);
+            J2 = inertia_tensor(2,2);
+            J3 = inertia_tensor(3,3);
+            J0 = J1+J2*J3;
+
+            extended_inertia_tensor = [J0, zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
 
             DTsDpi = 4*extended_inertia_tensor*omega;
