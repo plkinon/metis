@@ -14,16 +14,16 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'EML_noCons_cyclic'; 
-%INTEGRATOR = 'EML_noCons'; %as comparison without accounting for cyclic coordinate
+%INTEGRATOR = 'EML_noCons_cyclic'; 
+INTEGRATOR = 'MP_noCons'; %as comparison without accounting for cyclic coordinate
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.01;
+DT = 0.05;
 % starting time
 T_0 = 0;
 % end time
-T_END = 2;
+T_END = 10;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
@@ -33,7 +33,7 @@ TOLERANCE = 1E-09;
 
 %% Postprocessing
 % Animation of trajectory [true/false]
-shouldAnimate = false;
+shouldAnimate = true;
 % List of desired quantities for plotting in postprocessing
 plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference'};
 % Export of simulation results in a .mat-file [true/false]
