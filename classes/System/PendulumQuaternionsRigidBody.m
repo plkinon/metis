@@ -3,7 +3,7 @@
 % The rotation of a rigid body in terms of unit-quaternions.
 %
 
-classdef PendulumQuaternionsRot < System
+classdef PendulumQuaternionsRigidBody < System
 
     properties
 
@@ -11,7 +11,7 @@ classdef PendulumQuaternionsRot < System
 
     methods
 
-        function self = PendulumQuaternionsRot(CONFIG)
+        function self = PendulumQuaternionsRigidBody(CONFIG)
 
             self.mCONSTRAINTS = 2;
             self.nBODIES = 1;

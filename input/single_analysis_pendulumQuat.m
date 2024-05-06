@@ -1,7 +1,8 @@
 %% System Parameters
 % Name of system in /classes/System
 %SYSTEM = 'PendulumQuaternions';
-SYSTEM = 'PendulumQuaternionsRot';
+SYSTEM = 'PendulumQuaternionsRigidBody';
+
 % External acceleration
 EXT_ACC = -9.81;
 % Initial configuration
@@ -32,7 +33,6 @@ clear Omega_0 Q0_hat Q0_vec Q0_scalar H0 phi_0 theta_0
 
 %% Integrator
 % Name of routine in /classes/Integrator
-%INTEGRATOR = 'EML';
 INTEGRATOR = 'MP_Livens';
 
 % Parameters of the method
