@@ -228,8 +228,9 @@ classdef PendulumQuaternionsRigidBody < System
         function g = constraint(~, q)
            
             g1=1/2*(q'*q - 1);
-            %g2= q(1)*q(4)-q(2)*q(3);
-            g2 = q(1)*q(2)+q(3)*q(4);
+            g2= q(1)*q(4)-q(2)*q(3); % poles are at front and back (x=+-l)
+            %g2 = q(1)*q(2)+q(3)*q(4); % poles are at top / bottom
+            %g2 = q(1)*q(4) + q(2)*q(3); % poles are left / right (y=+-l)
             g = [g1;g2];
             %g = g1;
         end
@@ -237,8 +238,9 @@ classdef PendulumQuaternionsRigidBody < System
         function Dg = constraint_gradient(~, q)
            
             Dg1 = q';
-            %Dg2 = [q(4) -q(3) -q(2) q(1)];
-            Dg2 = [q(2) q(1) q(4) q(3)];
+            Dg2 = [q(4) -q(3) -q(2) q(1)]; % poles are at front and back (x=+-l)
+           % Dg2 = [q(2) q(1) q(4) q(3)]; % poles are at top / bottom
+           % Dg2 = [q(4) q(3) q(2) q(1)]; % poles are left / right (y=+-l)
             Dg = [Dg1; Dg2];
             %Dg = Dg1;
 

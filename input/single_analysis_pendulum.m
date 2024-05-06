@@ -14,7 +14,7 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'EMS_ggl';
+INTEGRATOR = 'MP_std';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
@@ -32,7 +32,7 @@ TOLERANCE = 1E-09;
 
 %% Postprocessing
 % Animation of trajectory [true/false]
-shouldAnimate = false;
+shouldAnimate = true;
 % List of desired quantities for plotting in postprocessing
 plot_quantities = {'energy', 'energy_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'};
 % Export of simulation results in a .mat-file [true/false]

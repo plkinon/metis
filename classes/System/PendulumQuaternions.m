@@ -178,7 +178,7 @@ classdef PendulumQuaternions < System
             cos_theta = 1-2*(q_vec(3)^2+q_vec(2)^2);
             cos_phi = 1-2*(q_vec(1)^2+q_vec(3)^2);
 
-            V_ext = m*g*l*cos_theta*cos_phi;
+            V_ext = -m*g*l*cos_theta*cos_phi;
 
         end
 
@@ -196,7 +196,7 @@ classdef PendulumQuaternions < System
             Dc_theta_q = [0;0;-4*q_vec(2);-4*q_vec(3)];
             Dc_phi_q = [0; -4*q_vec(1); 0; -4*q_vec(3) ];
 
-            DV_ext = m*g*l*(Dc_theta_q*cos_phi + cos_theta*Dc_phi_q);
+            DV_ext = -m*g*l*(Dc_theta_q*cos_phi + cos_theta*Dc_phi_q);
 
         end
 

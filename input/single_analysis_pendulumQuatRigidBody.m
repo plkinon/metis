@@ -9,11 +9,11 @@ EXT_ACC = g;
 MASS = 1; % total mass of the gyro top
 
 % Initial configuration
-theta_0 = pi/4;
+theta_0 = pi/2;
 
-Q_0 = [cos(theta_0/2); 0; sin(theta_0/2); 0];
+Q_0 = [cos(theta_0/2); sin(theta_0/2); 0; 0];
 % inital angular velocity vector w.r.t. e_i-coordinate system
-omega_0 = [0; 0; 1];
+omega_0 = 0.1*[0; 0; -1];
 
 %extract vector and scalar part form quaternion
 Q0_vec = Q_0(2:4);
@@ -45,11 +45,11 @@ INTEGRATOR = 'MP_Livens';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.001;
+DT = 0.01;
 % starting time
 T_0 = 0;
 % end time
-T_END = 1000;
+T_END = 10;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
@@ -59,7 +59,7 @@ TOLERANCE = 1E-09;
 
 %% Postprocessing
 % Animation of trajectory [true/false]
-shouldAnimate = false;
+shouldAnimate = true;
 % List of desired quantities for plotting in postprocessing
 plot_quantities = {'energy', 'energy_difference','general_energy_function', 'energy_function_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_velocity', 'constraint_position','cartesian_coordinates_center_of_mass'};
 % Export of simulation results in a .mat-file [true/false]
