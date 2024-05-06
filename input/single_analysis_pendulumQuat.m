@@ -1,7 +1,6 @@
 %% System Parameters
 % Name of system in /classes/System
-%SYSTEM = 'PendulumQuaternions';
-SYSTEM = 'PendulumQuaternionsRigidBody';
+SYSTEM = 'PendulumQuaternions';
 
 % External acceleration
 EXT_ACC = -9.81;
