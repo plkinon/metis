@@ -85,38 +85,52 @@ classdef ClosedLoopMBSQuaternions < System
 
         function Dq_T = kinetic_energy_gradient_from_velocity(self, q, v)
             
-            %extract vector and scalar part form quaternion
-            v_vec = v(2:4);
-            v_scalar = v(1);
+            q_1 = q(4:7);
+            q_2 = q(11:14);
+            q_3 = q(18:21);
+            q_4 = q(25:28);
 
-            %skew-sym matrix corresponding to vector part
-            v_hat = [0, -v_vec(3), v_vec(2);
-                    v_vec(3), 0, -v_vec(1);
-                    -v_vec(2), v_vec(1), 0];
-            
-            % transformation matrix
-            G_v = [-v_vec, v_scalar*eye(3) - v_hat];
+            v_1 = v(4:7);
+            v_2 = v(11:14);
+            v_3 = v(18:21);
+            v_4 = v(25:28);
+
+            G_v1 = self.get_trafo_matrix(v_1);
+            G_v2 = self.get_trafo_matrix(v_2);
+            G_v3 = self.get_trafo_matrix(v_3);
+            G_v4 = self.get_trafo_matrix(v_4);
             
             % classical inertia tensor
-            inertia_tensor = diag(self.GEOM);
+            inertia_tensor_1 = diag(self.GEOM(1:3));
+            inertia_tensor_2 = diag(self.GEOM(4:6));
+            inertia_tensor_3 = diag(self.GEOM(7:9));
+            inertia_tensor_4 = diag(self.GEOM(10:end));
             
             % singular inertia matrix in v
-            M_4_hat = 4*G_v'*inertia_tensor*G_v;
+            M_4_hat_1 = 4*G_v1'*inertia_tensor_1*G_v1;
+            M_4_hat_2 = 4*G_v2'*inertia_tensor_2*G_v2;
+            M_4_hat_3 = 4*G_v3'*inertia_tensor_3*G_v3;
+            M_4_hat_4 = 4*G_v4'*inertia_tensor_4*G_v4;
             
             % partial derivativa of kinetic energy w.r.t. q(uat)
-            Dq_T = M_4_hat * q;
+            Dq1_T = M_4_hat_1 * q_1;
+            Dq2_T = M_4_hat_2 * q_2;
+            Dq3_T = M_4_hat_3 * q_3;
+            Dq4_T = M_4_hat_4 * q_4;
+
+            Dq_T = [zeros(3,1); Dq1_T;zeros(3,1); Dq2_T;zeros(3,1); Dq3_T;zeros(3,1); Dq4_T];
 
         end
 
         function Dq_T = kinetic_energy_gradient_from_momentum(~, ~, ~)
             
-            Dq_T = [0; 0; 0];
+            Dq_T = NaN(4,1);
 
         end
 
 
-        function L = get_cartesian_angular_momentum_from_momentum(~, q, p)            
-            
+        function L_single = get_single_angular_momentum_from_momentum(~, q, p)
+
             if size(q,1) == 1 && size(q,2) == 4
                 q = q';
             end
@@ -136,7 +150,44 @@ classdef ClosedLoopMBSQuaternions < System
 
             E_q = [-q_vec, q_scalar*eye(3) + q_hat];
             
-            L = 1/2 * E_q * p ;
+            L_single = 1/2 * E_q * p ;
+
+        end
+
+
+
+        function L = get_cartesian_angular_momentum_from_momentum(~, q, p)
+
+            q_1 = q(4:7);
+            q_2 = q(11:14);
+            q_3 = q(18:21);
+            q_4 = q(25:28);
+
+            p_1 = p(4:7);
+            p_2 = p(11:14);
+            p_3 = p(18:21);
+            p_4 = p(25:28);
+
+            L_single1 = get_single_angular_momentum_from_momentum(q_1,p_1);
+            L_single2 = get_single_angular_momentum_from_momentum(q_2,p_2);
+            L_single3 = get_single_angular_momentum_from_momentum(q_3,p_3);
+            L_single4 = get_single_angular_momentum_from_momentum(q_4,p_4);
+            
+            L_rot = L_single1 + L_single2 + L_single3 + L_single4;
+
+            phi_1 = q(1:3);
+            phi_2 = q(8:10);
+            phi_3 = q(15:17);
+            phi_4 = q(22:24);
+
+            p_phi_1 = p(1:3);
+            p_phi_2 = p(8:10);
+            p_phi_3 = p(15:17);
+            p_phi_4 = p(22:24);
+
+            L_trans = cross(phi_1, p_phi_1) + cross(phi_2, p_phi_2) + cross(phi_3, p_phi_3) + cross(phi_4, p_phi_4);
+            
+            L = L_rot + L_trans;
 
         end
 
@@ -144,37 +195,37 @@ classdef ClosedLoopMBSQuaternions < System
 
         function V_ext = external_potential(~, ~)
             % External potential
-            V_ext = 0;
+            V_ext = NaN;
 
         end
 
         function DV_ext = external_potential_gradient(~, ~)
 
-            DV_ext = [0; 0; 0; 0];
+            DV_ext = NaN(4,1);
 
         end
 
         function D2V_ext = external_potential_hessian(~, ~)
 
-            D2V_ext = zeros(4,4);
+            D2V_ext = NaN(4,4);
 
         end
 
         function V_int = internal_potential(~, ~)
 
-            V_int = 0;
+            V_int = NaN;
 
         end
 
         function DV_int = internal_potential_gradient(~, ~)
 
-            DV_int = [0;0; 0; 0];
+            DV_int = NaN(4,1);
 
         end
 
         function D2V_int = internal_potential_hessian(~, ~)
 
-            D2V_int = diag([0; 0; 0; 0]);
+            D2V_int = NaN(4,4);
 
         end
 
