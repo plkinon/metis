@@ -36,18 +36,18 @@ simulation = solver.solve(simulation, system, integrator);
 
 %% METIS postprocessing
 % Define postprocessing from class
-%postprocess = Postprocess();
+postprocess = Postprocess();
 
 % Compute various postprocessing quantities
-%simulation = postprocess.compute(system, simulation, integrator);
+simulation = postprocess.compute(system, simulation, integrator);
 
 % Animation of trajectory if activated in input-file
-%postprocess.animation(system, simulation);
+postprocess.animation(system, simulation);
 
 % Plot time-evolution of postprocessing quantites
-%postprocess.plot(simulation);
+postprocess.plot(simulation);
 
 % Export simulation results if activated in input-file
-%postprocess.save(simulation);
+postprocess.save(simulation);
 
 % -------------------------- END OF CODE ----------------------------------
