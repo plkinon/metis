@@ -13,22 +13,23 @@ classdef ClosedLoopMBSQuaternions < System
 
         function self = ClosedLoopMBSQuaternions(CONFIG)
 
-            self.mCONSTRAINTS = 4*3;
+            self.mCONSTRAINTS = 4*3 + 4*1;
             self.nBODIES = 4;
             self.DIM = CONFIG.DIM;
             self.MASS = CONFIG.MASS;
-            self.nDOF = 4*7-4*3;
+            self.nDOF = 4*7;
             self.MASS_MAT = [];
             self.EXT_ACC = CONFIG.EXT_ACC;
 
            % parameters
-            J_short_axis = self.MASS/12 * (10^2 + 1^2);
+            length_bar = 10;
+            J_short_axis = self.MASS/12 * (length_bar^2 + 1^2);
             J_long_axis = self.MASS/12 * (1^2 + 1^2);
             self.GEOM = [J_short_axis,J_long_axis,J_short_axis,J_long_axis, J_short_axis, J_short_axis, J_short_axis,J_long_axis,J_short_axis,J_long_axis, J_short_axis, J_short_axis]; % principal inertia [body1, body2, body3, body4]
-            
-            self.DISS_MAT = zeros(4,4);
+            self.GEOM = [self.GEOM, length_bar];
+            self.DISS_MAT = zeros(self.nDOF,self.nDOF);
             self.nPotentialInvariants = 0;
-            self.nKineticInvariants = 8;
+            self.nKineticInvariants = 0;%8;
             self.nConstraintInvariants = 0;
             self.mMixedQuantities = 0;
             self.isCyclicCoordinate = [];
@@ -71,7 +72,7 @@ classdef ClosedLoopMBSQuaternions < System
             inertia_tensor_1 = diag(self.GEOM(1:3));
             inertia_tensor_2 = diag(self.GEOM(4:6));
             inertia_tensor_3 = diag(self.GEOM(7:9));
-            inertia_tensor_4 = diag(self.GEOM(10:end));
+            inertia_tensor_4 = diag(self.GEOM(10:12));
             
             % singular mass matrix
             M1 = 4*G_q1'*inertia_tensor_1*G_q1;
@@ -104,7 +105,7 @@ classdef ClosedLoopMBSQuaternions < System
             inertia_tensor_1 = diag(self.GEOM(1:3));
             inertia_tensor_2 = diag(self.GEOM(4:6));
             inertia_tensor_3 = diag(self.GEOM(7:9));
-            inertia_tensor_4 = diag(self.GEOM(10:end));
+            inertia_tensor_4 = diag(self.GEOM(10:12));
             
             % singular inertia matrix in v
             M_4_hat_1 = 4*G_v1'*inertia_tensor_1*G_v1;
@@ -118,7 +119,7 @@ classdef ClosedLoopMBSQuaternions < System
             Dq3_T = M_4_hat_3 * q_3;
             Dq4_T = M_4_hat_4 * q_4;
 
-            Dq_T = [zeros(3,1); Dq1_T;zeros(3,1); Dq2_T;zeros(3,1); Dq3_T;zeros(3,1); Dq4_T];
+            Dq_T = [zeros(3,1); Dq1_T; zeros(3,1); Dq2_T; zeros(3,1); Dq3_T; zeros(3,1); Dq4_T];
 
         end
 
@@ -156,7 +157,7 @@ classdef ClosedLoopMBSQuaternions < System
 
 
 
-        function L = get_cartesian_angular_momentum_from_momentum(~, q, p)
+        function L = get_cartesian_angular_momentum_from_momentum(self, q, p)
 
             q_1 = q(4:7);
             q_2 = q(11:14);
@@ -168,10 +169,10 @@ classdef ClosedLoopMBSQuaternions < System
             p_3 = p(18:21);
             p_4 = p(25:28);
 
-            L_single1 = get_single_angular_momentum_from_momentum(q_1,p_1);
-            L_single2 = get_single_angular_momentum_from_momentum(q_2,p_2);
-            L_single3 = get_single_angular_momentum_from_momentum(q_3,p_3);
-            L_single4 = get_single_angular_momentum_from_momentum(q_4,p_4);
+            L_single1 = self.get_single_angular_momentum_from_momentum(q_1,p_1);
+            L_single2 = self.get_single_angular_momentum_from_momentum(q_2,p_2);
+            L_single3 = self.get_single_angular_momentum_from_momentum(q_3,p_3);
+            L_single4 = self.get_single_angular_momentum_from_momentum(q_4,p_4);
             
             L_rot = L_single1 + L_single2 + L_single3 + L_single4;
 
@@ -186,8 +187,8 @@ classdef ClosedLoopMBSQuaternions < System
             p_phi_4 = p(22:24);
 
             L_trans = cross(phi_1, p_phi_1) + cross(phi_2, p_phi_2) + cross(phi_3, p_phi_3) + cross(phi_4, p_phi_4);
-            
-            L = L_rot + L_trans;
+                        
+            L = L_rot + L_trans';
 
         end
 
@@ -195,58 +196,187 @@ classdef ClosedLoopMBSQuaternions < System
 
         function V_ext = external_potential(~, ~)
             % External potential
-            V_ext = NaN;
+            V_ext = 0;
 
         end
 
-        function DV_ext = external_potential_gradient(~, ~)
+        function DV_ext = external_potential_gradient(~, q)
 
-            DV_ext = NaN(4,1);
+            DV_ext = zeros(size(q));
 
         end
 
-        function D2V_ext = external_potential_hessian(~, ~)
+        function D2V_ext = external_potential_hessian(~, q)
 
-            D2V_ext = NaN(4,4);
+            D2V_ext = zeros(size(q),size(q));
 
         end
 
         function V_int = internal_potential(~, ~)
 
-            V_int = NaN;
+            V_int = 0;
 
         end
 
-        function DV_int = internal_potential_gradient(~, ~)
+        function DV_int = internal_potential_gradient(~, q)
 
-            DV_int = NaN(4,1);
+            DV_int = zeros(size(q));
 
         end
 
-        function D2V_int = internal_potential_hessian(~, ~)
+        function D2V_int = internal_potential_hessian(~, q)
 
-            D2V_int = NaN(4,4);
+            D2V_int = zeros(size(q),size(q));
+
+        end
+
+        function R = get_rotation_matrix(~,q)
+
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+
+            R = E_q*G_q';
 
         end
 
 
         %% Constraint on position level
 
-        function g = constraint(~, q)
+        function g = constraint(self, q)
+
+            length_bar = self.GEOM(end);
+
+            q_1 = q(4:7);
+            q_2 = q(11:14);
+            q_3 = q(18:21);
+            q_4 = q(25:28);
+
+            phi_1 = q(1:3);
+            phi_2 = q(8:10);
+            phi_3 = q(15:17);
+            phi_4 = q(22:24);
            
-            g=1/2*(q'*q -1);
+            g_int1=1/2*(q_1'*q_1 -1);
+            g_int2=1/2*(q_2'*q_2 -1);
+            g_int3=1/2*(q_3'*q_3 -1);
+            g_int4=1/2*(q_4'*q_4 -1);
+
+            R1 = self.get_rotation_matrix(q_1);
+            R2 = self.get_rotation_matrix(q_2);
+            R3 = self.get_rotation_matrix(q_3);
+            R4 = self.get_rotation_matrix(q_4);
+
+            X1_2 = [0;length_bar/2;0];
+            X1_4 = [0;-length_bar/2;0];
+            X2_1 = [length_bar/2;0;0];
+            X2_3 = [-length_bar/2;0;0];
+            X3_2 = [0;length_bar/2;0];
+            X3_4 = [0;-length_bar/2;0];
+            X4_1 = [length_bar/2;0;0];
+            X4_3 = [-length_bar/2;0;0];
+
+            x1_2 = R1 * X1_2;
+            x1_4 = R1 * X1_4;
+            x2_1 = R2 * X2_1;
+            x2_3 = R2 * X2_3;
+            x3_2 = R3 * X3_2;
+            x3_4 = R3 * X3_4;
+            x4_1 = R4 * X4_1;
+            x4_3 = R4 * X4_3;
+
+            g_ext12 = phi_1 - phi_2 + x1_2 - x2_1;
+            g_ext23 = phi_2 - phi_3 + x2_3 - x3_2;
+            g_ext34 = phi_3 - phi_4 + x3_4 - x4_3;
+            g_ext41 = phi_4 - phi_1 + x4_1 - x1_4;
+
+            g = [g_int1; g_int2; g_int3; g_int4; g_ext12; g_ext23; g_ext34; g_ext41];
 
         end
 
-        function Dg = constraint_gradient(~, q)
+        function X_bar = get_bar_matrix(~,X)
+
+            X_hat = [0, -X(3), X(2);
+                    X(3), 0, -X(1);
+                    -X(2), X(1), 0];
+
+            X_bar = [0, -X';
+                     X, -X_hat];
+
+        end
+
+        function E_q = get_Ematrix(~,q)
+
+            q_vec = q(2:4);
+            q_scalar = q(1);
+
+            %skew-sym matrix corresponding to vector part
+            q_hat = [0, -q_vec(3), q_vec(2);
+                    q_vec(3), 0, -q_vec(1);
+                    -q_vec(2), q_vec(1), 0];
+            
+            % transformation matrix
+            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
+
+        end
+
+        function Dg = constraint_gradient(self, q)
+
+            length_bar = self.GEOM(end);
+
+            q_1 = q(4:7);
+            q_2 = q(11:14);
+            q_3 = q(18:21);
+            q_4 = q(25:28);
            
-            Dg=q';
+            Dg_int1=[zeros(1,3), q_1', zeros(1,21)];
+            Dg_int2=[zeros(1,10), q_2', zeros(1,14)];
+            Dg_int3=[zeros(1,17), q_3', zeros(1,7)];
+            Dg_int4=[zeros(1,24), q_4'];
+
+            X1_2 = [0;length_bar/2;0];
+            X1_4 = [0;-length_bar/2;0];
+            X2_1 = [length_bar/2;0;0];
+            X2_3 = [-length_bar/2;0;0];
+            X3_2 = [0;length_bar/2;0];
+            X3_4 = [0;-length_bar/2;0];
+            X4_1 = [length_bar/2;0;0];
+            X4_3 = [-length_bar/2;0;0];
+
+            X_bar_12 = self.get_bar_matrix(X1_2);
+            X_bar_14 = self.get_bar_matrix(X1_4);
+            X_bar_23 = self.get_bar_matrix(X2_3);
+            X_bar_21 = self.get_bar_matrix(X2_1);
+            X_bar_34 = self.get_bar_matrix(X3_4);
+            X_bar_32 = self.get_bar_matrix(X3_2);
+            X_bar_43 = self.get_bar_matrix(X4_3);
+            X_bar_41 = self.get_bar_matrix(X4_1);
+
+            E_q1 = self.get_Ematrix(q_1);
+            E_q2 = self.get_Ematrix(q_2);
+            E_q3 = self.get_Ematrix(q_3);
+            E_q4 = self.get_Ematrix(q_4);
+
+            Dg_ext12 = [eye(3), 2*E_q1*X_bar_12, -eye(3), -2*E_q2*X_bar_21, zeros(3), zeros(3,4),zeros(3), zeros(3,4)];
+            Dg_ext23 = [zeros(3), zeros(3,4), eye(3), 2*E_q2*X_bar_23, -eye(3), -2*E_q3*X_bar_32, zeros(3), zeros(3,4)];
+            Dg_ext34 = [zeros(3), zeros(3,4), zeros(3), zeros(3,4), eye(3), 2*E_q3*X_bar_34, -eye(3), -2*E_q4*X_bar_43];
+            Dg_ext41 = [-eye(3), -2*E_q1*X_bar_14, zeros(3), zeros(3,4), zeros(3), zeros(3,4), eye(3), 2*E_q4*X_bar_41,];
+
+            Dg = [Dg_int1; Dg_int2; Dg_int3; Dg_int4; Dg_ext12; Dg_ext23; Dg_ext34; Dg_ext41];
 
         end
 
         function D2g = constraint_hessian(~, ~, ~)
 
-             D2g=eye(4);
+             D2g=NaN(28,28);
 
         end
 
@@ -427,6 +557,40 @@ classdef ClosedLoopMBSQuaternions < System
     function Dgs = constraint_gradient_from_invariant(~, ~, ~)
 
         Dgs = 1/2;
+
+    end
+
+    function timefunction = get_timefunction(~,time)
+
+        fm = 100;
+
+        if (time >= 0) && (time <= 0.5)
+
+            timefunction = 2*fm*time;
+
+        elseif (time > 0.5) && (time <= 1)
+
+            timefunction = 2*fm*(1-time);
+
+        elseif time > 1
+
+            timefunction = 0;
+
+        else
+            error ("wrong time.")
+        end
+
+    end
+
+    function f_ext = get_external_forces(self,q,~,time)
+        
+        q_1 = q(4:7);
+        E_q1 = self.get_Ematrix(q_1);
+
+        f_bar = 8*self.get_timefunction(time)*[1;0;0];
+        m_bar = 3*self.get_timefunction(time)*[1;0;0];
+
+        f_ext = [f_bar; 2*E_q1'*m_bar; zeros(21,1)];
 
     end
 
