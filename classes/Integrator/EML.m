@@ -214,11 +214,16 @@ classdef EML < Integrator
 
             end
             
-         
+            if ismethod(this_system,"get_external_forces")
+                time_n05 = time_n + 0.5*h;
+                f_ext = this_system.get_external_forces(q_n05,v_n05,time_n05);
+            else
+                f_ext = zeros(size(q_n05));
+            end
 
             %% Residual vector
              resi = [qn1 - qn - h * v_n05; 
-                     pn1 - pn + h * DG_Vext + h * DG_Vint - h * DG_T_q + h * DG_g' * lambdan1; 
+                     pn1 - pn + h * DG_Vext + h * DG_Vint - h * DG_T_q + h * DG_g' * lambdan1 - f_ext; 
                      p_n05 - DG_T_v;
                      g_n1];
             %% Tangent matrix
