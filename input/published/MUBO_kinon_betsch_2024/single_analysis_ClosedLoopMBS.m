@@ -1,40 +1,37 @@
 %% System Parameters
 % Name of system in /classes/System
-SYSTEM = 'RigidBodyRotatingQuaternions';
-%SYSTEM = 'RigidBodyRotatingQuaternionsRegularMassMatrix';
+SYSTEM = 'ClosedLoopMBSQuaternions';
 
 % External acceleration
 EXT_ACC = 0;
 % Initial configuration
-Q_0 = [1; 0; 0; 0];
+length_bar = 10;
+phi_1 = [length_bar/2; 0; 0];
+phi_2 = [0; length_bar/2; 0];
+phi_3 = [-length_bar; 0; 0];
+phi_4 = [0; -length_bar/2; 0];
+q_1 = [1; 0; 0; 0];
+q_2 = [1; 0; 0; 0];
+q_3 = [1; 0; 0; 0];
+q_4 = [1; 0; 0; 0];
+
+Q_0 = [phi_1; q_1; phi_2; q_2; phi_3; q_3; phi_4; q_4];
 % Initial velocity 
-Omega_0 = [10;20;20];
-%extract vector and scalar part form quaternion
-Q0_vec = Q_0(2:4);
-Q0_scalar = Q_0(1);
-
-%skew-sym matrix corresponding to vector part
-Q0_hat = [0, -Q0_vec(3), Q0_vec(2);
-        Q0_vec(3), 0, -Q0_vec(1);
-        -Q0_vec(2), Q0_vec(1), 0];
-
-% transformation matrix
-G_Q0 = [-Q0_vec, Q0_scalar*eye(3) - Q0_hat];
-V_0 = 1/2*G_Q0'*Omega_0;
+V_0 = zeros(size(Q_0));
 % Mass
-MASS = 1;
+rho = 1;
+cross_section = 1;
+single_mass = rho * length_bar * cross_section; 
+MASS = single_mass*ones(4,1);
 % Spatial dimensions
 DIM = 3;
 
 % clear unnecessary variables (crucial for further processing!)
-clear Omega_0 Q0_hat Q0_vec Q0_scalar G_Q0
+clear length_bar phi_1 phi_2 phi_3 phi_4 q_1 q_2 q_3 q_4 rho cross_section single_mass
 
 %% Integrator
 % Name of routine in /classes/Integrator
 INTEGRATOR = 'EML';
-%INTEGRATOR = 'EML_reduced';
-%INTEGRATOR = 'EML_null';
-%INTEGRATOR = 'EMS_std';
 
 % Parameters of the method
 INT_PARA = [NaN, NaN];
@@ -43,7 +40,7 @@ DT = 0.01;
 % starting time
 T_0 = 0;
 % end time
-T_END = 10; %2
+T_END = 5;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
