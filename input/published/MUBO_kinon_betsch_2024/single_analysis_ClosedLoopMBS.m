@@ -31,15 +31,16 @@ clear length_bar phi_1 phi_2 phi_3 phi_4 q_1 q_2 q_3 q_4 rho cross_section
 %% Integrator
 % Name of routine in /classes/Integrator
 INTEGRATOR = 'EML';
+%INTEGRATOR = 'MP_Livens';
 
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.01;
+DT = 0.1;
 % starting time
 T_0 = 0;
 % end time
-T_END = 1.5;
+T_END = 2;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
