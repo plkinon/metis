@@ -29,7 +29,7 @@ classdef ClosedLoopMBSQuaternions < System
             self.GEOM = [self.GEOM, length_bar];
             self.DISS_MAT = zeros(self.nDOF,self.nDOF);
             self.nPotentialInvariants = 0;
-            self.nKineticInvariants = 0;%8;
+            self.nKineticInvariants = 8;
             self.nConstraintInvariants = 0;
             self.mMixedQuantities = 0;
             self.isCyclicCoordinate = [];
@@ -415,79 +415,243 @@ classdef ClosedLoopMBSQuaternions < System
         end
 
         % Invariant of the internal potential
-        function omega = kinetic_energy_invariant(~, q, v, ~)
+        function omega = kinetic_energy_invariant(self, q, v, i)
+
+            if i == 1
+                
+                q_1 = q(4:7);
+                G_q1 = self.get_trafo_matrix(q_1);
+                v_1 = v(4:7);
+                omega = 2*G_q1*v_1;
+
+            elseif i == 2
+                
+                q_2 = q(11:14);
+                G_q2 = self.get_trafo_matrix(q_2);
+                v_2 = v(11:14);
+                omega = 2*G_q2*v_2;
             
-            if size(q,1) == 1 && size(q,2) == 4
-                q = q';
+            elseif i == 3
+                
+                q_3 = q(18:21);
+                G_q3 = self.get_trafo_matrix(q_3);
+                v_3 = v(18:21);
+                omega = 2*G_q3*v_3;
+
+            elseif i == 4
+
+                q_4 = q(25:28);
+                G_q4 = self.get_trafo_matrix(q_4);
+                v_4 = v(25:28);
+                omega = 2*G_q4*v_4;
+            
+            elseif i == 5
+
+                v_phi_1 = v(1:3);
+                omega = 1/2*v_phi_1'*v_phi_1;
+
+            elseif i == 6
+
+                v_phi_2 = v(8:10);
+                omega = 1/2*v_phi_2'*v_phi_2;
+
+            elseif i == 7
+
+                v_phi_3 = v(15:17);
+                omega = 1/2*v_phi_3'*v_phi_3;
+
+            elseif i == 8
+
+                v_phi_4 = v(22:24);
+                omega = 1/2*v_phi_4'*v_phi_4;
+
             end
-
-            %extract vector and scalar part form quaternion
-            q_vec = q(2:4);
-            q_scalar = q(1);
-
-            %skew-sym matrix corresponding to vector part
-            q_hat = [0, -q_vec(3), q_vec(2);
-                    q_vec(3), 0, -q_vec(1);
-                    -q_vec(2), q_vec(1), 0];
-            
-            % transformation matrix
-            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
-
-            omega = 2*G_q*v;
 
         end
 
             % gradient of potential invariants w.r.t. q
-        function DomegaDq = kinetic_energy_invariant_gradient_q(~, ~, v, ~)
-            %extract vector and scalar part form quaternion
-            v_vec = v(2:4);
-            v_scalar = v(1);
-
-            %skew-sym matrix corresponding to vector part
-            v_hat = [0, -v_vec(3), v_vec(2);
-                    v_vec(3), 0, -v_vec(1);
-                    -v_vec(2), v_vec(1), 0];
+        function DomegaDq = kinetic_energy_invariant_gradient_q(self, ~, v, i)
             
-            % transformation matrix
-            G_v = [-v_vec, v_scalar*eye(3) - v_hat];
-            DomegaDq = -2*G_v;
+            if i == 1
+                
+                v_1 = v(4:7);
+                G_v1 = self.get_trafo_matrix(v_1);
+                DomegaDq = [zeros(3,3), -2*G_v1, zeros(3,21)];
+
+            elseif i == 2
+                
+                v_2 = v(11:14);
+                G_v2 = self.get_trafo_matrix(v_2);
+                DomegaDq = [zeros(3,10), -2*G_v2, zeros(3,14)];
+            
+            elseif i == 3
+                
+                v_3 = v(18:21);
+                G_v3 = self.get_trafo_matrix(v_3);
+                DomegaDq = [zeros(3,17), -2*G_v3, zeros(3,7)];
+
+            elseif i == 4
+
+                v_4 = v(25:28);
+                G_v4 = self.get_trafo_matrix(v_4);
+                DomegaDq = [zeros(3,24), -2*G_v4];
+            
+            elseif i == 5
+
+                DomegaDq = zeros(1,28);
+
+            elseif i == 6
+
+                DomegaDq = zeros(1,28);
+
+            elseif i == 7
+
+                DomegaDq = zeros(1,28);
+
+            elseif i == 8
+
+                DomegaDq = zeros(1,28);
+
+            end
+
         end
 
          % gradient of kinetic energy invariants w.r.t. v
-        function DomegaDv = kinetic_energy_invariant_gradient_v(~, q, ~, ~)
-            if size(q,1) == 1 && size(q,2) == 4
-                q = q';
+        function DomegaDv = kinetic_energy_invariant_gradient_v(self, q, v, i)
+            
+            if i == 1
+                
+                q_1 = q(4:7);
+                G_q1 = self.get_trafo_matrix(q_1);
+                DomegaDv = [zeros(3,3), 2*G_q1, zeros(3,21)];
+
+            elseif i == 2
+                
+                q_2 = q(11:14);
+                G_q2 = self.get_trafo_matrix(q_2);
+                DomegaDv = [zeros(3,10), 2*G_q2, zeros(3,14)];
+            
+            elseif i == 3
+                
+                q_3 = q(18:21);
+                G_q3 = self.get_trafo_matrix(q_3);
+                DomegaDv = [zeros(3,17), 2*G_q3, zeros(3,7)];
+
+            elseif i == 4
+
+                q_4 = q(25:28);
+                G_q4 = self.get_trafo_matrix(q_4);
+                DomegaDv = [zeros(3,24), 2*G_q4];
+            
+            elseif i == 5
+
+                v_phi_1 = v(1:3);
+                DomegaDv = [v_phi_1', zeros(1,25)];
+
+            elseif i == 6
+
+                v_phi_2 = v(8:10);
+                DomegaDv = [zeros(1,7), v_phi_2', zeros(1,18)];
+
+            elseif i == 7
+
+                v_phi_3 = v(15:17);
+                DomegaDv = [zeros(1,14), v_phi_3', zeros(1,11)];
+
+            elseif i == 8
+
+                v_phi_4 = v(22:24);
+                DomegaDv = [zeros(1,21), v_phi_4', zeros(1,4)];
+
             end
 
-            %extract vector and scalar part form quaternion
-            q_vec = q(2:4);
-            q_scalar = q(1);
-
-            %skew-sym matrix corresponding to vector part
-            q_hat = [0, -q_vec(3), q_vec(2);
-                    q_vec(3), 0, -q_vec(1);
-                    -q_vec(2), q_vec(1), 0];
-            
-            % transformation matrix
-            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
-            DomegaDv = 2*G_q;
         end
 
         % internal potential computed with the invariant
-        function Ts = kinetic_energy_from_invariant(self, omega, ~)
-            % classical inertia tensor
-            inertia_tensor = diag(self.GEOM);
+        function Ts = kinetic_energy_from_invariant(self, omega, i)
 
-            Ts = 1/2 *omega'*inertia_tensor*omega;
+            
+            if i == 1
+                
+                inertia_tensor_1 = diag(self.GEOM(1:3));
+                Ts = 1/2 *omega'*inertia_tensor_1*omega;
+
+            elseif i == 2
+                
+                inertia_tensor_2 = diag(self.GEOM(4:6));
+                Ts = 1/2 *omega'*inertia_tensor_2*omega;
+            
+            elseif i == 3
+                
+                inertia_tensor_3 = diag(self.GEOM(7:9));
+                Ts = 1/2 *omega'*inertia_tensor_3*omega;
+
+            elseif i == 4
+
+                inertia_tensor_4 = diag(self.GEOM(10:12));
+                Ts = 1/2 *omega'*inertia_tensor_4*omega;
+            
+            elseif i == 5
+
+                Ts = self.MASS*omega;
+
+            elseif i == 6
+
+                Ts = self.MASS*omega;
+
+            elseif i == 7
+
+                Ts = self.MASS*omega;
+
+            elseif i == 8
+
+                Ts = self.MASS*omega;
+
+            end
+
         end
 
         % gradient of internal potential w.r.t. the invariant
-        function DTsDpi = kinetic_energy_gradient_from_invariant(self, omega, ~)
-          
-            % classical inertia tensor
-            inertia_tensor = diag(self.GEOM);
+        function DTsDpi = kinetic_energy_gradient_from_invariant(self, omega, i)
+            
+            if i == 1
+                
+                inertia_tensor_1 = diag(self.GEOM(1:3));
+                DTsDpi = inertia_tensor_1*omega;
 
-            DTsDpi = inertia_tensor*omega;
+            elseif i == 2
+                
+                inertia_tensor_2 = diag(self.GEOM(4:6));
+                DTsDpi = inertia_tensor_2*omega;
+            
+            elseif i == 3
+                
+                inertia_tensor_3 = diag(self.GEOM(7:9));
+                DTsDpi = inertia_tensor_3*omega;
+
+            elseif i == 4
+
+                inertia_tensor_4 = diag(self.GEOM(10:12));
+                DTsDpi = inertia_tensor_4*omega;
+            
+            elseif i == 5
+
+                DTsDpi = self.MASS;
+
+            elseif i == 6
+
+                DTsDpi = self.MASS;
+
+            elseif i == 7
+
+                DTsDpi = self.MASS;
+
+            elseif i == 8
+
+                DTsDpi = self.MASS;
+
+            end
+
         end
 
         % invariant of the velocity invariant
@@ -562,7 +726,7 @@ classdef ClosedLoopMBSQuaternions < System
 
     function timefunction = get_timefunction(~,time)
 
-        fm = 100;
+        fm = 10;
 
         if (time >= 0) && (time <= 0.5)
 
@@ -588,7 +752,7 @@ classdef ClosedLoopMBSQuaternions < System
         E_q1 = self.get_Ematrix(q_1);
 
         f_bar = 8*self.get_timefunction(time)*[1;0;0];
-        m_bar = 3*self.get_timefunction(time)*[1;0;0];
+        m_bar = 6*self.get_timefunction(time)*[1;0;0];
 
         f_ext = [f_bar; 2*E_q1'*m_bar; zeros(21,1)];
 
