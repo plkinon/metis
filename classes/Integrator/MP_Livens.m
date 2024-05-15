@@ -69,7 +69,7 @@ classdef MP_Livens < Integrator
 
             %% Residual vector
              resi = [qn1 - qn - h * v_n05; 
-                     pn1 - pn + h * DVext_n05 + h * DVint_n05 - h * DT_q_n05 + h * G_n05' * lambdan1 - f_ext; 
+                     pn1 - pn + h * DVext_n05 + h * DVint_n05 - h * DT_q_n05 + h * G_n05' * lambdan1 - h * f_ext; 
                      p_n05 - Mn05*v_n05;
                      g_n1];
             %% Tangent matrix

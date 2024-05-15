@@ -223,7 +223,7 @@ classdef EML < Integrator
 
             %% Residual vector
              resi = [qn1 - qn - h * v_n05; 
-                     pn1 - pn + h * DG_Vext + h * DG_Vint - h * DG_T_q + h * DG_g' * lambdan1 - f_ext; 
+                     pn1 - pn + h * DG_Vext + h * DG_Vint - h * DG_T_q + h * DG_g' * lambdan1 - h * f_ext; 
                      p_n05 - DG_T_v;
                      g_n1];
             %% Tangent matrix
