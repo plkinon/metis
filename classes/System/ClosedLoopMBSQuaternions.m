@@ -80,7 +80,7 @@ classdef ClosedLoopMBSQuaternions < System
             M3 = 4*G_q3'*inertia_tensor_3*G_q3;
             M4 = 4*G_q4'*inertia_tensor_4*G_q4;
 
-            M = blkdiag(self.MASS(1)*eye(3),M1,self.MASS(1)*eye(3),M2,self.MASS(1)*eye(3), M3,self.MASS(1)*eye(3), M4);
+            M = blkdiag(self.MASS*eye(3),M1,self.MASS*eye(3),M2,self.MASS*eye(3), M3,self.MASS*eye(3), M4);
 
         end
 
@@ -696,6 +696,7 @@ classdef ClosedLoopMBSQuaternions < System
     function zeta = constraint_invariant(~, q, ~)
 
        zeta = q'*q;
+       error('not available.')
 
     end
 
@@ -703,30 +704,35 @@ classdef ClosedLoopMBSQuaternions < System
     function DzetaDq = constraint_invariant_gradient(~, q, ~)
 
         DzetaDq = 2*q';
+        error('not available.')
     end
 
     % gradient of the invariant of the position constraint w.r.t. q
     function D2zetaDq2 = constraint_invariant_hessian(~, ~, ~)
 
       D2zetaDq2 = 2*eye(4);
+      error('not available.')
+
     end
 
     % position constrained computed with its invariant
       function gs = constraint_from_invariant(~, zeta, ~)
 
            gs = 1/2*(zeta -1);
+           error('not available.')
       end
 
     % gradient of position constrained w.r.t. its invariant
     function Dgs = constraint_gradient_from_invariant(~, ~, ~)
 
         Dgs = 1/2;
+        error('not available.')
 
     end
 
     function timefunction = get_timefunction(~,time)
 
-        fm = 10;
+        fm = 100;
 
         if (time >= 0) && (time <= 0.5)
 
@@ -755,73 +761,14 @@ classdef ClosedLoopMBSQuaternions < System
         m_bar = 6*self.get_timefunction(time)*[1;0;0];
 
         f_ext = [f_bar; 2*E_q1'*m_bar; zeros(21,1)];
-
-    end
-
-    function qn1 = get_coordinate_update(~,theta,qn)
-
-        abs_theta = norm(theta);
-        if abs_theta == 0
-            expS3 = [1;0;0;0];
-        else
-            expS3 = [cos(1/2*abs_theta); 1/abs_theta * sin(1/2*abs_theta) * theta];
-        end
-        
-
-        exp_vec = expS3(2:4);
-        exp_scalar = expS3(1);
-
-        %skew-sym matrix corresponding to vector part
-        exp_hat = [0, -exp_vec(3), exp_vec(2);
-                exp_vec(3), 0, -exp_vec(1);
-                -exp_vec(2), exp_vec(1), 0];
-        
-        % transformation matrix
-        G_exp = [-exp_vec, exp_scalar*eye(3) - exp_hat];
-
-        Ql_exp = [expS3, G_exp'];
-
-        qn1 = Ql_exp*qn;
-
-    end
-
-    function P = get_null_space_matrix(~,q)
-
-        q_vec = q(2:4);
-        q_scalar = q(1);
-
-        %skew-sym matrix corresponding to vector part
-        q_hat = [0, -q_vec(3), q_vec(2);
-                q_vec(3), 0, -q_vec(1);
-                -q_vec(2), q_vec(1), 0];
-        
-        % transformation matrix
-        P = [-q_vec, q_scalar*eye(3) - q_hat];
-
+        %f_ext = zeros(28,1);
     end
 
      function analyzed_quantity = hconvergence_set(~, this_simulation)
 
         if strcmp(this_simulation.CONV_QUANTITY,'q')
-
-            q = this_simulation.z(end,1:4)';
-            %extract vector and scalar part form quaternion
-            q_vec = q(2:4);
-            q_scalar = q(1);
-
-            %skew-sym matrix corresponding to vector part
-            q_hat = [0, -q_vec(3), q_vec(2);
-                    q_vec(3), 0, -q_vec(1);
-                    -q_vec(2), q_vec(1), 0];
             
-            % transformation matrix
-            G_q = [-q_vec, q_scalar*eye(3) - q_hat];
-            E_q = [-q_vec, q_scalar*eye(3) + q_hat];
-
-            R_q = E_q*G_q';
-
-            analyzed_quantity = R_q(:); %rotation matrix at t_end
-      
+            error('not available.')
 
         elseif strcmp(this_simulation.CONV_QUANTITY,'p')
             error('not available.')
@@ -836,8 +783,7 @@ classdef ClosedLoopMBSQuaternions < System
 
     function [reference_solution, this_simulation] = hconvergence_reference(~, this_simulation, analyzed_quantity)
 
-        reference_solution = analyzed_quantity(:, end, end); %position
-        this_simulation.matrix_error_analysis = true;
+        error('not available.')
       
     end
 
