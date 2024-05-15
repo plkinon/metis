@@ -36,17 +36,17 @@ INTEGRATOR = 'EML';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.1;
+DT = 0.001;
 % starting time
 T_0 = 0;
 % end time
-T_END = 2;
+T_END = 1.5;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
 MAX_ITERATIONS = 40;
 % tolerance of Newton Rhapson method
-TOLERANCE = 1E-09;
+TOLERANCE = 1E-7;
 
 %% Postprocessing
 % Animation of trajectory [true/false]
