@@ -788,78 +788,96 @@ classdef ClosedLoopMBSQuaternions < System
     end
 
         %% Animation method
-            function give_animation(~, fig, this_simulation)
+            function give_animation(self, fig, this_simulation)
+                
+                l = self.GEOM(end);
+                b=1;
+                h=1;
 
-                q = this_simulation.z(:, 1:4);
-                qa = q(1,:);
+                q = this_simulation.z(:, 1:28);
                 NT = size(q, 1);
 
-                %extract vector and scalar part form quaternion
-                q_vec = qa(2:4)';
-                q_scalar = qa(1);
-
-                q_hat = [0, -q_vec(3), q_vec(2);
-                    q_vec(3), 0, -q_vec(1);
-                    -q_vec(2), q_vec(1), 0];
-            
-                % transformation matrix
-                G_q = [-q_vec, q_scalar*eye(3) - q_hat];
-                E_q = [-q_vec, q_scalar*eye(3) + q_hat];
-                R_q = E_q*G_q';
-
-                b=6;
-                h=8;
-                t=3;
-
-                P1 = [t/2,b/2,-h/2]';
-                P2 = [-t/2,b/2,-h/2]';
-                P3 = [-t/2,-b/2,-h/2]';
-                P4 = [t/2,-b/2,-h/2]';
-                P5 = [t/2,b/2,h/2]';
-                P6 = [-t/2,b/2,h/2]';
-                P7 = [-t/2,-b/2,h/2]';
-                P8 = [t/2,-b/2,h/2]';
-
-                p1a = R_q*P1;
-                p2a = R_q*P2;
-                p3a = R_q*P3;
-                p4a = R_q*P4;
-                p5a = R_q*P5;
-                p6a = R_q*P6;
-                p7a = R_q*P7;
-                p8a = R_q*P8;
-
-                xa = [p1a(1);p2a(1);p3a(1);p4a(1);p1a(1);p5a(1);p6a(1);p7a(1);p8a(1);p5a(1)];
-                ya = [p1a(2);p2a(2);p3a(2);p4a(2);p1a(2);p5a(2);p6a(2);p7a(2);p8a(2);p5a(2)];
-                za = [p1a(3);p2a(3);p3a(3);p4a(3);p1a(3);p5a(3);p6a(3);p7a(3);p8a(3);p5a(3)];
+                q_1 = q(1,4:7);
+                q_2 = q(1,11:14);
+                q_3 = q(1,18:21);
+                q_4 = q(1,25:28);
+    
+                phi_1 = q(1,1:3);
+                phi_2 = q(1,8:10);
+                phi_3 = q(1,15:17);
+                phi_4 = q(1,22:24);
                 
-                x2a = [p4a(1);p8a(1);p7a(1);p3a(1);p2a(1);p6a(1)];
-                y2a = [p4a(2);p8a(2);p7a(2);p3a(2);p2a(2);p6a(2)];
-                z2a = [p4a(3);p8a(3);p7a(3);p3a(3);p2a(3);p6a(3)];
+                R1 = self.get_rotation_matrix(q_1');
+                R2 = self.get_rotation_matrix(q_2');
+                R3 = self.get_rotation_matrix(q_3');
+                R4 = self.get_rotation_matrix(q_4');
 
-                d1 = R_q*[1;0;0];
-                d2 = R_q*[0;1;0];
-                d3 = R_q*[0;0;1];
-                
-                % x = [p1a'; p2a'; p3a'; p4a'];
-                % y = [p4a'; p3a'; p7a'; p8a'];
-                % z = [p2a'; p3a'; p7a'; p5a'];
-                
+                P1 = [b/2,l/2,-h/2]';
+                P2 = [-b/2,l/2,-h/2]';
+                P3 = [-b/2,-l/2,-h/2]';
+                P4 = [b/2,-l/2,-h/2]';
+                P5 = [b/2,l/2,h/2]';
+                P6 = [-b/2,l/2,h/2]';
+                P7 = [-b/2,-l/2,h/2]';
+                P8 = [b/2,-l/2,h/2]';
+
+                Q1 = [l/2,b/2,-h/2]';
+                Q2 = [-l/2,b/2,-h/2]';
+                Q3 = [-l/2,-b/2,-h/2]';
+                Q4 = [l/2,-b/2,-h/2]';
+                Q5 = [l/2,b/2,h/2]';
+                Q6 = [-l/2,b/2,h/2]';
+                Q7 = [-l/2,-b/2,h/2]';
+                Q8 = [l/2,-b/2,h/2]';
+
+                p1a = R1*P1;
+                p2a = R1*P2;
+                p3a = R1*P3;
+                p4a = R1*P4;
+                p5a = R1*P5;
+                p6a = R1*P6;
+                p7a = R1*P7;
+                p8a = R1*P8;
+
+                q1a = R2*Q1;
+                q2a = R2*Q2;
+                q3a = R2*Q3;
+                q4a = R2*Q4;
+                q5a = R2*Q5;
+                q6a = R2*Q6;
+                q7a = R2*Q7;
+                q8a = R2*Q8;
+
+                xa = phi_1(1,1) + [p1a(1);p2a(1);p3a(1);p4a(1);p1a(1);p5a(1);p6a(1);p7a(1);p8a(1);p5a(1)];
+                ya = phi_1(1,2) + [p1a(2);p2a(2);p3a(2);p4a(2);p1a(2);p5a(2);p6a(2);p7a(2);p8a(2);p5a(2)];
+                za = phi_1(1,3) + [p1a(3);p2a(3);p3a(3);p4a(3);p1a(3);p5a(3);p6a(3);p7a(3);p8a(3);p5a(3)];
+
+                x2a = phi_1(1,1) + [p4a(1);p8a(1);p7a(1);p3a(1);p2a(1);p6a(1)];
+                y2a = phi_1(1,2) + [p4a(2);p8a(2);p7a(2);p3a(2);p2a(2);p6a(2)];
+                z2a = phi_1(1,3) + [p4a(3);p8a(3);p7a(3);p3a(3);p2a(3);p6a(3)];
+
+                x3a = phi_2(1,1) + [q1a(1);q2a(1);q3a(1);q4a(1);q1a(1);q5a(1);q6a(1);q7a(1);q8a(1);q5a(1)];
+                y3a = phi_2(1,2) + [q1a(2);q2a(2);q3a(2);q4a(2);q1a(2);q5a(2);q6a(2);q7a(2);q8a(2);q5a(2)];
+                z3a = phi_2(1,3) + [q1a(3);q2a(3);q3a(3);q4a(3);q1a(3);q5a(3);q6a(3);q7a(3);q8a(3);q5a(3)];
+
+                x4a = phi_2(1,1) + [q4a(1);q8a(1);q7a(1);q3a(1);q2a(1);q6a(1)];
+                y4a = phi_2(1,2) + [q4a(2);q8a(2);q7a(2);q3a(2);q2a(2);q6a(2)];
+                z4a = phi_2(1,3) + [q4a(3);q8a(3);q7a(3);q3a(3);q2a(3);q6a(3)];
+
                 plot3(xa, ya, za, 'k', LineWidth=1.2);
                 hold on
                 plot3(x2a, y2a, z2a, 'k', LineWidth=1.2);
-                h1 = mArrow3([0 0 0],2*d1', 'facealpha', 0.5, 'color', 'blue', 'stemWidth', 0.04);
-                h2 = mArrow3([0 0 0],2*d2', 'facealpha', 0.5, 'color', 'blue', 'stemWidth', 0.04);
-                h3 = mArrow3([0 0 0],2*d3', 'facealpha', 0.5, 'color', 'blue', 'stemWidth', 0.04);
+                plot3(x3a, y3a, z3a, 'k', LineWidth=1.2);
+                plot3(x4a, y4a, z4a, 'k', LineWidth=1.2);
 
                 axis equal
-                xmin = -5.2;
-                xmax = 5.2;
-                ymin = -5.2;
-                ymax = 5.2;
-                zmin =-5.2;
-                zmax =5.2;
-                axis([xmin, xmax, ymin, ymax, zmin, zmax]);
+                % xmin = -l - 1;
+                % xmax = l + 1;
+                % ymin = -l -1;
+                % ymax = l + 1;
+                % zmin =-l - 1;
+                % zmax =l +1;
+                % axis([xmin, xmax, ymin, ymax, zmin, zmax]);
 
                 grid on;
                 axis off
@@ -870,48 +888,60 @@ classdef ClosedLoopMBSQuaternions < System
                     hold on
 
                     %% Current position
-                    q_current = q(j,:);
+                    q_1_current = q(j,4:7);
+                    q_2_current = q(j,11:14);
+                    q_3_current = q(j,18:21);
+                    q_4_current = q(j,25:28);
+        
+                    phi_1_current = q(j,1:3);
+                    phi_2_current = q(j,8:10);
+                    phi_3_current = q(j,15:17);
+                    phi_4_current = q(j,22:24);
                     
-                    q_vec = q_current(2:4)';
-                    q_scalar = q_current(1);
+                    R1_current = self.get_rotation_matrix(q_1_current');
+                    R2_current = self.get_rotation_matrix(q_2_current');
+                    R3_current = self.get_rotation_matrix(q_3_current');
+                    R4_current = self.get_rotation_matrix(q_4_current');
+                        
+                    p1a = R1_current*P1;
+                    p2a = R1_current*P2;
+                    p3a = R1_current*P3;
+                    p4a = R1_current*P4;
+                    p5a = R1_current*P5;
+                    p6a = R1_current*P6;
+                    p7a = R1_current*P7;
+                    p8a = R1_current*P8;
 
-                    q_hat = [0, -q_vec(3), q_vec(2);
-                            q_vec(3), 0, -q_vec(1);
-                           -q_vec(2), q_vec(1), 0];
-            
-                    % transformation matrix
-                    G_q = [-q_vec, q_scalar*eye(3) - q_hat];
-                    E_q = [-q_vec, q_scalar*eye(3) + q_hat];
-                    R_q = E_q*G_q';
-    
-                    p1a = R_q*P1;
-                    p2a = R_q*P2;
-                    p3a = R_q*P3;
-                    p4a = R_q*P4;
-                    p5a = R_q*P5;
-                    p6a = R_q*P6;
-                    p7a = R_q*P7;
-                    p8a = R_q*P8;
-    
-                    x = [p1a(1);p2a(1);p3a(1);p4a(1);p1a(1);p5a(1);p6a(1);p7a(1);p8a(1);p5a(1)];
-                    y = [p1a(2);p2a(2);p3a(2);p4a(2);p1a(2);p5a(2);p6a(2);p7a(2);p8a(2);p5a(2)];
-                    z = [p1a(3);p2a(3);p3a(3);p4a(3);p1a(3);p5a(3);p6a(3);p7a(3);p8a(3);p5a(3)];
+                    q1a = R2_current*Q1;
+                    q2a = R2_current*Q2;
+                    q3a = R2_current*Q3;
+                    q4a = R2_current*Q4;
+                    q5a = R2_current*Q5;
+                    q6a = R2_current*Q6;
+                    q7a = R2_current*Q7;
+                    q8a = R2_current*Q8;
+   
+                    x = phi_1_current(1,1) + [p1a(1);p2a(1);p3a(1);p4a(1);p1a(1);p5a(1);p6a(1);p7a(1);p8a(1);p5a(1)];
+                    y = phi_1_current(1,2) + [p1a(2);p2a(2);p3a(2);p4a(2);p1a(2);p5a(2);p6a(2);p7a(2);p8a(2);p5a(2)];
+                    z = phi_1_current(1,3) + [p1a(3);p2a(3);p3a(3);p4a(3);p1a(3);p5a(3);p6a(3);p7a(3);p8a(3);p5a(3)];
                     
-                    x2 = [p4a(1);p8a(1);p7a(1);p3a(1);p2a(1);p6a(1)];
-                    y2 = [p4a(2);p8a(2);p7a(2);p3a(2);p2a(2);p6a(2)];
-                    z2 = [p4a(3);p8a(3);p7a(3);p3a(3);p2a(3);p6a(3)];
+                    x2 = phi_1_current(1,1) + [p4a(1);p8a(1);p7a(1);p3a(1);p2a(1);p6a(1)];
+                    y2 = phi_1_current(1,2) + [p4a(2);p8a(2);p7a(2);p3a(2);p2a(2);p6a(2)];
+                    z2 = phi_1_current(1,3) + [p4a(3);p8a(3);p7a(3);p3a(3);p2a(3);p6a(3)];
+
+                    x3 = phi_2_current(1,1) + [q1a(1);q2a(1);q3a(1);q4a(1);q1a(1);q5a(1);q6a(1);q7a(1);q8a(1);q5a(1)];
+                    y3 = phi_2_current(1,2) + [q1a(2);q2a(2);q3a(2);q4a(2);q1a(2);q5a(2);q6a(2);q7a(2);q8a(2);q5a(2)];
+                    z3 = phi_2_current(1,3) + [q1a(3);q2a(3);q3a(3);q4a(3);q1a(3);q5a(3);q6a(3);q7a(3);q8a(3);q5a(3)];
+    
+                    x4 = phi_2_current(1,1) + [q4a(1);q8a(1);q7a(1);q3a(1);q2a(1);q6a(1)];
+                    y4 = phi_2_current(1,2) + [q4a(2);q8a(2);q7a(2);q3a(2);q2a(2);q6a(2)];
+                    z4 = phi_2_current(1,3) + [q4a(3);q8a(3);q7a(3);q3a(3);q2a(3);q6a(3)];
                     
-                    d1t = R_q*[1;0;0];
-                    d2t = R_q*[0;1;0];
-                    d3t = R_q*[0;0;1];
-                
                     plot3(x, y, z, 'k', LineWidth=1.2);
                     hold on
                     plot3(x2, y2, z2, 'k', LineWidth=1.2);
-                    h1t = mArrow3([0 0 0],2*d1t', 'facealpha', 1.0, 'color','#CC79A7', 'stemWidth', 0.04);
-                    h2t = mArrow3([0 0 0],2*d2t', 'facealpha', 1.0, 'color','#CC79A7', 'stemWidth', 0.04);
-                    h3t = mArrow3([0 0 0],2*d3t', 'facealpha', 1.0, 'color', '#CC79A7', 'stemWidth', 0.04);
-
+                    plot3(x3, y3, z3, 'k', LineWidth=1.2);
+                    plot3(x4, y4, z4, 'k', LineWidth=1.2);
 
                     view(136, 23)
 
