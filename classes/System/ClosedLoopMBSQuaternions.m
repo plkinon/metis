@@ -791,6 +791,7 @@ classdef ClosedLoopMBSQuaternions < System
             function give_animation(self, fig, this_simulation)
                 
                 l = self.GEOM(end);
+                factor=0.9;
                 b=1;
                 h=1;
 
@@ -812,23 +813,33 @@ classdef ClosedLoopMBSQuaternions < System
                 R3 = self.get_rotation_matrix(q_3');
                 R4 = self.get_rotation_matrix(q_4');
 
-                P1 = [b/2,l/2,-h/2]';
-                P2 = [-b/2,l/2,-h/2]';
-                P3 = [-b/2,-l/2,-h/2]';
-                P4 = [b/2,-l/2,-h/2]';
-                P5 = [b/2,l/2,h/2]';
-                P6 = [-b/2,l/2,h/2]';
-                P7 = [-b/2,-l/2,h/2]';
-                P8 = [b/2,-l/2,h/2]';
+                P1 = [b/2,factor*l/2,-h/2]';
+                P2 = [-b/2,factor*l/2,-h/2]';
+                P3 = [-b/2,factor*-l/2,-h/2]';
+                P4 = [b/2,factor*-l/2,-h/2]';
+                P5 = [b/2,factor*l/2,h/2]';
+                P6 = [-b/2,factor*l/2,h/2]';
+                P7 = [-b/2,factor*-l/2,h/2]';
+                P8 = [b/2,factor*-l/2,h/2]';
 
-                Q1 = [l/2,b/2,-h/2]';
-                Q2 = [-l/2,b/2,-h/2]';
-                Q3 = [-l/2,-b/2,-h/2]';
-                Q4 = [l/2,-b/2,-h/2]';
-                Q5 = [l/2,b/2,h/2]';
-                Q6 = [-l/2,b/2,h/2]';
-                Q7 = [-l/2,-b/2,h/2]';
-                Q8 = [l/2,-b/2,h/2]';
+                Q1 = [factor*l/2,b/2,-h/2]';
+                Q2 = [factor*-l/2,b/2,-h/2]';
+                Q3 = [factor*-l/2,-b/2,-h/2]';
+                Q4 = [factor*l/2,-b/2,-h/2]';
+                Q5 = [factor*l/2,b/2,h/2]';
+                Q6 = [factor*-l/2,b/2,h/2]';
+                Q7 = [factor*-l/2,-b/2,h/2]';
+                Q8 = [factor*l/2,-b/2,h/2]';
+
+                X12 = [0,l/2,0];
+                X14 = [0,-l/2,0];
+                X32 = [0,l/2,0];
+                X34 = [0,-l/2,0];
+
+                x12 = R1*X12';
+                x14 = R1*X14';
+                x32 = R3*X32';
+                x34 = R3*X34';
 
                 p1a = R1*P1;
                 p2a = R1*P2;
@@ -848,6 +859,24 @@ classdef ClosedLoopMBSQuaternions < System
                 q7a = R2*Q7;
                 q8a = R2*Q8;
 
+                r1a = R3*P1;
+                r2a = R3*P2;
+                r3a = R3*P3;
+                r4a = R3*P4;
+                r5a = R3*P5;
+                r6a = R3*P6;
+                r7a = R3*P7;
+                r8a = R3*P8;
+
+                s1a = R4*Q1;
+                s2a = R4*Q2;
+                s3a = R4*Q3;
+                s4a = R4*Q4;
+                s5a = R4*Q5;
+                s6a = R4*Q6;
+                s7a = R4*Q7;
+                s8a = R4*Q8;
+
                 xa = phi_1(1,1) + [p1a(1);p2a(1);p3a(1);p4a(1);p1a(1);p5a(1);p6a(1);p7a(1);p8a(1);p5a(1)];
                 ya = phi_1(1,2) + [p1a(2);p2a(2);p3a(2);p4a(2);p1a(2);p5a(2);p6a(2);p7a(2);p8a(2);p5a(2)];
                 za = phi_1(1,3) + [p1a(3);p2a(3);p3a(3);p4a(3);p1a(3);p5a(3);p6a(3);p7a(3);p8a(3);p5a(3)];
@@ -864,11 +893,159 @@ classdef ClosedLoopMBSQuaternions < System
                 y4a = phi_2(1,2) + [q4a(2);q8a(2);q7a(2);q3a(2);q2a(2);q6a(2)];
                 z4a = phi_2(1,3) + [q4a(3);q8a(3);q7a(3);q3a(3);q2a(3);q6a(3)];
 
+                x5a = phi_3(1,1) + [r1a(1);r2a(1);r3a(1);r4a(1);r1a(1);r5a(1);r6a(1);r7a(1);r8a(1);r5a(1)];
+                y5a = phi_3(1,2) + [r1a(2);r2a(2);r3a(2);r4a(2);r1a(2);r5a(2);r6a(2);r7a(2);r8a(2);r5a(2)];
+                z5a = phi_3(1,3) + [r1a(3);r2a(3);r3a(3);r4a(3);r1a(3);r5a(3);r6a(3);r7a(3);r8a(3);r5a(3)];
+
+                x6a = phi_3(1,1) + [r4a(1);r8a(1);r7a(1);r3a(1);r2a(1);r6a(1)];
+                y6a = phi_3(1,2) + [r4a(2);r8a(2);r7a(2);r3a(2);r2a(2);r6a(2)];
+                z6a = phi_3(1,3) + [r4a(3);r8a(3);r7a(3);r3a(3);r2a(3);r6a(3)];
+
+                x7a = phi_4(1,1) + [s1a(1);s2a(1);s3a(1);s4a(1);s1a(1);s5a(1);s6a(1);s7a(1);s8a(1);s5a(1)];
+                y7a = phi_4(1,2) + [s1a(2);s2a(2);s3a(2);s4a(2);s1a(2);s5a(2);s6a(2);s7a(2);s8a(2);s5a(2)];
+                z7a = phi_4(1,3) + [s1a(3);s2a(3);s3a(3);s4a(3);s1a(3);s5a(3);s6a(3);s7a(3);s8a(3);s5a(3)];
+
+                x8a = phi_4(1,1) + [s4a(1);s8a(1);s7a(1);s3a(1);s2a(1);s6a(1)];
+                y8a = phi_4(1,2) + [s4a(2);s8a(2);s7a(2);s3a(2);s2a(2);s6a(2)];
+                z8a = phi_4(1,3) + [s4a(3);s8a(3);s7a(3);s3a(3);s2a(3);s6a(3)];
+
+                new_x_1 = phi_1(1,1) + [p1a(1);p2a(1);p3a(1);p4a(1)];
+                new_y_1 = phi_1(1,2) + [p1a(2);p2a(2);p3a(2);p4a(2)];
+                new_z_1 = phi_1(1,3) + [p1a(3);p2a(3);p3a(3);p4a(3)];
+
+                new_x_2 = phi_1(1,1) + [p1a(1);p2a(1);p6a(1);p5a(1)];
+                new_y_2 = phi_1(1,2) + [p1a(2);p2a(2);p6a(2);p5a(2)];
+                new_z_2 = phi_1(1,3) + [p1a(3);p2a(3);p6a(3);p5a(3)];
+
+                new_x_3 = phi_1(1,1) + [p5a(1);p6a(1);p7a(1);p8a(1)];
+                new_y_3 = phi_1(1,2) + [p5a(2);p6a(2);p7a(2);p8a(2)];
+                new_z_3 = phi_1(1,3) + [p5a(3);p6a(3);p7a(3);p8a(3)];
+
+                new_x_4 = phi_1(1,1) + [p4a(1);p3a(1);p7a(1);p8a(1)];
+                new_y_4 = phi_1(1,2) + [p4a(2);p3a(2);p7a(2);p8a(2)];
+                new_z_4 = phi_1(1,3) + [p4a(3);p3a(3);p7a(3);p8a(3)];
+
+                new_x_5 = phi_1(1,1) + [p5a(1);p8a(1);p4a(1);p1a(1)];
+                new_y_5 = phi_1(1,2) + [p5a(2);p8a(2);p4a(2);p1a(2)];
+                new_z_5 = phi_1(1,3) + [p5a(3);p8a(3);p4a(3);p1a(3)];
+
+                new_x_6 = phi_1(1,1) + [p2a(1);p3a(1);p7a(1);p6a(1)];
+                new_y_6 = phi_1(1,2) + [p2a(2);p3a(2);p7a(2);p6a(2)];
+                new_z_6 = phi_1(1,3) + [p2a(3);p3a(3);p7a(3);p6a(3)];
+
+                new_x_7 = phi_2(1,1) + [q1a(1);q2a(1);q3a(1);q4a(1)];
+                new_y_7 = phi_2(1,2) + [q1a(2);q2a(2);q3a(2);q4a(2)];
+                new_z_7 = phi_2(1,3) + [q1a(3);q2a(3);q3a(3);q4a(3)];
+
+                new_x_8 = phi_2(1,1) + [q1a(1);q2a(1);q6a(1);q5a(1)];
+                new_y_8 = phi_2(1,2) + [q1a(2);q2a(2);q6a(2);q5a(2)];
+                new_z_8 = phi_2(1,3) + [q1a(3);q2a(3);q6a(3);q5a(3)];
+
+                new_x_9 = phi_2(1,1) + [q5a(1);q6a(1);q7a(1);q8a(1)];
+                new_y_9 = phi_2(1,2) + [q5a(2);q6a(2);q7a(2);q8a(2)];
+                new_z_9 = phi_2(1,3) + [q5a(3);q6a(3);q7a(3);q8a(3)];
+
+                new_x_10 = phi_2(1,1) + [q4a(1);q3a(1);q7a(1);q8a(1)];
+                new_y_10 = phi_2(1,2) + [q4a(2);q3a(2);q7a(2);q8a(2)];
+                new_z_10 = phi_2(1,3) + [q4a(3);q3a(3);q7a(3);q8a(3)];
+
+                new_x_11 = phi_2(1,1) + [q5a(1);q8a(1);q4a(1);q1a(1)];
+                new_y_11 = phi_2(1,2) + [q5a(2);q8a(2);q4a(2);q1a(2)];
+                new_z_11 = phi_2(1,3) + [q5a(3);q8a(3);q4a(3);q1a(3)];
+
+                new_x_12 = phi_2(1,1) + [q2a(1);q3a(1);q7a(1);q6a(1)];
+                new_y_12 = phi_2(1,2) + [q2a(2);q3a(2);q7a(2);q6a(2)];
+                new_z_12 = phi_2(1,3) + [q2a(3);q3a(3);q7a(3);q6a(3)];
+
+                new_x_13 = phi_3(1,1) + [r1a(1);r2a(1);r3a(1);r4a(1)];
+                new_y_13 = phi_3(1,2) + [r1a(2);r2a(2);r3a(2);r4a(2)];
+                new_z_13 = phi_3(1,3) + [r1a(3);r2a(3);r3a(3);r4a(3)];
+
+                new_x_14 = phi_3(1,1) + [r1a(1);r2a(1);r6a(1);r5a(1)];
+                new_y_14 = phi_3(1,2) + [r1a(2);r2a(2);r6a(2);r5a(2)];
+                new_z_14 = phi_3(1,3) + [r1a(3);r2a(3);r6a(3);r5a(3)];
+
+                new_x_15 = phi_3(1,1) + [r5a(1);r6a(1);r7a(1);r8a(1)];
+                new_y_15 = phi_3(1,2) + [r5a(2);r6a(2);r7a(2);r8a(2)];
+                new_z_15 = phi_3(1,3) + [r5a(3);r6a(3);r7a(3);r8a(3)];
+
+                new_x_16 = phi_3(1,1) + [r4a(1);r3a(1);r7a(1);r8a(1)];
+                new_y_16 = phi_3(1,2) + [r4a(2);r3a(2);r7a(2);r8a(2)];
+                new_z_16 = phi_3(1,3) + [r4a(3);r3a(3);r7a(3);r8a(3)];
+
+                new_x_17 = phi_3(1,1) + [r5a(1);r8a(1);r4a(1);r1a(1)];
+                new_y_17 = phi_3(1,2) + [r5a(2);r8a(2);r4a(2);r1a(2)];
+                new_z_17 = phi_3(1,3) + [r5a(3);r8a(3);r4a(3);r1a(3)];
+
+                new_x_18 = phi_3(1,1) + [r2a(1);r3a(1);r7a(1);r6a(1)];
+                new_y_18 = phi_3(1,2) + [r2a(2);r3a(2);r7a(2);r6a(2)];
+                new_z_18 = phi_3(1,3) + [r2a(3);r3a(3);r7a(3);r6a(3)];
+
+                new_x_19 = phi_4(1,1) + [s1a(1);s2a(1);s3a(1);s4a(1)];
+                new_y_19 = phi_4(1,2) + [s1a(2);s2a(2);s3a(2);s4a(2)];
+                new_z_19 = phi_4(1,3) + [s1a(3);s2a(3);s3a(3);s4a(3)];
+
+                new_x_20 = phi_4(1,1) + [s1a(1);s2a(1);s6a(1);s5a(1)];
+                new_y_20 = phi_4(1,2) + [s1a(2);s2a(2);s6a(2);s5a(2)];
+                new_z_20 = phi_4(1,3) + [s1a(3);s2a(3);s6a(3);s5a(3)];
+
+                new_x_21 = phi_4(1,1) + [s5a(1);s6a(1);s7a(1);s8a(1)];
+                new_y_21 = phi_4(1,2) + [s5a(2);s6a(2);s7a(2);s8a(2)];
+                new_z_21 = phi_4(1,3) + [s5a(3);s6a(3);s7a(3);s8a(3)];
+
+                new_x_22 = phi_4(1,1) + [s4a(1);s3a(1);s7a(1);s8a(1)];
+                new_y_22 = phi_4(1,2) + [s4a(2);s3a(2);s7a(2);s8a(2)];
+                new_z_22 = phi_4(1,3) + [s4a(3);s3a(3);s7a(3);s8a(3)];
+
+                new_x_23 = phi_4(1,1) + [s5a(1);s8a(1);s4a(1);s1a(1)];
+                new_y_23 = phi_4(1,2) + [s5a(2);s8a(2);s4a(2);s1a(2)];
+                new_z_23 = phi_4(1,3) + [s5a(3);s8a(3);s4a(3);s1a(3)];
+
+                new_x_24 = phi_4(1,1) + [s2a(1);s3a(1);s7a(1);s6a(1)];
+                new_y_24 = phi_4(1,2) + [s2a(2);s3a(2);s7a(2);s6a(2)];
+                new_z_24 = phi_4(1,3) + [s2a(3);s3a(3);s7a(3);s6a(3)];
+
                 plot3(xa, ya, za, 'k', LineWidth=1.2);
                 hold on
                 plot3(x2a, y2a, z2a, 'k', LineWidth=1.2);
                 plot3(x3a, y3a, z3a, 'k', LineWidth=1.2);
                 plot3(x4a, y4a, z4a, 'k', LineWidth=1.2);
+                plot3(x5a, y5a, z5a, 'k', LineWidth=1.2);
+                plot3(x6a, y6a, z6a, 'k', LineWidth=1.2);
+                plot3(x7a, y7a, z7a, 'k', LineWidth=1.2);
+                plot3(x8a, y8a, z8a, 'k', LineWidth=1.2);
+
+                grayColor = [.7 .7 .7];
+
+                fill3(new_x_1,new_y_1, new_z_1,"white")
+                fill3(new_x_2,new_y_2, new_z_2,"white")
+                fill3(new_x_3,new_y_3, new_z_3,"white")
+                fill3(new_x_4,new_y_4, new_z_4,"white")
+                fill3(new_x_5,new_y_5, new_z_5,"white")
+                fill3(new_x_6,new_y_6, new_z_6,"white")
+                fill3(new_x_7,new_y_7, new_z_7,"white")
+                fill3(new_x_8,new_y_8, new_z_8,"white")
+                fill3(new_x_9,new_y_9, new_z_9,"white")
+                fill3(new_x_10,new_y_10, new_z_10,"white")
+                fill3(new_x_11,new_y_11, new_z_11,"white")
+                fill3(new_x_12,new_y_12, new_z_12,"white")
+                fill3(new_x_13,new_y_13, new_z_13,"white")
+                fill3(new_x_14,new_y_14, new_z_14,"white")
+                fill3(new_x_15,new_y_15, new_z_15,"white")
+                fill3(new_x_16,new_y_16, new_z_16,"white")
+                fill3(new_x_17,new_y_17, new_z_17,"white")
+                fill3(new_x_18,new_y_18, new_z_18,"white")
+                fill3(new_x_19,new_y_19, new_z_19,"white")
+                fill3(new_x_20,new_y_20, new_z_20,"white")
+                fill3(new_x_21,new_y_21, new_z_21,"white")
+                fill3(new_x_22,new_y_22, new_z_22,"white")
+                fill3(new_x_23,new_y_23, new_z_23,"white")
+                fill3(new_x_24,new_y_24, new_z_24,"white")
+               
+                plot3(phi_1(1,1) + x12(1), phi_1(1,2) + x12(2), phi_1(1,3)+ x12(3), 'mo', 'MarkerSize', 20, 'MarkerEdgeColor', "black", 'MarkerFaceColor', grayColor);
+                plot3(phi_1(1,1) + x14(1), phi_1(1,2) + x14(2), phi_1(1,3)+ x14(3), 'mo', 'MarkerSize', 20, 'MarkerEdgeColor', "black", 'MarkerFaceColor', grayColor);
+                plot3(phi_3(1,1) + x32(1), phi_3(1,2) + x32(2), phi_3(1,3)+ x32(3), 'mo', 'MarkerSize', 20, 'MarkerEdgeColor', "black", 'MarkerFaceColor', grayColor);
+                plot3(phi_3(1,1) + x34(1), phi_3(1,2) + x34(2), phi_3(1,3)+ x34(3), 'mo', 'MarkerSize', 20, 'MarkerEdgeColor', "black", 'MarkerFaceColor', grayColor);
 
                 axis equal
                 % xmin = -l - 1;
@@ -882,9 +1059,9 @@ classdef ClosedLoopMBSQuaternions < System
                 grid on;
                 axis off
 
-                for j = 1:NT
+                for j = 1:(NT-1)/5:NT
 
-                    cla(fig);
+                    %cla(fig);
                     hold on
 
                     %% Current position
@@ -920,6 +1097,29 @@ classdef ClosedLoopMBSQuaternions < System
                     q6a = R2_current*Q6;
                     q7a = R2_current*Q7;
                     q8a = R2_current*Q8;
+
+                    r1a = R3_current*P1;
+                    r2a = R3_current*P2;
+                    r3a = R3_current*P3;
+                    r4a = R3_current*P4;
+                    r5a = R3_current*P5;
+                    r6a = R3_current*P6;
+                    r7a = R3_current*P7;
+                    r8a = R3_current*P8;
+
+                    s1a = R4_current*Q1;
+                    s2a = R4_current*Q2;
+                    s3a = R4_current*Q3;
+                    s4a = R4_current*Q4;
+                    s5a = R4_current*Q5;
+                    s6a = R4_current*Q6;
+                    s7a = R4_current*Q7;
+                    s8a = R4_current*Q8;
+
+                    x12 = R1_current*X12';
+                    x14 = R1_current*X14';
+                    x32 = R3_current*X32';
+                    x34 = R3_current*X34';
    
                     x = phi_1_current(1,1) + [p1a(1);p2a(1);p3a(1);p4a(1);p1a(1);p5a(1);p6a(1);p7a(1);p8a(1);p5a(1)];
                     y = phi_1_current(1,2) + [p1a(2);p2a(2);p3a(2);p4a(2);p1a(2);p5a(2);p6a(2);p7a(2);p8a(2);p5a(2)];
@@ -936,18 +1136,173 @@ classdef ClosedLoopMBSQuaternions < System
                     x4 = phi_2_current(1,1) + [q4a(1);q8a(1);q7a(1);q3a(1);q2a(1);q6a(1)];
                     y4 = phi_2_current(1,2) + [q4a(2);q8a(2);q7a(2);q3a(2);q2a(2);q6a(2)];
                     z4 = phi_2_current(1,3) + [q4a(3);q8a(3);q7a(3);q3a(3);q2a(3);q6a(3)];
+
+                    x5 = phi_3_current(1,1) + [r1a(1);r2a(1);r3a(1);r4a(1);r1a(1);r5a(1);r6a(1);r7a(1);r8a(1);r5a(1)];
+                    y5 = phi_3_current(1,2) + [r1a(2);r2a(2);r3a(2);r4a(2);r1a(2);r5a(2);r6a(2);r7a(2);r8a(2);r5a(2)];
+                    z5 = phi_3_current(1,3) + [r1a(3);r2a(3);r3a(3);r4a(3);r1a(3);r5a(3);r6a(3);r7a(3);r8a(3);r5a(3)];
+    
+                    x6 = phi_3_current(1,1) + [r4a(1);r8a(1);r7a(1);r3a(1);r2a(1);r6a(1)];
+                    y6 = phi_3_current(1,2) + [r4a(2);r8a(2);r7a(2);r3a(2);r2a(2);r6a(2)];
+                    z6 = phi_3_current(1,3) + [r4a(3);r8a(3);r7a(3);r3a(3);r2a(3);r6a(3)];
+    
+                    x7 = phi_4_current(1,1) + [s1a(1);s2a(1);s3a(1);s4a(1);s1a(1);s5a(1);s6a(1);s7a(1);s8a(1);s5a(1)];
+                    y7 = phi_4_current(1,2) + [s1a(2);s2a(2);s3a(2);s4a(2);s1a(2);s5a(2);s6a(2);s7a(2);s8a(2);s5a(2)];
+                    z7 = phi_4_current(1,3) + [s1a(3);s2a(3);s3a(3);s4a(3);s1a(3);s5a(3);s6a(3);s7a(3);s8a(3);s5a(3)];
+    
+                    x8 = phi_4_current(1,1) + [s4a(1);s8a(1);s7a(1);s3a(1);s2a(1);s6a(1)];
+                    y8 = phi_4_current(1,2) + [s4a(2);s8a(2);s7a(2);s3a(2);s2a(2);s6a(2)];
+                    z8 = phi_4_current(1,3) + [s4a(3);s8a(3);s7a(3);s3a(3);s2a(3);s6a(3)];
                     
+                    new_x_1 = phi_1_current(1,1) + [p1a(1);p2a(1);p3a(1);p4a(1)];
+                    new_y_1 = phi_1_current(1,2) + [p1a(2);p2a(2);p3a(2);p4a(2)];
+                    new_z_1 = phi_1_current(1,3) + [p1a(3);p2a(3);p3a(3);p4a(3)];
+    
+                    new_x_2 = phi_1_current(1,1) + [p1a(1);p2a(1);p6a(1);p5a(1)];
+                    new_y_2 = phi_1_current(1,2) + [p1a(2);p2a(2);p6a(2);p5a(2)];
+                    new_z_2 = phi_1_current(1,3) + [p1a(3);p2a(3);p6a(3);p5a(3)];
+    
+                    new_x_3 = phi_1_current(1,1) + [p5a(1);p6a(1);p7a(1);p8a(1)];
+                    new_y_3 = phi_1_current(1,2) + [p5a(2);p6a(2);p7a(2);p8a(2)];
+                    new_z_3 = phi_1_current(1,3) + [p5a(3);p6a(3);p7a(3);p8a(3)];
+    
+                    new_x_4 = phi_1_current(1,1) + [p4a(1);p3a(1);p7a(1);p8a(1)];
+                    new_y_4 = phi_1_current(1,2) + [p4a(2);p3a(2);p7a(2);p8a(2)];
+                    new_z_4 = phi_1_current(1,3) + [p4a(3);p3a(3);p7a(3);p8a(3)];
+    
+                    new_x_5 = phi_1_current(1,1) + [p5a(1);p8a(1);p4a(1);p1a(1)];
+                    new_y_5 = phi_1_current(1,2) + [p5a(2);p8a(2);p4a(2);p1a(2)];
+                    new_z_5 = phi_1_current(1,3) + [p5a(3);p8a(3);p4a(3);p1a(3)];
+    
+                    new_x_6 = phi_1_current(1,1) + [p2a(1);p3a(1);p7a(1);p6a(1)];
+                    new_y_6 = phi_1_current(1,2) + [p2a(2);p3a(2);p7a(2);p6a(2)];
+                    new_z_6 = phi_1_current(1,3) + [p2a(3);p3a(3);p7a(3);p6a(3)];
+
+                    new_x_7 = phi_2_current(1,1) + [q1a(1);q2a(1);q3a(1);q4a(1)];
+                    new_y_7 = phi_2_current(1,2) + [q1a(2);q2a(2);q3a(2);q4a(2)];
+                    new_z_7 = phi_2_current(1,3) + [q1a(3);q2a(3);q3a(3);q4a(3)];
+    
+                    new_x_8 = phi_2_current(1,1) + [q1a(1);q2a(1);q6a(1);q5a(1)];
+                    new_y_8 = phi_2_current(1,2) + [q1a(2);q2a(2);q6a(2);q5a(2)];
+                    new_z_8 = phi_2_current(1,3) + [q1a(3);q2a(3);q6a(3);q5a(3)];
+    
+                    new_x_9 = phi_2_current(1,1) + [q5a(1);q6a(1);q7a(1);q8a(1)];
+                    new_y_9 = phi_2_current(1,2) + [q5a(2);q6a(2);q7a(2);q8a(2)];
+                    new_z_9 = phi_2_current(1,3) + [q5a(3);q6a(3);q7a(3);q8a(3)];
+    
+                    new_x_10 = phi_2_current(1,1) + [q4a(1);q3a(1);q7a(1);q8a(1)];
+                    new_y_10 = phi_2_current(1,2) + [q4a(2);q3a(2);q7a(2);q8a(2)];
+                    new_z_10 = phi_2_current(1,3) + [q4a(3);q3a(3);q7a(3);q8a(3)];
+    
+                    new_x_11 = phi_2_current(1,1) + [q5a(1);q8a(1);q4a(1);q1a(1)];
+                    new_y_11 = phi_2_current(1,2) + [q5a(2);q8a(2);q4a(2);q1a(2)];
+                    new_z_11 = phi_2_current(1,3) + [q5a(3);q8a(3);q4a(3);q1a(3)];
+    
+                    new_x_12 = phi_2_current(1,1) + [q2a(1);q3a(1);q7a(1);q6a(1)];
+                    new_y_12 = phi_2_current(1,2) + [q2a(2);q3a(2);q7a(2);q6a(2)];
+                    new_z_12 = phi_2_current(1,3) + [q2a(3);q3a(3);q7a(3);q6a(3)];
+
+                    new_x_13 = phi_3_current(1,1) + [r1a(1);r2a(1);r3a(1);r4a(1)];
+                    new_y_13 = phi_3_current(1,2) + [r1a(2);r2a(2);r3a(2);r4a(2)];
+                    new_z_13 = phi_3_current(1,3) + [r1a(3);r2a(3);r3a(3);r4a(3)];
+    
+                    new_x_14 = phi_3_current(1,1) + [r1a(1);r2a(1);r6a(1);r5a(1)];
+                    new_y_14 = phi_3_current(1,2) + [r1a(2);r2a(2);r6a(2);r5a(2)];
+                    new_z_14 = phi_3_current(1,3) + [r1a(3);r2a(3);r6a(3);r5a(3)];
+    
+                    new_x_15 = phi_3_current(1,1) + [r5a(1);r6a(1);r7a(1);r8a(1)];
+                    new_y_15 = phi_3_current(1,2) + [r5a(2);r6a(2);r7a(2);r8a(2)];
+                    new_z_15 = phi_3_current(1,3) + [r5a(3);r6a(3);r7a(3);r8a(3)];
+    
+                    new_x_16 = phi_3_current(1,1) + [r4a(1);r3a(1);r7a(1);r8a(1)];
+                    new_y_16 = phi_3_current(1,2) + [r4a(2);r3a(2);r7a(2);r8a(2)];
+                    new_z_16 = phi_3_current(1,3) + [r4a(3);r3a(3);r7a(3);r8a(3)];
+    
+                    new_x_17 = phi_3_current(1,1) + [r5a(1);r8a(1);r4a(1);r1a(1)];
+                    new_y_17 = phi_3_current(1,2) + [r5a(2);r8a(2);r4a(2);r1a(2)];
+                    new_z_17 = phi_3_current(1,3) + [r5a(3);r8a(3);r4a(3);r1a(3)];
+    
+                    new_x_18 = phi_3_current(1,1) + [r2a(1);r3a(1);r7a(1);r6a(1)];
+                    new_y_18 = phi_3_current(1,2) + [r2a(2);r3a(2);r7a(2);r6a(2)];
+                    new_z_18 = phi_3_current(1,3) + [r2a(3);r3a(3);r7a(3);r6a(3)];
+
+                    new_x_19 = phi_4_current(1,1) + [s1a(1);s2a(1);s3a(1);s4a(1)];
+                    new_y_19 = phi_4_current(1,2) + [s1a(2);s2a(2);s3a(2);s4a(2)];
+                    new_z_19 = phi_4_current(1,3) + [s1a(3);s2a(3);s3a(3);s4a(3)];
+    
+                    new_x_20 = phi_4_current(1,1) + [s1a(1);s2a(1);s6a(1);s5a(1)];
+                    new_y_20 = phi_4_current(1,2) + [s1a(2);s2a(2);s6a(2);s5a(2)];
+                    new_z_20 = phi_4_current(1,3) + [s1a(3);s2a(3);s6a(3);s5a(3)];
+    
+                    new_x_21 = phi_4_current(1,1) + [s5a(1);s6a(1);s7a(1);s8a(1)];
+                    new_y_21 = phi_4_current(1,2) + [s5a(2);s6a(2);s7a(2);s8a(2)];
+                    new_z_21 = phi_4_current(1,3) + [s5a(3);s6a(3);s7a(3);s8a(3)];
+    
+                    new_x_22 = phi_4_current(1,1) + [s4a(1);s3a(1);s7a(1);s8a(1)];
+                    new_y_22 = phi_4_current(1,2) + [s4a(2);s3a(2);s7a(2);s8a(2)];
+                    new_z_22 = phi_4_current(1,3) + [s4a(3);s3a(3);s7a(3);s8a(3)];
+    
+                    new_x_23 = phi_4_current(1,1) + [s5a(1);s8a(1);s4a(1);s1a(1)];
+                    new_y_23 = phi_4_current(1,2) + [s5a(2);s8a(2);s4a(2);s1a(2)];
+                    new_z_23 = phi_4_current(1,3) + [s5a(3);s8a(3);s4a(3);s1a(3)];
+    
+                    new_x_24 = phi_4_current(1,1) + [s2a(1);s3a(1);s7a(1);s6a(1)];
+                    new_y_24 = phi_4_current(1,2) + [s2a(2);s3a(2);s7a(2);s6a(2)];
+                    new_z_24 = phi_4_current(1,3) + [s2a(3);s3a(3);s7a(3);s6a(3)];
+
                     plot3(x, y, z, 'k', LineWidth=1.2);
                     hold on
                     plot3(x2, y2, z2, 'k', LineWidth=1.2);
                     plot3(x3, y3, z3, 'k', LineWidth=1.2);
                     plot3(x4, y4, z4, 'k', LineWidth=1.2);
+                    plot3(x5, y5, z5, 'k', LineWidth=1.2);
+                    plot3(x6, y6, z6, 'k', LineWidth=1.2);
+                    plot3(x7, y7, z7, 'k', LineWidth=1.2);
+                    plot3(x8, y8, z8, 'k', LineWidth=1.2);
 
+                    fill3(new_x_1,new_y_1, new_z_1,"white")
+                    fill3(new_x_2,new_y_2, new_z_2,"white")
+                    fill3(new_x_3,new_y_3, new_z_3,"white")
+                    fill3(new_x_4,new_y_4, new_z_4,"white")
+                    fill3(new_x_5,new_y_5, new_z_5,"white")
+                    fill3(new_x_6,new_y_6, new_z_6,"white")
+                    fill3(new_x_7,new_y_7, new_z_7,"white")
+                    fill3(new_x_8,new_y_8, new_z_8,"white")
+                    fill3(new_x_9,new_y_9, new_z_9,"white")
+                    fill3(new_x_10,new_y_10, new_z_10,"white")
+                    fill3(new_x_11,new_y_11, new_z_11,"white")
+                    fill3(new_x_12,new_y_12, new_z_12,"white")
+                    fill3(new_x_13,new_y_13, new_z_13,"white")
+                    fill3(new_x_14,new_y_14, new_z_14,"white")
+                    fill3(new_x_15,new_y_15, new_z_15,"white")
+                    fill3(new_x_16,new_y_16, new_z_16,"white")
+                    fill3(new_x_17,new_y_17, new_z_17,"white")
+                    fill3(new_x_18,new_y_18, new_z_18,"white")
+                    fill3(new_x_19,new_y_19, new_z_19,"white")
+                    fill3(new_x_20,new_y_20, new_z_20,"white")
+                    fill3(new_x_21,new_y_21, new_z_21,"white")
+                    fill3(new_x_22,new_y_22, new_z_22,"white")
+                    fill3(new_x_23,new_y_23, new_z_23,"white")
+                    fill3(new_x_24,new_y_24, new_z_24,"white")
+
+                    plot3(phi_1_current(1,1) + x12(1), phi_1_current(1,2) + x12(2), phi_1_current(1,3)+ x12(3), 'mo', 'MarkerSize', 20, 'MarkerEdgeColor', "black", 'MarkerFaceColor', grayColor);
+                    plot3(phi_1_current(1,1) + x14(1), phi_1_current(1,2) + x14(2), phi_1_current(1,3)+ x14(3), 'mo', 'MarkerSize', 20, 'MarkerEdgeColor', "black", 'MarkerFaceColor', grayColor);
+                    plot3(phi_3_current(1,1) + x32(1), phi_3_current(1,2) + x32(2), phi_3_current(1,3)+ x32(3), 'mo', 'MarkerSize', 20, 'MarkerEdgeColor', "black", 'MarkerFaceColor', grayColor);
+                    plot3(phi_3_current(1,1) + x34(1), phi_3_current(1,2) + x34(2), phi_3_current(1,3)+ x34(3), 'mo', 'MarkerSize', 20, 'MarkerEdgeColor', "black", 'MarkerFaceColor', grayColor);
+
+
+                    % fill3(x, y, z, 'r')
+                    % fill3(x2, y2, z2, 'r')
+                    % fill3(x3, y3, z3, 'r')
+                    % fill3(x4, y4, z4, 'r')
+                    % fill3(x5, y5, z5, 'r')
+                    % fill3(x6, y6, z6, 'r')
+                    % fill3(x7, y7, z7, 'r')
+                    % fill3(x8, y8, z8, 'r')
                     view(136, 23)
 
                     drawnow
 
-                    print(gcf, strcat('snapshot_', num2str(j)), '-dpng')
+                    %print(gcf, strcat('snapshot_', num2str(j)), '-dpng')
 
                 end
 
