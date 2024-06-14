@@ -27,8 +27,8 @@ addpath(genpath(fileparts(which(mfilename))));
 % Metis creates objects from input-file
 %[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/single_analysis_RedundantMassSpring', 1, 1);
 %[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/single_analysis_SpringPendulumPolar', 1, 1);
-[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_freeRB/single_analysis_rigidBodyRotatingQuat', 1, 1);
-%[simulation, system, integrator, solver] = Metis('input/single_analysis_HeavyTopQuat', 1, 1);
+%[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/quat_freeRB/single_analysis_rigidBodyRotatingQuat', 1, 1);
+[simulation, system, integrator, solver] = Metis('input/published/MUBO_kinon_betsch_2024/single_analysis_ClosedLoopMBS', 1, 1);
 
 %% METIS solver
 % Solve system with chosen solver and integration scheme
@@ -36,18 +36,18 @@ simulation = solver.solve(simulation, system, integrator);
 
 %% METIS postprocessing
 % Define postprocessing from class
-%postprocess = Postprocess();
+postprocess = Postprocess();
 
 % Compute various postprocessing quantities
-%simulation = postprocess.compute(system, simulation, integrator);
+simulation = postprocess.compute(system, simulation, integrator);
 
 % Animation of trajectory if activated in input-file
-%postprocess.animation(system, simulation);
+postprocess.animation(system, simulation);
 
 % Plot time-evolution of postprocessing quantites
-%postprocess.plot(simulation);
+postprocess.plot(simulation);
 
 % Export simulation results if activated in input-file
-%postprocess.save(simulation);
+postprocess.save(simulation);
 
 % -------------------------- END OF CODE ----------------------------------

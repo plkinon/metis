@@ -32,7 +32,7 @@ classdef MP_Livens < Integrator
             z0 = [this_simulation.Q_0', p0', this_simulation.V_0', self.LM0'];
         end
 
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, time_n)
 
             %% Abbreviations
             h = self.DT;
@@ -59,10 +59,17 @@ classdef MP_Livens < Integrator
             DVint_n05 = this_system.internal_potential_gradient(q_n05);
             G_n05 = this_system.constraint_gradient(q_n05);
             DT_q_n05 = this_system.kinetic_energy_gradient_from_velocity(q_n05, v_n05);
+            
+            if ismethod(this_system,"get_external_forces")
+                time_n05 = time_n + 0.5*h;
+                f_ext = this_system.get_external_forces(q_n05,v_n05,time_n05);
+            else
+                f_ext = zeros(size(q_n05));
+            end
 
             %% Residual vector
              resi = [qn1 - qn - h * v_n05; 
-                     pn1 - pn + h * DVext_n05 + h * DVint_n05 - h * DT_q_n05 + h * G_n05' * lambdan1; 
+                     pn1 - pn + h * DVext_n05 + h * DVint_n05 - h * DT_q_n05 + h * G_n05' * lambdan1 - h * f_ext; 
                      p_n05 - Mn05*v_n05;
                      g_n1];
             %% Tangent matrix
