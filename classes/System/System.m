@@ -19,6 +19,7 @@ classdef System
         isCyclicCoordinate % vector with boolean entries which are 1 for cyclic coordinates
         mMixedQuantities % number of mixed quantities for integrator (e.g. strain)
         nKineticInvariants % number of invariants of the kinetic energy
+        hasQuadraticConstraints = false % specifies if all constraints are at most quadratic in the position
     end
 
 end
