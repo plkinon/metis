@@ -34,6 +34,9 @@ classdef ClosedLoopMBSQuaternions < System
             self.mMixedQuantities = 0;
             self.isCyclicCoordinate = [];
 
+            %constraint
+            self.hasQuadraticConstraints = true;
+
         end
 
         function G_q = get_trafo_matrix(~,q)
