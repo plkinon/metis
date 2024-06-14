@@ -80,31 +80,35 @@ classdef EML < Integrator
             % discrete gradient of the constraints
             DG_g = zeros(mConstraints, nDOF);
             g_invariants_difference_too_small = false;
-        
-            % for every constraint invariant individually
-            for j = 1:this_system.nConstraintInvariants
-                %compute i-th invariants
-                zeta_n = this_system.constraint_invariant(qn, j);
-                zeta_n1 = this_system.constraint_invariant(qn1, j);
-                % evaluate constraints depending on invariants
-                gs_n = this_system.constraint_from_invariant(zeta_n, j);
-                gs_n1 = this_system.constraint_from_invariant(zeta_n1, j);
-                % derivative of invariant w.r.t. q_n05
-                DzetaDq_n05 = this_system.constraint_invariant_gradient(q_n05, j);
 
-                % if invariants at n and n1 are equal use the midpoint
-                % evaluated gradient instead
-                if abs(zeta_n1-zeta_n) > 1e-9
-                    % discrete gradient
-                    DG_g(j, :) = (gs_n1 - gs_n) / (zeta_n1 - zeta_n) * DzetaDq_n05';
-                else
-                    g_invariants_difference_too_small = true;
-                    break
+            if ~this_system.hasQuadraticConstraints
+        
+                % for every constraint invariant individually
+                for j = 1:this_system.nConstraintInvariants
+                    %compute i-th invariants
+                    zeta_n = this_system.constraint_invariant(qn, j);
+                    zeta_n1 = this_system.constraint_invariant(qn1, j);
+                    % evaluate constraints depending on invariants
+                    gs_n = this_system.constraint_from_invariant(zeta_n, j);
+                    gs_n1 = this_system.constraint_from_invariant(zeta_n1, j);
+                    % derivative of invariant w.r.t. q_n05
+                    DzetaDq_n05 = this_system.constraint_invariant_gradient(q_n05, j);
+    
+                    % if invariants at n and n1 are equal use the midpoint
+                    % evaluated gradient instead
+                    if abs(zeta_n1-zeta_n) > 1e-9
+                        % discrete gradient
+                        DG_g(j, :) = (gs_n1 - gs_n) / (zeta_n1 - zeta_n) * DzetaDq_n05';
+                    else
+                        g_invariants_difference_too_small = true;
+                        break
+                    end
+    
                 end
 
             end
 
-            if g_invariants_difference_too_small
+            if g_invariants_difference_too_small || this_system.hasQuadraticConstraints 
                 % else use MP evaluation of gradient
                 G_n05 = this_system.constraint_gradient(q_n05);
                 DG_g = G_n05;
