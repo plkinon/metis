@@ -5,6 +5,7 @@ classdef Solver
     properties
         MAX_ITERATIONS
         TOLERANCE
+        ADVANCED_INIT
     end
 
     methods
@@ -15,6 +16,7 @@ classdef Solver
             % Set Newton tolerance and max. iterations from simulation
             self.TOLERANCE = this_simulation.TOLERANCE;
             self.MAX_ITERATIONS = this_simulation.MAX_ITERATIONS;
+            self.ADVANCED_INIT = this_simulation.ADVANCED_INIT;
 
         end
 
@@ -50,7 +52,9 @@ classdef Solver
                     zn = zn1;
 
                     % Initial Guess
-                    %zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
+                    if self.ADVANCED_INIT
+                        zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
+                    end
 
                     % Print current time-step
                     fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'----------------------------------------------------');

@@ -40,7 +40,7 @@ classdef EMS_std < Integrator
 
         end
 
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, time_n)
 
             %% Abbreviations
             h = self.DT;
@@ -55,24 +55,24 @@ classdef EMS_std < Integrator
             lambda_n1 = zn1(2*nDOF+1:2*nDOF+m);
             Vext_n1 = this_system.external_potential(qn1);
             g_n1 = this_system.constraint(qn1);
-            %if ismethod(this_system,'get_inverse_mass_matrix')
+            if ismethod(this_system,'get_inverse_mass_matrix')
                 IMn1 = this_system.get_inverse_mass_matrix(qn1);
-            %else
-            %    Mn1 = this_system.get_mass_matrix(qn1);
-            %    IMn1 = eye(size(Mn1)) / Mn1;
-            %end
+            else
+                Mn1 = this_system.get_mass_matrix(qn1);
+                IMn1 = eye(size(Mn1)) / Mn1;
+            end
             
             %% Known quantities from last time-step
             qn = zn(1:nDOF);
             pn = zn(nDOF+1:2*nDOF);
             Vext_n = this_system.external_potential(qn);
             
-            %if ismethod(this_system,'get_inverse_mass_matrix')
+            if ismethod(this_system,'get_inverse_mass_matrix')
                 IMn = this_system.get_inverse_mass_matrix(qn);
-            %else
-            %    Mn = this_system.get_mass_matrix(qn);
-            %    IMn = eye(size(Mn)) / Mn;
-            %end
+            else
+                Mn = this_system.get_mass_matrix(qn);
+                IMn = eye(size(Mn)) / Mn;
+            end
 
             %% MP evaluated quantities
             q_n05 = 0.5 * (qn + qn1);
@@ -80,12 +80,12 @@ classdef EMS_std < Integrator
             DVext_n05 = this_system.external_potential_gradient(q_n05);
             D_1_T_n05 = this_system.kinetic_energy_gradient_from_momentum(q_n05, p_n05);
             
-            %if ismethod(this_system,'get_inverse_mass_matrix')
+            if ismethod(this_system,'get_inverse_mass_matrix')
                 IMn05 = this_system.get_inverse_mass_matrix(q_n05);
-            %else
-            %    Mn05 = this_system.get_mass_matrix(q_n05);
-            %    IMn05 = eye(size(Mn05)) / Mn05;
-            %end
+            else
+                Mn05 = this_system.get_mass_matrix(q_n05);
+                IMn05 = eye(size(Mn05)) / Mn05;
+            end
 
             % kinetic energy with mixed evaluations
             T_qn1pn  = 0.5 * pn'  * IMn1 * pn;
