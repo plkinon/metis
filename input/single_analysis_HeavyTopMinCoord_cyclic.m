@@ -30,9 +30,9 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'MP_noCons'; 
-%INTEGRATOR = 'EMG_noCons'; % DG due to Gonzalez without accounting for cyclic coordinate
-%INTEGRATOR = 'EMS_std_cyclic'; %method by DS, PK
+% INTEGRATOR = 'MP_noCons'; 
+% INTEGRATOR = 'EMG_noCons'; % DG due to Gonzalez without accounting for cyclic coordinate
+INTEGRATOR = 'EMS_std_cyclic'; %method by DS, PK
 
 % Parameters of the method
 INT_PARA = [NaN, NaN];
