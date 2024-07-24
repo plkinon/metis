@@ -1,12 +1,12 @@
 %% System Parameters
 % Name of system in /classes/System
-SYSTEM = 'PendulumMinCoord';
+SYSTEM = 'SpringPendulumPolar';
 % External acceleration
-EXT_ACC = 9.81;
+EXT_ACC = 0;%9.81;
 % Initial configuration
-Q_0 = [pi/4; pi/4];
-% Initial velocity
-V_0 = [1; 1];
+Q_0 = [1.05; pi/2; 0];
+% Initial velocity 
+V_0 = [0; 1; 1];
 % Mass
 MASS = 1;
 % Spatial dimensions
@@ -14,7 +14,7 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'EML_noCons_cyclic';
+INTEGRATOR = 'EML_noCons';
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
@@ -22,7 +22,7 @@ DT = 0.01;
 % starting time
 T_0 = 0;
 % end time
-T_END = 2;
+T_END = 1;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method

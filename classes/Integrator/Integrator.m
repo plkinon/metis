@@ -1,9 +1,9 @@
 classdef Integrator
     % Abstract Integrator class
-
+    
     properties
         NAME % integrator name
-        DT % time step size 
+        DT % time step size
         T_0 % start time
         T_END % end time
         t % time
@@ -15,6 +15,7 @@ classdef Integrator
         PARA % integrator parameters
         has_enhanced_constraint_force % whether constraint force is enhances
         compute_potential_from_mixed_quantity % whether potential is computed from mixed quantity or not
+        reduced = false
     end
-
+    
 end

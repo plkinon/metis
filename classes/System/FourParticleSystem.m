@@ -17,6 +17,7 @@ classdef FourParticleSystem < System
         K1
         K2
         p
+        
     end
 
     methods
@@ -47,7 +48,7 @@ classdef FourParticleSystem < System
             self.nPotentialInvariants = 2;
             self.nConstraintInvariants = 2;
             self.nVconstraintInvariants = 2;
-
+            self.mMixedQuantities = 0;
             self.DISS_MAT = zeros(self.nDOF,self.nDOF);
         end
 
@@ -435,10 +436,11 @@ classdef FourParticleSystem < System
                                                                                             end
 
 
-                                                                                            function reference_solution = hconvergence_reference(~, this_simulation, analyzed_quantity)
+                                                                                            function [reference_solution, this_simulation] = hconvergence_reference(~, this_simulation, analyzed_quantity)
 
                                                                                                 reference_solution = analyzed_quantity(:, end, end); %position
-                                                                                              
+                                                                                                this_simulation.matrix_error_analysis = false;
+
                                                                                             end
 
                                                                                                 %% Animation method
