@@ -27,6 +27,7 @@ classdef Metis
         NUM_ITER
         MEAN_ITER
         ALPHA_0
+        ADVANCED_INIT = false;
 
         %% Postprocessing parameters
         % Can be given in an input-file (not necessary for computing)

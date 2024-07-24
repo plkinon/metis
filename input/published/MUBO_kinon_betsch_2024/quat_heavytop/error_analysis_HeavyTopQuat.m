@@ -1,7 +1,8 @@
 %% System Parameters
 % Name of system in /classes/System
-%SYSTEM = 'HeavyTopQuaternions';
-SYSTEM = 'HeavyTopQuaternionsRegularMassMatrix';
+SYSTEM = 'HeavyTopQuaternions'; %for EML,MPL
+%SYSTEM = 'HeavyTopQuaternionsRegularMassMatrix'; % for EMH,MPH
+
 % External acceleration
 g = 9.81;
 EXT_ACC = [0; 0; -g];
@@ -46,11 +47,10 @@ clear omega_0 Q0_hat Q0_vec Q0_scalar E_Q0 omega_s omega_p theta_0 J1 J3 L R H r
 
 %% Integrator
 % Name of routines in /classes/Integrator to be analyzed
-%INTEGRATOR = {'EML'}; %EMS_std
-%INTEGRATOR = {'MP_Livens'};
-INTEGRATOR = {'MP_std'};
+INTEGRATOR = {'EML','MP_Livens'}; 
+%INTEGRATOR = {'EMS_std','MP_std'};
 % Parameters of the method
-INT_PARA = [NaN, NaN];
+INT_PARA = [NaN, NaN; NaN, NaN];
 % time step sizes to be analyzed
 DT = [0.01, 0.005, 0.001, 0.0005];
 % quantity which is to be analyzed
@@ -65,6 +65,8 @@ T_END = 0.1;
 MAX_ITERATIONS = 40;
 % tolerance of Newton Rhapson method
 TOLERANCE = 1E-09;
+% advanced initial guess
+ADVANCED_INIT = true;  %true required for EMH and MPH
 
 %% Postprocessing
 % Animation of trajectory [true/false]

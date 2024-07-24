@@ -37,7 +37,7 @@ classdef EML < Integrator
             z0 = [this_simulation.Q_0', p0', this_simulation.V_0', self.LM0'];
         end
 
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, time_n)
 
             %% Abbreviations
             h = self.DT;
@@ -80,31 +80,35 @@ classdef EML < Integrator
             % discrete gradient of the constraints
             DG_g = zeros(mConstraints, nDOF);
             g_invariants_difference_too_small = false;
-        
-            % for every constraint invariant individually
-            for j = 1:this_system.nConstraintInvariants
-                %compute i-th invariants
-                zeta_n = this_system.constraint_invariant(qn, j);
-                zeta_n1 = this_system.constraint_invariant(qn1, j);
-                % evaluate constraints depending on invariants
-                gs_n = this_system.constraint_from_invariant(zeta_n, j);
-                gs_n1 = this_system.constraint_from_invariant(zeta_n1, j);
-                % derivative of invariant w.r.t. q_n05
-                DzetaDq_n05 = this_system.constraint_invariant_gradient(q_n05, j);
 
-                % if invariants at n and n1 are equal use the midpoint
-                % evaluated gradient instead
-                if abs(zeta_n1-zeta_n) > 1e-9
-                    % discrete gradient
-                    DG_g(j, :) = (gs_n1 - gs_n) / (zeta_n1 - zeta_n) * DzetaDq_n05';
-                else
-                    g_invariants_difference_too_small = true;
-                    break
+            if ~this_system.hasQuadraticConstraints
+        
+                % for every constraint invariant individually
+                for j = 1:this_system.nConstraintInvariants
+                    %compute i-th invariants
+                    zeta_n = this_system.constraint_invariant(qn, j);
+                    zeta_n1 = this_system.constraint_invariant(qn1, j);
+                    % evaluate constraints depending on invariants
+                    gs_n = this_system.constraint_from_invariant(zeta_n, j);
+                    gs_n1 = this_system.constraint_from_invariant(zeta_n1, j);
+                    % derivative of invariant w.r.t. q_n05
+                    DzetaDq_n05 = this_system.constraint_invariant_gradient(q_n05, j);
+    
+                    % if invariants at n and n1 are equal use the midpoint
+                    % evaluated gradient instead
+                    if abs(zeta_n1-zeta_n) > 1e-9
+                        % discrete gradient
+                        DG_g(j, :) = (gs_n1 - gs_n) / (zeta_n1 - zeta_n) * DzetaDq_n05';
+                    else
+                        g_invariants_difference_too_small = true;
+                        break
+                    end
+    
                 end
 
             end
 
-            if g_invariants_difference_too_small
+            if g_invariants_difference_too_small || this_system.hasQuadraticConstraints 
                 % else use MP evaluation of gradient
                 G_n05 = this_system.constraint_gradient(q_n05);
                 DG_g = G_n05;
@@ -214,11 +218,16 @@ classdef EML < Integrator
 
             end
             
-         
+            if ismethod(this_system,"get_external_forces")
+                time_n05 = time_n + 0.5*h;
+                f_ext = this_system.get_external_forces(q_n05,v_n05,time_n05);
+            else
+                f_ext = zeros(size(q_n05));
+            end
 
             %% Residual vector
              resi = [qn1 - qn - h * v_n05; 
-                     pn1 - pn + h * DG_Vext + h * DG_Vint - h * DG_T_q + h * DG_g' * lambdan1; 
+                     pn1 - pn + h * DG_Vext + h * DG_Vint - h * DG_T_q + h * DG_g' * lambdan1 - h * f_ext; 
                      p_n05 - DG_T_v;
                      g_n1];
             %% Tangent matrix

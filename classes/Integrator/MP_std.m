@@ -34,7 +34,7 @@ classdef MP_std < Integrator
 
         end
 
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, time_n)
 
             %% Abbreviations
             M = this_system.MASS_MAT;

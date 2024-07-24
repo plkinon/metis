@@ -341,7 +341,7 @@ classdef Postprocess
                         addpath([export_simulation.matlab2tikz_directory,'/src']);
                         % tries to export via matlab2tikz if available
                         
-                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.4g');
+                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.6g');
                     catch
                         % if chosen directory is wrong or not existing
                         fprintf(export_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Matlab2Tikz not found at ',export_simulation.matlab2tikz_directory,' .           ']);
@@ -356,7 +356,7 @@ classdef Postprocess
                         fprintf('  \n');
                         addpath([export_simulation.matlab2tikz_directory,'/src']);
                         % Export to .tikz now
-                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.4g');
+                        matlab2tikz('figurehandle', figHandles(i), 'height', '\figH', 'width', '\figW', 'filename', [export_folder, export_name, '.tikz'], 'showInfo', false, 'floatformat', '%.6g');
                     end
                     warning('on')
 

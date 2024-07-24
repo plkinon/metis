@@ -40,7 +40,7 @@ classdef EML_reduced < Integrator
             z0 = [this_simulation.Q_0',p0', this_simulation.V_0', self.LM0'];
         end
 
-        function [resi, tang] = compute_resi_tang(self, xn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, xn1, zn, this_system, time_n)
 
             %% Abbreviations
             h = self.DT;

@@ -35,7 +35,7 @@ end
 
         end
 
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, time_n)
 
             %% Abbreviations
             h = self.DT;

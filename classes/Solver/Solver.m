@@ -5,6 +5,7 @@ classdef Solver
     properties
         MAX_ITERATIONS
         TOLERANCE
+        ADVANCED_INIT
     end
 
     methods
@@ -15,6 +16,7 @@ classdef Solver
             % Set Newton tolerance and max. iterations from simulation
             self.TOLERANCE = this_simulation.TOLERANCE;
             self.MAX_ITERATIONS = this_simulation.MAX_ITERATIONS;
+            self.ADVANCED_INIT = this_simulation.ADVANCED_INIT;
 
         end
 
@@ -50,14 +52,17 @@ classdef Solver
                     zn = zn1;
 
                     % Initial Guess
-                    %zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
+                    if self.ADVANCED_INIT
+                        zn1 = self.newton_initial_guess(zn1,this_system,this_simulation, this_integrator.DT);
+                    end
 
                     % Print current time-step
                     fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),'----------------------------------------------------');
                     fprintf(this_simulation.log_file_ID, '%s: %s\n', datestr(now, 0),['     Time: t = ',num2str(i*this_integrator.DT),', dt = ', num2str(this_integrator.DT),', step no. ',num2str(i)]);
 
                     % Conduct iteration
-                    [zn1, this_simulation.NUM_ITER(i,1)] = self.newton_iterate(this_integrator, this_system, this_simulation, zn, zn1);
+                    time_n = (i - 1) * this_simulation.DT;
+                    [zn1, this_simulation.NUM_ITER(i,1)] = self.newton_iterate(this_integrator, this_system, this_simulation, zn, zn1, time_n);
 
                     % Save update solution for current timestep
                     z(i+1, :) = zn1;
@@ -125,7 +130,7 @@ classdef Solver
         end
 
         %% Function: Conducts Newton-Rhapson-method to iterate z-vector
-        function [zn1, num_iter] = newton_iterate(self, this_integrator, this_system, this_simulation, zn, zn1)
+        function [zn1, num_iter] = newton_iterate(self, this_integrator, this_system, this_simulation, zn, zn1, time_n)
 
             % Set iteration-index to zero and residual above tolerance
             num_iter = 0;
@@ -147,12 +152,12 @@ classdef Solver
 
                 % Calculate residual and tangent matrix of present integrator
                 % for present system
-                [resi, tang] = this_integrator.compute_resi_tang(xn1, zn, this_system);
+                [resi, tang] = this_integrator.compute_resi_tang(xn1, zn, this_system, time_n);
 
                 % Check if an analytic tangent matrix is implemented
                 if isempty(tang)
                     % if not, compute a numerical one
-                    tang_num = self.compute_numerical_tangent(this_integrator, this_system, zn, xn1);
+                    tang_num = self.compute_numerical_tangent(this_integrator, this_system, zn, xn1, time_n);
                     tang = tang_num;
                 end
 
@@ -183,7 +188,7 @@ classdef Solver
         %% Function: numerical tangent
         % Computes numerical tangent matrix for a given residual defined by
         % integrator and system zn1 and zn
-        function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn, xn1)
+        function tang_num = compute_numerical_tangent(~, this_integrator, this_system, zn, xn1, time_n)
 
             % Pre-allocate tangent matrix, initialized with zeros:
             N = length(xn1);
@@ -202,13 +207,12 @@ classdef Solver
                 delp = epsilon * (1.0 + abs(xn1(j)));
                 xn1(j) = xsave + delp;
                 %xn1 = this_integrator.get_reduced_state(this_system,zn1);
-                [R1, ~] = this_integrator.compute_resi_tang(xn1, zn, this_system);
-
+                [R1, ~] = this_integrator.compute_resi_tang(xn1, zn, this_system, time_n);
                 % Decrement the jth component of the solution vector
                 xn1(j) = xsave - delp;
                 %xn1 = this_integrator.get_reduced_state(this_system,zn1);
 
-                [R2, ~] = this_integrator.compute_resi_tang(xn1, zn, this_system);
+                [R2, ~] = this_integrator.compute_resi_tang(xn1, zn, this_system, time_n);
 
                 % Restore the original vector
                 xn1(j) = xsave;
