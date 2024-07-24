@@ -1,11 +1,6 @@
-%% Class: Pendulum
-%
+classdef DoublePendulum < System
 % A double-pendulum: two point masses constrained by rigid bars.
 % Length of the bars are determined from initial configuration.
-
-classdef DoublePendulum < System
-
-    %% Double Pendulum system in 2 or 3 dimensions
 
     methods
 
@@ -75,7 +70,7 @@ classdef DoublePendulum < System
         end
 
         function g = constraint(self, q)
-            % Constraint on position level
+
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
             g1 = 0.5 * (q1' * q1 / self.GEOM(1)^2 - 1);
@@ -85,7 +80,7 @@ classdef DoublePendulum < System
         end
 
         function Dg = constraint_gradient(self, q)
-            % Gradient of constraint w.r.t q
+
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
             Dg = [q1'/ self.GEOM(1)^2, zeros(size(q1))'; -(q2 - q1)'/ self.GEOM(2)^2, (q2 - q1)'/ self.GEOM(2)^2];

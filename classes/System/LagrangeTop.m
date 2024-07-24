@@ -1,15 +1,6 @@
-%% Class: Gyroscopic Top with steady precession ('heavy top')
-%
-% A rigid gyroscopic top. Uses d_3 director and angular momentum as
-% variables.
-%
-% References:
-% [1]: Bobenko & Suris. 1996.
-%
-
 classdef LagrangeTop < System
-
-    %%
+% A rigid gyroscopic top. Uses d_3 director and angular momentum as variables. See Bobenko & Suris (1996).
+ 
     methods
 
         function self = LagrangeTop(CONFIG)
@@ -85,7 +76,7 @@ classdef LagrangeTop < System
 
 
         function V_ext = external_potential(self, q)
-            % given by external acceleration acting on center of mass
+
             V_ext = -self.MASS * self.EXT_ACC(1:3)' * q(1:3)*self.GEOM(4);
 
         end
@@ -290,7 +281,7 @@ classdef LagrangeTop < System
                                                         %%%%%%%%%%%%%%%%%%%%%%%%%
 
                                                             function zeta = constraint_invariant(self, q, i)
-                                                                % Constraint on position level
+                                                                
                                                                 phi = q(1:self.DIM);
                                                                 d1 = q(self.DIM+1:2*self.DIM);
                                                                 d2 = q(2*self.DIM+1:3*self.DIM);

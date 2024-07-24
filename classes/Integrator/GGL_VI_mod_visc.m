@@ -1,13 +1,11 @@
 classdef GGL_VI_mod_visc < Integrator
-
-    %% Variational integration scheme for GGL-like constrained DAE
+    % Variational integration scheme for GGL-like constrained DAE
     %
     % - based on constraint on position and momentum level
     %
     % - independent momenta variables (Livens approach)
     %
-    % - derived from variational principle by Peter Betsch (easy (2nd) attempt for
-    %   new 'GGL-functional'
+    % - derived from variational principle 
     %
     % - symplectic
     %   
@@ -15,9 +13,7 @@ classdef GGL_VI_mod_visc < Integrator
     %
     % - takes into account non-conservative viscous forces
     %
-    % Author: Philipp Kinon
-    % Date  : 30.11.2022
-
+    % - more info: https://doi.org/10.1007/s11044-023-09889-6
     methods
 
         function self = GGL_VI_mod_visc(this_simulation, this_system)
@@ -53,6 +49,12 @@ classdef GGL_VI_mod_visc < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             M = this_system.MASS_MAT;

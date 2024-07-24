@@ -1,6 +1,5 @@
 classdef GGL_theta_mod < Integrator
-
-    %% One-stage-theta-method (1) for GGL-like constrained DAE
+    % One-stage-theta-method (1) for GGL-like constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)
@@ -9,9 +8,7 @@ classdef GGL_theta_mod < Integrator
     %
     % - derived from one-stage thetat method (constraints have been modified)
     %
-    %
-    % Author: Philipp Kinon
-    % Date  : 28.01.2021
+    % - still from masters thesis, not used further
 
     methods
 
@@ -37,6 +34,12 @@ classdef GGL_theta_mod < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             M = this_system.MASS_MAT;

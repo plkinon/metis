@@ -1,15 +1,12 @@
 classdef Lagrange_top_ODE < Integrator
-
-    %% Integration scheme for Lagrange top 
+    % Integration scheme for Lagrange top 
     %
     % - based on angular momentum and director d3 (ODE approach)
     %
     % - not derived from variational principle 
     %
-    % - used for NODY publication, taken from Bobenko & Suris, 1999
-    %
-    % Author: Philipp Kinon
-    % Date  : 24.01.2023
+    % - used for NODY publication(https://doi.org/10.1007/s11071-023-08522-7), taken from Bobenko & Suris, 1999
+
 
     methods
 
@@ -34,6 +31,12 @@ classdef Lagrange_top_ODE < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             h = self.DT;

@@ -1,5 +1,4 @@
-%% Class: Four-Particle-System
-%
+classdef FourParticleSystem < System
 % Four masses, two of them connected via rigid bars (yields constraints),
 % the other two with elastic springs (yields internal potential).
 %
@@ -12,14 +11,11 @@
 % In: Physica D: Nonlinear Phenomena, 132(1-2): 165–174, 1999.
 % doi: 10.1016/S0167-2789(99)00054-8.
 
-classdef FourParticleSystem < System
-
     %% 4-particle system in 2 or 3 dimensions
     properties
-        % spring stiffnesses
+
         K1
         K2
-        % power of spring potential
         p
         
     end
@@ -77,13 +73,13 @@ classdef FourParticleSystem < System
         %% Potential functions
 
         function V_ext = external_potential(self, q)
-            % External potential
+
             V_ext = (self.MASS_MAT * self.EXT_ACC)' * q;
 
         end
 
         function V_int = internal_potential(self, q)
-            % Internal potential
+
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
             q3 = q(2*self.DIM+1:3*self.DIM);
@@ -116,7 +112,6 @@ classdef FourParticleSystem < System
 
         function D2V_int = internal_potential_hessian(self, q)
 
-            % Extract single position vectors
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
             q3 = q(2*self.DIM+1:3*self.DIM);
@@ -153,10 +148,9 @@ classdef FourParticleSystem < System
             D2V_ext = zeros(size(q, 1));
         end
 
-        %% Constraint on position level
 
         function g = constraint(self, q)
-            % Constraint on position level
+
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
             q3 = q(2*self.DIM+1:3*self.DIM);
@@ -169,7 +163,7 @@ classdef FourParticleSystem < System
         end
 
         function Dg = constraint_gradient(self, q)
-            % Gradient of constraint w.r.t q
+
             q1 = q(1:self.DIM);
             q2 = q(self.DIM+1:2*self.DIM);
             q3 = q(2*self.DIM+1:3*self.DIM);
@@ -215,7 +209,6 @@ classdef FourParticleSystem < System
 
         end
 
-            % gradient of potential invariants w.r.t. q
                 function DpiDq = potential_invariant_gradient(self, q, i)
 
                     q1 = q(1:self.DIM);
@@ -232,7 +225,6 @@ classdef FourParticleSystem < System
                         end
                     end
 
-                    % gradient of potential invariants w.r.t. q
                         function D2piDq = potential_invariant_hessian(self, ~, i)
 
                             if i == 1
@@ -244,7 +236,6 @@ classdef FourParticleSystem < System
                                 end
                             end
 
-                            % internal potential computed with the invariant
                                 function Vs = potential_from_invariant(self, pi, i)
                                     if i == 1
                                         Vs = 0.5 * self.K1 * (pi - self.GEOM(3)^2)^2;
@@ -253,7 +244,6 @@ classdef FourParticleSystem < System
                                     end
                             end
 
-                                % gradient of internal potential w.r.t. the invariant
                                     function DVsDpi = potential_gradient_from_invariant(self, pi, i)
                                         if i == 1
                                             DVsDpi = self.K1 * (pi - self.GEOM(3)^2);
@@ -262,7 +252,6 @@ classdef FourParticleSystem < System
                                         end
                                 end
 
-                                    % invariant of the velocity invariant
                                         function pi2 = vConstraint_invariant(self, q, p, i)
 
                                             q1 = q(1:self.DIM);
@@ -287,7 +276,6 @@ classdef FourParticleSystem < System
                                             end
                                     end
 
-                                        % gradient of the invariant of the velocity constraint w.r.t. q
                                             function Dpi2Dq = vConstraint_invariant_gradient_q(self, ~, p, i)
 
                                                 p1 = p(1:self.DIM);
@@ -308,7 +296,6 @@ classdef FourParticleSystem < System
 
                                         end
 
-                                            % gradient of the invariant of the velocity constraint w.r.t. p
                                                 function Dpi2Dp = vConstraint_invariant_gradient_p(self, q, ~, i)
 
                                                     q1 = q(1:self.DIM);
@@ -343,7 +330,6 @@ classdef FourParticleSystem < System
                                                         end
                                                 end
 
-                                                    % velocity constraint computed with its invariant
                                                         function gv = Vconstraint_from_invariant(self, pi2, i)
 
                                                             if i == 1
@@ -367,7 +353,7 @@ classdef FourParticleSystem < System
                                                                 end
                                                         end
 
-                                                            % invariant of the position constraint
+
                                                                 function zeta = constraint_invariant(self, q, i)
 
                                                                     q1 = q(1:self.DIM);
@@ -384,7 +370,7 @@ classdef FourParticleSystem < System
                                                                     end
                                                                 end
 
-                                                                    % gradient of the invariant of the position constraint w.r.t. q
+
                                                                         function DzetaDq = constraint_invariant_gradient(self, q, i)
 
                                                                             q1 = q(1:self.DIM);
@@ -401,7 +387,7 @@ classdef FourParticleSystem < System
                                                                                 end
                                                                             end
 
-                                                                            % gradient of the invariant of the position constraint w.r.t. q
+
                                                                                 function D2zetaDq2 = constraint_invariant_hessian(self, ~, i)
 
                                                                                     tmp = [eye(self.DIM), -eye(self.DIM); -eye(self.DIM), eye(self.DIM)];
@@ -415,7 +401,7 @@ classdef FourParticleSystem < System
                                                                                         end
                                                                                     end
 
-                                                                                    % position constrained computed with its invariant
+
                                                                                         function gs = constraint_from_invariant(self, zeta, i)
 
                                                                                             if i == 1
@@ -425,7 +411,7 @@ classdef FourParticleSystem < System
                                                                                             end
                                                                                     end
 
-                                                                                        % gradient of position constrained w.r.t. its invariant
+
                                                                                             function gs = constraint_gradient_from_invariant(self, ~, i)
 
                                                                                                 if i == 1

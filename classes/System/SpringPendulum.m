@@ -1,9 +1,5 @@
-%% Class: SpringPendulum
-%
-% Spring pendulum with nonlinear elastic spring law.
-%
-
 classdef SpringPendulum < System
+    % Spring pendulum with nonlinear elastic spring law.
 
     properties
 
@@ -55,7 +51,6 @@ classdef SpringPendulum < System
         %% Potential functions
 
         function V_ext = external_potential(self, q)
-            % External potential
 
             m =  self.MASS;
             b =  self.EXT_ACC;

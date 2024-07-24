@@ -1,16 +1,14 @@
 classdef MP_noCons_Livens < Integrator
-
-    %% Gen-Alpha-typed-Integration scheme for standard constrained DAE
+    % Midpoint-Integration scheme for standard constrained DAE
     %
     % - based only on constraint on position level
     %
-    % - independent momenta variables (Hamilton Potryagin approach)
+    % - independent momenta variables (Livens approach)
     %
     % - not derived from variational principle but simply evaluates RHS at
     %   t_{n+1/2}
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
+
 
     methods
 
@@ -35,6 +33,12 @@ classdef MP_noCons_Livens < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             

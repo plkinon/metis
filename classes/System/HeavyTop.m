@@ -1,20 +1,13 @@
-%% Class: Gyroscopic Top with steady precession ('heavy top')
-%
+classdef HeavyTop < System
 % A rigid gyroscopic top. Makes use of director formulation, e.g. described
 % in [1,2]. Internal constraints plus a constraint which fixes the top to
 % the floor. Subject to initial velocities and external acceleration.
 %
 % References:
-% [1]: Betsch, P. and Steinmann, P. Constrained integration of rigid body dynamics.
-%      In: Computer Methods in Applied Mechanics and Engineering, 191(3-5): 467–488,
-%      2001. doi: 10.1016/S0045-7825(01)00283-3.
 %
-% [2]: Krenk, S. and Nielsen, M. B. Conservative rigid body dynamics by convected
-%      base vectors with implicit constraints. In: Computer Methods in Applied Mechanics
-%      and Engineering, 269: 437–453, 2014. doi: 10.1016/j.cma.2013.10.028.
-
-classdef HeavyTop < System
-
+% [1]: Betsch, P. and Steinmann, P. Constrained integration of rigid body dynamics. In: Computer Methods in Applied Mechanics and Engineering, 191(3-5): 467–488, 2001. doi: 10.1016/S0045-7825(01)00283-3.
+%
+% [2]: Krenk, S. and Nielsen, M. B. Conservative rigid body dynamics by convected base vectors with implicit constraints. In: Computer Methods in Applied Mechanics and Engineering, 269: 437–453, 2014. doi: 10.1016/j.cma.2013.10.028.
     %%
     methods
 
@@ -81,7 +74,7 @@ classdef HeavyTop < System
 
 
         function V_ext = external_potential(self, q)
-            % given by external acceleration acting on center of mass
+
             V_ext = -self.MASS * self.EXT_ACC(1:3)' * q(1:3);
 
         end
@@ -112,7 +105,6 @@ classdef HeavyTop < System
 
         function g = constraint(self, q)
 
-            % Constraint on position level
             phi = q(1:self.DIM);
             L = self.GEOM(4);
             d1 = q(self.DIM+1:2*self.DIM);
@@ -131,7 +123,6 @@ classdef HeavyTop < System
 
         function Dg = constraint_gradient(self, q)
 
-            % Gradient of constraint w.r.t q
             d1 = q(self.DIM+1:2*self.DIM);
             d2 = q(2*self.DIM+1:3*self.DIM);
             d3 = q(3*self.DIM+1:4*self.DIM);
@@ -143,7 +134,6 @@ classdef HeavyTop < System
 
         function D2g = constraint_hessian(~, ~, m)
 
-            % Hessian of g_1 w.r.t. q
             D2g = zeros(12, 12);
             if m == 1
                 D2g(4, 4) = 1;
@@ -340,7 +330,7 @@ classdef HeavyTop < System
                                                         %%%%%%%%%%%%%%%%%%%%%%%%%
 
                                                             function zeta = constraint_invariant(self, q, i)
-                                                                % Constraint on position level
+
                                                                 phi = q(1:self.DIM);
                                                                 d1 = q(self.DIM+1:2*self.DIM);
                                                                 d2 = q(2*self.DIM+1:3*self.DIM);

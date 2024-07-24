@@ -1,43 +1,35 @@
-%% Class: Double Four Bar Linkage
-%
-% A system consisting of 5 bars. Makes use of 2D director formulation, 
-% e.g. described in [1]. Internal constraints plus a constraint which 
+classdef DoubleFourBarLinkage < System
+% A system consisting of 5 bars. Makes use of 2D director formulation, e.g. described in [1]. Internal constraints plus a constraint which 
 % fixes the top to the floor. Subject to initial velocities and external 
 % acceleration. More details can be found in [2].
 %
 % References:
-% [1]: Betsch, P. and Uhlar, S.: Energy-momentum conserving integration of 
-%      multibody dynamics, In: Multibody Syst Dyn, 17: 243–289,
-%      2007. doi: 10.1007/s11044-007-9043-9.
 %
-% [2]: Ivo Roupa, Sérgio B. Gonçalves, Miguel Tavares da Silva: 
-%      Kinematics and dynamics of planar multibody systems with fully 
-%      Cartesian coordinates and a generic rigid body, 
-%      In: Mechanism and Machine Theory, 180: 105134, 2023. 
-%      doi: 10.1016/j.mechmachtheory.2022.105134.
+% [1]: Betsch, P. and Uhlar, S.: Energy-momentum conserving integration of 
+% multibody dynamics, In: Multibody Syst Dyn, 17: 243–289, 2007. doi: 10.1007/s11044-007-9043-9.
+%
+% [2]: Ivo Roupa, Sérgio B. Gonçalves, Miguel Tavares da Silva: Kinematics and dynamics of planar multibody systems with fully  Cartesian coordinates and a generic rigid body, In: Mechanism and Machine Theory, 180: 105134, 2023, doi: 10.1016/j.mechmachtheory.2022.105134 .
 
-
-classdef DoubleFourBarLinkage < System
-
-    %%
     methods
 
         function self = DoubleFourBarLinkage(CONFIG)
 
-            self.nBODIES = 5;
-            self.DIM = CONFIG.DIM;
-            self.MASS = CONFIG.MASS;
+            self.nBODIES = 5; % Number of bodies
+            
+            self.DIM = CONFIG.DIM; % Number of dimensions
+            
+            self.MASS = CONFIG.MASS; 
             % 3 coordinates of center of mass + 3*3 director coordinates
             self.nDOF = self.nBODIES*6;
             self.mMixedQuantities = 0;
             % ext. acceleration only acts on center of mass
             self.EXT_ACC = [CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1); CONFIG.EXT_ACC; zeros(4, 1)];
 
-            % Geometric parameter
-            l = 1; % 
+            
+            l = 1; % Geometric parameter
 
-            % Principle moments of inertia
-            J = 1/12*self.MASS*l^2;
+            
+            J = 1/12*self.MASS*l^2; % Principle moments of inertia
 
             % Entries of convected Euler tensor
             E1 = J/2;
@@ -86,7 +78,6 @@ classdef DoubleFourBarLinkage < System
         end
 
         function V_ext = external_potential(self, q)
-            % given by external acceleration acting on center of mass
             V_ext = 0;
             g = self.EXT_ACC(1:2);
 
@@ -166,8 +157,6 @@ classdef DoubleFourBarLinkage < System
 
         function Dg = constraint_gradient(self, q)
 
-            % Gradient of constraint w.r.t q
-
             d1  = NaN(self.nBODIES,2);
             phi = NaN(self.nBODIES,2);
             d2  = NaN(self.nBODIES,2);
@@ -203,7 +192,6 @@ classdef DoubleFourBarLinkage < System
 
         function D2g = constraint_hessian(~, ~, m)
 
-            % Hessian of g_k w.r.t. q vanish (only linear constraints)
 
             D2g = zeros(30, 30);
             if ismember(m, [1,4,7,10,13])
@@ -417,7 +405,8 @@ classdef DoubleFourBarLinkage < System
                                                         %%%%%%%%%%%%%%%%%%%%%%%%%
 
                                                             function zeta = constraint_invariant(self, q, i)
-                                                                % Constraint on position level
+                                                                
+                                                                
                                                                 phi = q(1:self.DIM);
                                                                 d1 = q(self.DIM+1:2*self.DIM);
                                                                 d2 = q(2*self.DIM+1:3*self.DIM);

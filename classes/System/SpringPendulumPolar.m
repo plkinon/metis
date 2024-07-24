@@ -1,9 +1,5 @@
-%% Class: PendulumMinCoord
-%
-% Spherical pendulum in minimal coordinates (two angles).
-%
-
 classdef SpringPendulumPolar < System
+    % Spherical pendulum in minimal coordinates (two angles).
 
     properties
 
@@ -108,7 +104,7 @@ classdef SpringPendulumPolar < System
         %% Potential functions
 
         function V_ext = external_potential(self, q)
-            % External potential
+
             theta = q(2);
             m =  self.MASS;
             g =  self.EXT_ACC;

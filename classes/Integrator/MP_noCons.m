@@ -1,14 +1,11 @@
 classdef MP_noCons < Integrator
-
-    %% Midpoint-Integration scheme for unconstrained dynamics
+    % Midpoint-Integration scheme for unconstrained dynamics (ODEs)
     %
     % - based on momenta and positions (Hamiltonian approach)
     %
     % - not derived from variational principle but simply evaluates RHS at
     %   t_{n+1/2}
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
 
     methods
 
@@ -33,6 +30,12 @@ classdef MP_noCons < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             h = self.DT;

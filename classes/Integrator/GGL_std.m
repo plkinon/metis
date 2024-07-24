@@ -1,6 +1,5 @@
 classdef GGL_std < Integrator
-
-    %% GGL integration scheme for constrained DAE
+    % GGL integration scheme for constrained DAE
     %
     % - based constraints on position and momentum level
     %
@@ -14,8 +13,6 @@ classdef GGL_std < Integrator
     %
     % - rather bad performance
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
 
     methods
 
@@ -40,6 +37,12 @@ classdef GGL_std < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             M = this_system.MASS_MAT;

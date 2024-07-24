@@ -1,6 +1,5 @@
 classdef EM_pH < Integrator
-
-    %% Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for PH mechanical system
     %
     % - not derived from variational principle
     %
@@ -9,8 +8,7 @@ classdef EM_pH < Integrator
     % - uses mixed variables (e.g. for strains) and has port-Hamiltonian
     %   structure
     %
-    % Author: Philipp Kinon
-    % Date  : 26.04.2023
+    % - more info: https://doi.org/10.1002/pamm.202300144
 
     methods
 
@@ -36,6 +34,12 @@ end
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             h = self.DT;

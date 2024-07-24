@@ -1,6 +1,5 @@
 classdef EML_noCons_cyclic < Integrator
-
-    %% Energy_Momentum-Integration scheme for standard constrained DAE
+    % Energy_Momentum-Integration scheme for ODE with cyclic coordinate
     %
     % - not derived from variational principle
     %
@@ -12,9 +11,7 @@ classdef EML_noCons_cyclic < Integrator
     %
     % - splits up for cyclic coordinates! import for conservation of
     %   corresponding conjugate momenta
-    %
-    % Author: Philipp Kinon
-    % Date  : 25.04.2023
+
 
     methods
 
@@ -39,6 +36,12 @@ end
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             h = self.DT;

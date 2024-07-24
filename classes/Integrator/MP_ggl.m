@@ -1,6 +1,5 @@
 classdef MP_ggl < Integrator
-
-    %% Gen-alpha-typed-Integration scheme for standard constrained DAE
+    % Midpoint-Integration scheme for standard constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)
@@ -12,8 +11,6 @@ classdef MP_ggl < Integrator
     %
     % - constraints are enforced at t_{n+1}
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
 
     methods
 
@@ -38,6 +35,12 @@ classdef MP_ggl < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_problem)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             M = this_problem.MASS_MAT;

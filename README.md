@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/philipplk/metis"><img alt="metis" src="logo.png" width="100%"></a>
+  <a href="https://github.com/philipplk/metis"><img alt="metis" src="docs/images/logo.png" width="100%"></a>
   <p align="center">Metis: Matlab-based simulation of dynamical systems.</p>
 </p>
 
@@ -109,7 +109,7 @@ Rigid Body Dynamics:
 -   GitHub - [philipplk](https://github.com/philipplk)
 -   Website - [Philipp L. Kinon, Karlsruhe Institute of Technology (KIT)](https://www.ifm.kit.edu/english/14_5490.php)
 -   ResearchGate - [Philipp L. Kinon](https://www.researchgate.net/profile/Philipp-Kinon)
--   LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/philipp-lothar-kinon-9092781b5/)
+-   LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/pl-kinon/)
 
 [Back To The Top](#description)
 
@@ -117,13 +117,12 @@ Rigid Body Dynamics:
 
 ## Acknowledgements
 
-Metis was initialised by Philipp L. Kinon during their master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. Subsequently, Philipp worked on the code continuously in the context of academic projects. The achieved results would not have been possible without the support by [Prof. Peter Betsch](https://www.ifm.kit.edu/english/14_4655.php).
+This project was initialized by Philipp L. Kinon during their master thesis at the [_Institute of Mechanics (IFM)_](https://www.ifm.kit.edu/english/index.php) at [_Karlsruhe Institute of Technology (KIT)_](https://www.kit.edu/english/), Germany. Subsequently, Philipp worked on the code continuously in the context of academic projects. The achieved results would not have been possible without the support and supervision by [Prof. Peter Betsch](https://www.ifm.kit.edu/english/14_4655.php) and the other colleagues from the institute.
 
 **Coding support:**
 
-[Julian K. Bauer](https://scholar.google.de/citations?user=-qdVC1gAAAAJ&hl=en&oi=ao)
-(GitHub: [JulianKarlBauer](https://github.com/JulianKarlBauer))
-
+- Julian Karl Bauer ([Github](https://github.com/JulianKarlBauer), [Google Scholar](https://scholar.google.de/citations?user=-qdVC1gAAAAJ&hl=en&oi=ao))
+- José Luis Muñoz Reyes ([GitHub](https://github.com/JLMR29))
 * * *
 
 [Back To The Top](#description)

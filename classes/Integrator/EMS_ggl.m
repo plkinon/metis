@@ -1,6 +1,5 @@
 classdef EMS_ggl < Integrator
-
-    %% Energy_Momentum-Integration scheme for constrained DAE with GGL stabilisation
+    % Energy_Momentum-Integration scheme for constrained DAE with GGL principle
     %
     % - based only on constraints on position and velocity level
     %
@@ -14,8 +13,8 @@ classdef EMS_ggl < Integrator
     % - uses standard gradient for ext. potential and discrete gradient for
     %   internal potential and constraints
     %
-    % Author: Philipp Kinon
-    % Date  : 20.12.2020
+    % - more info: https://doi.org/10.1007/s11071-023-08522-7
+
 
     methods
 
@@ -40,6 +39,12 @@ classdef EMS_ggl < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             M = this_system.MASS_MAT;

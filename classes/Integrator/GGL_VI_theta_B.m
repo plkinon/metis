@@ -1,6 +1,5 @@
 classdef GGL_VI_theta_B < Integrator
-
-    %% Runge-Kutta typed scheme for GGL-like constrained DAE
+    % Runge-Kutta typed scheme for GGL-like constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)
@@ -9,13 +8,9 @@ classdef GGL_VI_theta_B < Integrator
     %
     % - derived from variational principle
     %
-    % - from symplectic-theta-framework but equivalent to GGL-VI-RK from P.B.
-    %   notes
-    % - postprocessing with T(p) yields large oscillations, with T(v) gives
-    %   error in 1st timestep, since v0 is unknown for given p0
+    % - from symplectic-theta-framework 
     %
-    % Author: Philipp Kinon
-    % Date  : 28.01.2021
+    % - more info: https://doi.org/10.1007/s11071-023-08522-7
 
     methods
 
@@ -45,6 +40,12 @@ classdef GGL_VI_theta_B < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             M = this_system.MASS_MAT;

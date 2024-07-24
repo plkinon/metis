@@ -1,14 +1,11 @@
 classdef Rattle < Integrator
-
-    %% Variational integration scheme for GGL-like constrained DAE
+    % Variational integration scheme for GGL-like constrained DAE
     %
     % - based on constraint on position and velocity level
     %   (GGL-stabilisation)
     %
     % - constraints are enforced at t_{n+1}
     %
-    % Author: Philipp Kinon
-    % Date  : 09.12.2020
 
     methods
 
@@ -33,6 +30,12 @@ classdef Rattle < Integrator
         end
 
         function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+            % Computes residual vector & tangent matrix
+            %
+            % :param zn1: state vector for next time step
+            % :param zn: state vector at current time step
+            % :param this_system: System object
+            % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
             M = this_system.MASS_MAT;
