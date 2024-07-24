@@ -10,14 +10,12 @@ See [license](LICENSE) and [acknowledgements](#acknowledgements).
 If you used this code (partially) in your project or found it somehow useful, please cite one or both of the following works:
 
 ```bibtex
-@article{kinon_ggl_2023,
-  author  = {Kinon, Philipp L. and Betsch, P. and Schneider, S.},
-  title   = {The {GGL} variational principle for constrained mechanical systems},
+@article{kinon_conserving_2024,
+  author  = {Kinon, Philipp L. and Betsch, P.},
+  title   = {Conserving integration of multibody systems with singular and non-constant mass matrix including quaternion-based rigid body dynamics},
   journal = {Multibody Syst. Dyn.},
-  volume  = {57},
-  pages   = {211--236},
-  year    = {2023},
-  doi     = {10.1007/s11044-023-09889-6}
+  year    = {2024},
+  doi     = {10.1007/s11044-024-10001-9}
 }
 
 @article{kinon_structure_2023,
@@ -27,6 +25,16 @@ If you used this code (partially) in your project or found it somehow useful, pl
   year    = {2023},
   doi     = {10.1007/s11071-023-08522-7},
   note    = {doi: 10.1007/s11071-023-08522-7}
+}
+
+@article{kinon_ggl_2023,
+  author  = {Kinon, Philipp L. and Betsch, P. and Schneider, S.},
+  title   = {The {GGL} variational principle for constrained mechanical systems},
+  journal = {Multibody Syst. Dyn.},
+  volume  = {57},
+  pages   = {211--236},
+  year    = {2023},
+  doi     = {10.1007/s11044-023-09889-6}
 }
 ```
 
