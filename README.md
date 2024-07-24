@@ -3,7 +3,7 @@
   <p align="center">Metis: Matlab-based simulation of dynamical systems.</p>
 </p>
 
-See [license](LICENSE) and [acknowledgements](#acknowledgements). 
+See [license](LICENSE) and [acknowledgements](#acknowledgements).
 
 ## Citation
 
@@ -38,7 +38,11 @@ If you used this code (partially) in your project or found it somehow useful, pl
 }
 ```
 
-* * *
+---
+
+## Documentation
+
+The full documentation can be found [here](https://metis-project.readthedocs.io/en/latest/). See [How to Start](#how-to-start) below.
 
 ## Description
 
@@ -51,22 +55,21 @@ The simulation is will be tracked by a log-file `./metis.log`.
 
 #### Prerequisites
 
--   [MATLAB](https://www.mathworks.com/products/matlab.html)
--   [matlab2tikz][urlmatlab2tikz] (optional)
-
+- [MATLAB](https://www.mathworks.com/products/matlab.html)
+- [matlab2tikz][urlmatlab2tikz] (optional)
 
 #### Theoretical Background
 
--   Initial Value Problems (IVP) of Constrained Dynamics leading to Differential-algebraic Equations (DAEs)
--   Numerical Integration (Direct Methods, Variational Integrators, Energy-Momentum Schemes)
--   Newton-Rhapson Method
--   Particle Systems
--   Rigid Body Dynamics
--   Multibody Dynamics
+- Initial Value Problems (IVP) of Constrained Dynamics leading to Differential-algebraic Equations (DAEs)
+- Numerical Integration (Direct Methods, Variational Integrators, Energy-Momentum Schemes)
+- Newton-Rhapson Method
+- Particle Systems
+- Rigid Body Dynamics
+- Multibody Dynamics
 
 [Back To The Top](#description)
 
-* * *
+---
 
 ## How To Start
 
@@ -74,30 +77,34 @@ The simulation is will be tracked by a log-file `./metis.log`.
 2.  Get [matlab2tikz][urlmatlab2tikz] (optional)
 3.  Open the MATLAB editor or run it with the shell script [metis.sh](metis.sh)
 4.  Open [start_metis_single_analysis.m](start_metis_single_analysis.m)
-5. Adjust `<input_file_name>` corresponding to a file from [/input](/input), for more info look at [README_input](/input/README_input.md)
+5.  Adjust `<input_file_name>` corresponding to a file from [/input](/input), for more info look at [README_input](/input/README_input.md)
 
 ```matlab
 [simulation, system, integrator, solver] = Metis('input/<input_file_name>',1,1);
 ```
+
 6. Adjust the path to the matlab2tikz directory in the chosen input-file
-7.  Execute [start_metis_single_analysis.m](start_metis_single_analysis.m) for a first simulation
-8.  Edit or change input file or create a new one in [/input](/input)
-9.  For error analyses run [start_metis_error_analysis.m](start_metis_error_analysis.m) with corresponding input-file
-10.  Have fun!
+7. Execute [start_metis_single_analysis.m](start_metis_single_analysis.m) for a first simulation
+8. Edit or change input file or create a new one in [/input](/input)
+9. For error analyses run [start_metis_error_analysis.m](start_metis_error_analysis.m) with corresponding input-file
+10. Have fun!
 
 [Back To The Top](#description)
 
-* * *
+---
 
 ## References
 
 Hamiltonian Dynamics and Constraints:
-- [Leimkuhler, Reich: Simulating Hamiltonian Dynamics, 2005](https://doi.org/10.1016/S0167-2789(99)00054-8)
+
+- [Leimkuhler, Reich: Simulating Hamiltonian Dynamics, 2005](<https://doi.org/10.1016/S0167-2789(99)00054-8>)
 
 Differential-Algebraic Equations:
+
 - [Kunkel, Mehrmann: Differential-algebraic equations: analysis and numerical solution, 2006](https://doi.org/10.4171/017)
 
 Numerical Integration:
+
 - [Hairer, Lubich, Wanner: Geometric numerical integration: structure-preserving algorithms for ordinary differential equations, 2006](https://doi.org/10.1007/3-540-30666-8)
 - [Lew, Mata: A Brief Introduction to Variational Integrators, 2016](https://doi.org/10.1007/978-3-319-31879-0_5)
 - [Marsden, West: Discrete mechanics and variational integrators, 2001](https://doi.org/10.1017/S096249290100006X)
@@ -105,23 +112,24 @@ Numerical Integration:
 - [Gonzalez: Time integration and discrete Hamiltonian systems, 1996](https://doi.org/10.1007/BF02440162)
 
 Rigid Body Dynamics:
-- [Betsch, Steinmann: Constrained integration of rigid body dynamics, 2001](https://doi.org/10.1016/S0045-7825(01)00283-3)
+
+- [Betsch, Steinmann: Constrained integration of rigid body dynamics, 2001](<https://doi.org/10.1016/S0045-7825(01)00283-3>)
 - [Betsch, Siebert: Rigid body dynamics in terms of quaternions: Hamiltonian formulation and conserving numerical integration, 2009](https://doi.org/10.1002/nme.2586)
 
 [Back To The Top](#description)
 
-* * *
+---
 
 ## Author Info
 
--   GitHub - [philipplk](https://github.com/philipplk)
--   Website - [Philipp L. Kinon, Karlsruhe Institute of Technology (KIT)](https://www.ifm.kit.edu/english/14_5490.php)
--   ResearchGate - [Philipp L. Kinon](https://www.researchgate.net/profile/Philipp-Kinon)
--   LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/pl-kinon/)
+- GitHub - [philipplk](https://github.com/philipplk)
+- Website - [Philipp L. Kinon, Karlsruhe Institute of Technology (KIT)](https://www.ifm.kit.edu/english/14_5490.php)
+- ResearchGate - [Philipp L. Kinon](https://www.researchgate.net/profile/Philipp-Kinon)
+- LinkedIn - [Philipp Kinon](https://www.linkedin.com/in/pl-kinon/)
 
 [Back To The Top](#description)
 
-* * *
+---
 
 ## Acknowledgements
 
@@ -131,7 +139,8 @@ This project was initialized by Philipp L. Kinon during their master thesis at t
 
 - Julian Karl Bauer ([Github](https://github.com/JulianKarlBauer), [Google Scholar](https://scholar.google.de/citations?user=-qdVC1gAAAAJ&hl=en&oi=ao))
 - José Luis Muñoz Reyes ([GitHub](https://github.com/JLMR29))
-* * *
+
+---
 
 [Back To The Top](#description)
 
