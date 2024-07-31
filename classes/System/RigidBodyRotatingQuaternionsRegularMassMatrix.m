@@ -114,7 +114,7 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
             J1 = inertia_tensor(1,1);
             J2 = inertia_tensor(2,2);
             J3 = inertia_tensor(3,3);
-            J0 = J1+J2*J3;
+            J0 = J1+J2+J3;
 
             extended_inertia_tensor = [J0, zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
@@ -145,7 +145,7 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
             J1 = inertia_tensor(1,1);
             J2 = inertia_tensor(2,2);
             J3 = inertia_tensor(3,3);
-            J0 = J1+J2*J3;
+            J0 = J1+J2+J3;
 
             extended_inertia_tensor = [J0, zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
@@ -394,7 +394,7 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
             J1 = inertia_tensor(1,1);
             J2 = inertia_tensor(2,2);
             J3 = inertia_tensor(3,3);
-            J0 = J1+J2*J3;
+            J0 = J1+J2+J3;
 
             extended_inertia_tensor = [J0, zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
@@ -424,7 +424,7 @@ classdef RigidBodyRotatingQuaternionsRegularMassMatrix < System
             J1 = inertia_tensor(1,1);
             J2 = inertia_tensor(2,2);
             J3 = inertia_tensor(3,3);
-            J0 = J1+J2*J3;
+            J0 = J1+J2+J3;
 
             extended_inertia_tensor = [J0, zeros(3,1)';
                                        zeros(1,3)', inertia_tensor];
