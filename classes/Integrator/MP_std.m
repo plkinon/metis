@@ -65,8 +65,13 @@ classdef MP_std < Integrator
             DV_n05 = this_system.internal_potential_gradient(q_n05) + this_system.external_potential_gradient(q_n05);
             G_n05 = this_system.constraint_gradient(q_n05);
             t_n05 = zeros(n);
-            Mn05 = this_system.get_mass_matrix(q_n05);
-            IMn05 =  Mn05 \ eye(size(Mn05));
+          
+            if ismethod(this_system,'get_inverse_mass_matrix')
+                IMn05 = this_system.get_inverse_mass_matrix(q_n05);
+            else
+                Mn05 = this_system.get_mass_matrix(q_n05);
+                IMn05 = eye(size(Mn05)) / Mn05;
+            end
             DT_q_n05 = this_system.kinetic_energy_gradient_from_momentum(q_n05, p_n05);
             
             
