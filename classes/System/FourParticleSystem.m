@@ -17,6 +17,8 @@ classdef FourParticleSystem < System
         K1
         K2
         p
+        eta
+        alpha
         
     end
 
@@ -44,6 +46,10 @@ classdef FourParticleSystem < System
             self.K1 = 50;
             self.K2 = 500;
 
+            %dissipation parameter (viscosity)
+            self.eta = 1;
+            self.alpha = 0.5;
+
             self.p = 2;
             self.nPotentialInvariants = 2;
             self.nConstraintInvariants = 2;
@@ -69,6 +75,19 @@ classdef FourParticleSystem < System
             Dq_T = zeros(size(q));
 
         end
+
+        function DISS_MAT = get_dissipation_matrix(self,q)
+
+            q2 = q(self.DIM+1:2*self.DIM);
+            q3 = q(2*self.DIM+1:3*self.DIM);
+            q_rel = q3-q2;
+            eta = self.eta * (1 +self.alpha * (q_rel')*q_rel);
+            DISS_MAT = eta * [zeros(3), zeros(3), zeros(3), zeros(3);
+                                   zeros(3), eye(3), -eye(3), zeros(3);
+                                   zeros(3), -eye(3), eye(3), zeros(3);
+                                   zeros(3), zeros(3), zeros(3), zeros(3)];
+        end
+
 
         %% Potential functions
 
