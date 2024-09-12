@@ -69,14 +69,16 @@ classdef Postprocess
             if this_simulation.INDI_VELO == true
                 
                 % set velocity vector directly
-                if strcmp(this_integrator.NAME,'Lagrange_top_ODE')
+                if strcmp(this_integrator.NAME,'Lagrange_top_ODE') || strcmp(this_integrator.NAME,'PHDAE-DG')
                     v = this_simulation.z(:, nDOF+1:2*nDOF);
                 else
                     v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
                 end
                 
-                if m > 0 && ~strcmp(this_integrator.NAME,'EML-null')
+                if m > 0 && ~strcmp(this_integrator.NAME,'EML-null') && ~strcmp(this_integrator.NAME,'PHDAE-DG')
                     lambda = this_simulation.z(:,3*nDOF+1:3*nDOF+m);
+                elseif strcmp(this_integrator.NAME,'PHDAE-DG')
+                    lambda = this_simulation.z(:,2*nDOF+1:2*nDOF+m);
                 else
                     lambda = NaN(NT,m);
                 end
@@ -125,6 +127,7 @@ classdef Postprocess
             diffE = zeros(NT-1, 1);
             diffL = zeros(NT-1, 3);
             diss_work = zeros(NT-1, 1);
+            diss_power = zeros(NT-1, 1);
             if DIM == 2
                 L = zeros(NT,1);
                 diffL = zeros(NT-1,1);
@@ -163,6 +166,7 @@ classdef Postprocess
                 H(j) = T(j) + V(j);
                 E(j) = p(j,:)*v(j,:)' - 1 / 2 * v(j, :) * M * v(j, :)' + V(j);
                 E_kin(j) = E(j) - V(j);
+                
                 D(j) = v(j, :) * this_system.DISS_MAT * v(j, :)';
                 F_ext = -this_system.external_potential_gradient(q(j, :)');
                 
@@ -189,6 +193,10 @@ classdef Postprocess
                     else
                         r = q(j,:);
                         r_dot_m = p(j,:);
+
+                        if strcmp(this_simulation.INTEGRATOR, 'PHDAE_DG')
+                            r_dot_m = M*v(j,:)';
+                        end
                         
                         for k=1:d
                             L(j,:) = L(j,:)+ cross(r((k - 1)*DIM+1:k*DIM), r_dot_m((k - 1)*DIM+1:k*DIM));
@@ -214,9 +222,17 @@ classdef Postprocess
                 diffE(j) = E(j+1) - E(j);
                 diffL(j, :) = L(j+1, :) - L(j, :);
                 diss_work(j+1) = diss_work(j)+D(j+1);
-                
+
+                if ismethod(this_system,'get_dissipation_matrix')
+                    qN05 = 0.5*(q(j, :)' + q(j+1, :)');
+                    vN05 = 0.5*(v(j, :)' + v(j+1, :)');
+                    DISS_MAT = this_system.get_dissipation_matrix(qN05);
+                    h = this_integrator.DT;
+                    diss_power(j) = h *vN05' * DISS_MAT * vN05;
+                end
+
                 if m > 0
-                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens') || strcmp(this_simulation.INTEGRATOR, 'EML_reduced') || strcmp(this_simulation.INTEGRATOR, 'EML_null')
+                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens') || strcmp(this_simulation.INTEGRATOR, 'EML_reduced') || strcmp(this_simulation.INTEGRATOR, 'EML_null') || strcmp(this_simulation.INTEGRATOR, 'PHDAE_DG')
                         
                         constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
                         
@@ -241,6 +257,7 @@ classdef Postprocess
             this_simulation.E_kin = E_kin;
             this_simulation.D = D;
             this_simulation.diss_work = diss_work;
+            this_simulation.diss_power = diss_power;
             this_simulation.L = L;
             this_simulation.Hdiff = diffH;
             this_simulation.Ediff = diffE;
@@ -395,6 +412,7 @@ classdef Postprocess
             T = this_simulation.T;
             t = this_simulation.t;
             L = this_simulation.L;
+            diss_power = this_simulation.diss_power;
             diffH = this_simulation.Hdiff;
             diffE = this_simulation.Ediff;
             diffL = this_simulation.Ldiff;
@@ -427,6 +445,18 @@ classdef Postprocess
                         ylim([Mmin - 0.1 * abs(Mmax-Mmin), Mmax + 0.1 * abs(Mmax-Mmin)]);
                         title(strcat(integrator_string, ': Energy'));
                         legend('$T$', '$V$', '$H$', 'interpreter', 'latex')
+                        xlabel('$t$', 'interpreter', 'latex')
+                        ylabel('$\mathrm{[J]}$', 'interpreter', 'latex')
+
+                    case 'energy_dissipation'
+
+                        plotline = plot(t(1:end-1), diffH, t(1:end-1), diss_power, t(1:end-1), diss_power+diffH);
+                        fig.Name = 'energy_dissipation';
+                        Mmin = min([min(diffH), min(diss_power)]);
+                        Mmax = max([max(diffH), max(diss_power)]);
+                        ylim([Mmin - 0.1 * abs(Mmax-Mmin), Mmax + 0.1 * abs(Mmax-Mmin)]);
+                        title(strcat(integrator_string, ': Energy Dissipation'));
+                        legend('$diffH$', '$diss_power$','$diffH+diss-power$', 'interpreter', 'latex')
                         xlabel('$t$', 'interpreter', 'latex')
                         ylabel('$\mathrm{[J]}$', 'interpreter', 'latex')
                         
