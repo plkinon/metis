@@ -63,6 +63,7 @@ classdef Metis
         Ediff
         Ldiff
         diss_work
+        diss_power
         constraint_position
         constraint_velocity
         constraint_forces
