@@ -14,11 +14,11 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'EMS_ggl';
+INTEGRATOR = 'PHDAE_DG';
 % Parameters of the method
-INT_PARA = [1, 0.5];
+INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.05;
+DT = 0.01;
 % starting time
 T_0 = 0;
 % end time
@@ -34,7 +34,7 @@ TOLERANCE = 1E-09;
 % Animation of trajectory [true/false]
 shouldAnimate = false;
 % List of desired quantities for plotting in postprocessing
-plot_quantities = {'energy', 'energy_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'};
+plot_quantities = {'energy','energy_dissipation', 'energy_difference', 'angular_momentum', 'angular_momentum_difference', 'constraint_position', 'constraint_velocity'};
 % Export of simulation results in a .mat-file [true/false]
 should_export = true;
 % Export of figures in .eps- and .tikz-files
