@@ -47,7 +47,7 @@ classdef FourParticleSystem < System
             self.K2 = 500;
 
             %dissipation parameter (viscosity)
-            self.eta = 1;
+            self.eta = 0;
             self.alpha = 0.5;
 
             self.p = 2;
