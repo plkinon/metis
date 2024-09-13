@@ -24,15 +24,14 @@ classdef PHDAE_DG < Integrator
             self.has_enhanced_constraint_force = false;
         end
         
-        function z0 = set_initial_condition(self, this_simulation, this_system)
+        function z0 = set_initial_condition(self, this_simulation, ~)
             q0 = this_simulation.Q_0;
-            M0 = this_system.get_mass_matrix(q0);
             v0 = this_simulation.V_0;
             z0 = [q0', v0', self.LM0'];
             
         end
         
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, time_n)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, ~)
             % Computes residual vector & tangent matrix
             %
             % :param zn1: state vector for next time step
@@ -51,7 +50,6 @@ classdef PHDAE_DG < Integrator
             vn1 = zn1(nDOF+1:2*nDOF);
             lambda_n1 = zn1(2*nDOF+1:2*nDOF+m);
             Vext_n1 = this_system.external_potential(qn1);
-            g_n1 = this_system.constraint(qn1);
             M = this_system.get_mass_matrix(qn1);
             
             %% Known quantities from last time-step
@@ -69,7 +67,7 @@ classdef PHDAE_DG < Integrator
             DG_g = zeros(m, nDOF);
             %K21_DG_g = zeros(nDOF, nDOF);
             g_invariants_difference_too_small = false;
-
+            
             if ismethod(this_system,'get_dissipation_matrix')
                 Dn05 = this_system.get_dissipation_matrix(q_n05);
             end
@@ -144,12 +142,12 @@ classdef PHDAE_DG < Integrator
             else
                 DG_Vext = DVext_n05;
             end
-
+            
             
             %% Residual vector
             resi = [qn1 - qn - h * v_n05;
-                    M*(vn1 - vn) + h * DG_Vext + h * DG_Vint + h * Dn05 * v_n05 + h * DG_g' * lambda_n1;
-                    DG_g*v_n05];
+                M*(vn1 - vn) + h * DG_Vext + h * DG_Vint + h * Dn05 * v_n05 + h * DG_g' * lambda_n1;
+                DG_g*v_n05];
             
             %% Tangent matrix
             tang = [];
