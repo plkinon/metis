@@ -45,7 +45,7 @@ classdef FourParticleSystem < System
             %parameters
             self.K1 = 50;
             self.K2 = 500;
-            self.eta = 0;
+            self.eta = 1;
             self.alpha = 0.5;
 
             self.p = 2;
@@ -122,7 +122,7 @@ classdef FourParticleSystem < System
             q4 = q(3*self.DIM+1:4*self.DIM);
             P = self.p;
 
-            DV_int = [self.K1 * P * (norm(q3-q1)^P - self.GEOM(3)^P) * norm(q3-q1)^(P - 2) * (q1 - q3); self.K2 * P * (norm(q4-q2)^P - self.GEOM(4)^P) * norm(q4-q2)^(P - 2) * (q2 - q4); self.K1 * P * (norm(q3-q1)^P - self.GEOM(3)^P) * norm(q3-q1)^(P - 2) * (q3 - q1); self.K2 * P * (norm(q4-q2)^P - self.GEOM(4)^P) * norm(q4-q2)^(P - 2) * (q4 - q2)];
+            DV_int = [1/2 * self.K1 * P * (norm(q3-q1)^P - self.GEOM(3)^P) * norm(q3-q1)^(P - 2) * (q1 - q3); 1/2 * self.K2 * P * (norm(q4-q2)^P - self.GEOM(4)^P) * norm(q4-q2)^(P - 2) * (q2 - q4); 1/2* self.K1 * P * (norm(q3-q1)^P - self.GEOM(3)^P) * norm(q3-q1)^(P - 2) * (q3 - q1); 1/2 *self.K2 * P * (norm(q4-q2)^P - self.GEOM(4)^P) * norm(q4-q2)^(P - 2) * (q4 - q2)];
 
         end
 

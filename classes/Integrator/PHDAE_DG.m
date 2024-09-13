@@ -120,7 +120,7 @@ classdef PHDAE_DG < Integrator
                 
                 % if invariants at n and n1 are equal use the midpoint
                 % evaluated gradient instead
-                if abs(pi_n1-pi_n) > 1e-09
+                if abs(pi_n1-pi_n) > 1e-10
                     % discrete gradient
                     DG_Vint = DG_Vint + (Vs_n1 - Vs_n) / (pi_n1 - pi_n) * DPiq_n05;
                 else
@@ -136,7 +136,7 @@ classdef PHDAE_DG < Integrator
             end
             
             %% Potential energy gradient
-            if abs((qn1-qn)'*(qn1-qn)) > 1e-9
+            if abs((qn1-qn)'*(qn1-qn)) > 1e-10
                 % discrete gradient of external potential energy
                 DG_Vext = DVext_n05 + ((Vext_n1 - Vext_n - DVext_n05'*(qn1 -qn)) / ((qn1-qn)'*(qn1-qn)) ) * (qn1-qn);
             else
