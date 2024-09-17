@@ -445,7 +445,7 @@ classdef FourParticleSystem < System
                                                                                                     elseif strcmp(this_simulation.CONV_QUANTITY,'p')
                                                                                                         analyzed_quantity = this_simulation.z(end, 7*self.DIM+1:8*self.DIM); %momentum of 4th particle
                                                                                                     elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
-                                                                                                        analyzed_quantity = this_simulation.z(end, 25:26); %both LM for configuration constraints
+                                                                                                        analyzed_quantity = this_simulation.z(end, 25); %both LM for configuration constraints
                                                                                                     else
                                                                                                         error('quantity not yet implemented for convergence analysis.')
                                                                                                     end
