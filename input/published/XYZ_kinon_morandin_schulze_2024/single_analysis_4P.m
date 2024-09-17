@@ -14,7 +14,7 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'PHDAE_DG';
+INTEGRATOR = 'PHDAE_DG'; %PHDAE_MP
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size

@@ -69,13 +69,13 @@ classdef Postprocess
             if this_simulation.INDI_VELO == true
                 
                 % set velocity vector directly
-                if strcmp(this_integrator.NAME,'Lagrange_top_ODE') || strcmp(this_integrator.NAME,'PHDAE-DG')
+                if strcmp(this_integrator.NAME,'Lagrange_top_ODE') || strcmp(this_integrator.NAME,'PHDAE-DG') || strcmp(this_integrator.NAME,'PHDAE-MP')
                     v = this_simulation.z(:, nDOF+1:2*nDOF);
                 else
                     v = this_simulation.z(:, 2*nDOF+1:3*nDOF);
                 end
                 
-                if m > 0 && ~strcmp(this_integrator.NAME,'EML-null') && ~strcmp(this_integrator.NAME,'PHDAE-DG')
+                if m > 0 && ~strcmp(this_integrator.NAME,'EML-null') && ~strcmp(this_integrator.NAME,'PHDAE-DG') && ~strcmp(this_integrator.NAME,'PHDAE-MP')
                     lambda = this_simulation.z(:,3*nDOF+1:3*nDOF+m);
                 elseif strcmp(this_integrator.NAME,'PHDAE-DG')
                     lambda = this_simulation.z(:,2*nDOF+1:2*nDOF+m);
@@ -194,7 +194,7 @@ classdef Postprocess
                         r = q(j,:);
                         r_dot_m = p(j,:);
 
-                        if strcmp(this_simulation.INTEGRATOR, 'PHDAE_DG')
+                        if strcmp(this_simulation.INTEGRATOR, 'PHDAE_DG') || strcmp(this_simulation.INTEGRATOR, 'PHDAE_MP')
                             r_dot_m = M*v(j,:)';
                         end
                         
@@ -232,7 +232,7 @@ classdef Postprocess
                 end
 
                 if m > 0
-                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens') || strcmp(this_simulation.INTEGRATOR, 'EML_reduced') || strcmp(this_simulation.INTEGRATOR, 'EML_null') || strcmp(this_simulation.INTEGRATOR, 'PHDAE_DG')
+                    if strcmp(this_simulation.INTEGRATOR, 'EMS_std') || strcmp(this_simulation.INTEGRATOR, 'GGL_std') || strcmp(this_simulation.INTEGRATOR, 'MP_ggl') || strcmp(this_simulation.INTEGRATOR, 'MP_std') || strcmp(this_simulation.INTEGRATOR, 'CSE_B') || strcmp(this_simulation.INTEGRATOR, 'EML') || strcmp(this_simulation.INTEGRATOR, 'MP_Livens') || strcmp(this_simulation.INTEGRATOR, 'EML_reduced') || strcmp(this_simulation.INTEGRATOR, 'EML_null') || strcmp(this_simulation.INTEGRATOR, 'PHDAE_DG') || strcmp(this_simulation.INTEGRATOR, 'PHDAE_MP')
                         
                         constraint_forces(j,:) = (this_system.constraint_gradient(q(j, :)')' * lambda(j+1, :)')';
                         
