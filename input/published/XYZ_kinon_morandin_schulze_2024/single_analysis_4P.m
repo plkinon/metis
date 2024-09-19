@@ -14,7 +14,7 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'PHDAE_DG'; %PHDAE_MP
+INTEGRATOR = 'PHDAE_MP'; %PHDAE_MP
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
@@ -28,7 +28,7 @@ T_END = 10;
 % maximum number of iterations of Newton Rhapson method
 MAX_ITERATIONS = 40;
 % tolerance of Newton Rhapson method
-TOLERANCE = 1E-09;
+TOLERANCE = 1E-10;
 
 %% Postprocessing
 % Animation of trajectory [true/false]
