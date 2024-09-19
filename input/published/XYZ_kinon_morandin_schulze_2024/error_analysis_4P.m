@@ -14,9 +14,9 @@ DIM = 3;
 
 %% Integrator
 % Name of routines in /classes/Integrator to be analyzed
-INTEGRATOR = {'PHDAE_DG'};
+INTEGRATOR = {'PHDAE_MP','PHDAE_DG'};
 % corresponding parameters
-INT_PARA = [NaN, NaN];
+INT_PARA = [NaN, NaN; NaN, NaN];
 % time step sizes to be analyzed
 DT = [0.01, 0.005, 0.002, 0.001, 0.0001];
 % quantity which is to be analyzed
