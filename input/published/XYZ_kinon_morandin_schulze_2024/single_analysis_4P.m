@@ -14,15 +14,15 @@ DIM = 3;
 
 %% Integrator
 % Name of routine in /classes/Integrator
-INTEGRATOR = 'PHDAE_MP'; %PHDAE_MP
+INTEGRATOR = 'PHDAE_DG'; %PHDAE_MP
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 0.01;
+DT = 1;
 % starting time
 T_0 = 0;
 % end time
-T_END = 10;
+T_END = 20;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
