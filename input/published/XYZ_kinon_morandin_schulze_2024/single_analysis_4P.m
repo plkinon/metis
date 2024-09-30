@@ -18,11 +18,11 @@ INTEGRATOR = 'PHDAE_DG'; %PHDAE_MP
 % Parameters of the method
 INT_PARA = [NaN, NaN];
 % time step size
-DT = 1;
+DT = 0.01;
 % starting time
 T_0 = 0;
 % end time
-T_END = 20;
+T_END = 10;
 
 %% Solver Method
 % maximum number of iterations of Newton Rhapson method
