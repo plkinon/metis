@@ -20,7 +20,7 @@ INT_PARA = [NaN, NaN; NaN, NaN];
 % time step sizes to be analyzed
 DT = [0.01, 0.005, 0.002, 0.001, 0.0001];
 % quantity which is to be analyzed
-CONV_QUANTITY = 'q';
+CONV_QUANTITY = 'lambda';
 % starting time
 T_0 = 0;
 % end time
