@@ -5,10 +5,10 @@ classdef GGL_VI_mod_visc < Integrator
     %
     % - independent momenta variables (Livens approach)
     %
-    % - derived from variational principle 
+    % - derived from variational principle
     %
     % - symplectic
-    %   
+    %
     % - constraints are enforced at t_{n+1}
     %
     % - takes into account non-conservative viscous forces
@@ -37,7 +37,7 @@ classdef GGL_VI_mod_visc < Integrator
 
         end
 
-        function z_rearranged = rearrange_unknowns(~, this_simulation, this_system)
+        function z_rearranged = rearrange_unknowns(~, this_simulation, this_system, ~)
 
             % v_n is an unknown of this scheme, has to be shifted backwards
             % by 1 after computation
@@ -97,18 +97,18 @@ classdef GGL_VI_mod_visc < Integrator
             end
 
             %% Residual vector
-            resi = [qn1 - qn - h * vn - h * IM * G_bar' * gamman1; 
-                    pn1 - pn + h * DV_n + h * G_n' * lambdan + h * t_n_bar * IM * pn1 - h * F_nc_n; 
-                    M * vn - pn1 - h * t_n_bar * IM * pn1; 
-                    g_n1; 
-                    G_bar * IM * pn1];
+            resi = [qn1 - qn - h * vn - h * IM * G_bar' * gamman1;
+                pn1 - pn + h * DV_n + h * G_n' * lambdan + h * t_n_bar * IM * pn1 - h * F_nc_n;
+                M * vn - pn1 - h * t_n_bar * IM * pn1;
+                g_n1;
+                G_bar * IM * pn1];
 
             %% Tangent matrix
-            tang = [[eye(n), zeros(n), -h * eye(n) - h^2 * IM * t_n_bar, zeros(n, m), -h * IM * G_bar']; 
-                    [zeros(n), eye(n) + h * t_n_bar * IM, -h*DF_nc_dv , h * G_n', h * T_bar']; 
-                    [zeros(n), -eye(n) - h * t_n_bar * IM, M, zeros(n, m), -h * T_bar']; 
-                    [G_n1, zeros(n, m)', zeros(n, m)', zeros(m), zeros(m)]; 
-                    [zeros(n, m)', G_bar * IM, T_bar * h, zeros(m), zeros(m)]];
+            tang = [[eye(n), zeros(n), -h * eye(n) - h^2 * IM * t_n_bar, zeros(n, m), -h * IM * G_bar'];
+                [zeros(n), eye(n) + h * t_n_bar * IM, -h*DF_nc_dv , h * G_n', h * T_bar'];
+                [zeros(n), -eye(n) - h * t_n_bar * IM, M, zeros(n, m), -h * T_bar'];
+                [G_n1, zeros(n, m)', zeros(n, m)', zeros(m), zeros(m)];
+                [zeros(n, m)', G_bar * IM, T_bar * h, zeros(m), zeros(m)]];
 
 
         end

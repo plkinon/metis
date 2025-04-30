@@ -40,7 +40,7 @@ classdef EMS_std_cyclic < Integrator
 
         end
 
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, ~)
 
             %% Abbreviations
             h = self.DT;
@@ -85,28 +85,28 @@ classdef EMS_std_cyclic < Integrator
             D_1_T_xn05_pn = this_system.kinetic_energy_gradient_from_momentum_cyclic(x_n05, pn);
             D_1_T_xn05_pn1 = this_system.kinetic_energy_gradient_from_momentum_cyclic(x_n05, pn1);
             if abs((xn1-xn)'*(xn1-xn)) > 1e-9
-                % discrete gradient of kinetic energy w.r.t position 
-                DG_1_T_x_pn = D_1_T_xn05_pn + ((T_xn1pn - T_xnpn - D_1_T_xn05_pn'*(xn1 -xn)) / ((xn1-xn)'*(xn1-xn))) * (xn1-xn); 
-                DG_1_T_x_pn1 = D_1_T_xn05_pn1 + ((T_xn1pn1 - T_xnpn1 - D_1_T_xn05_pn1'*(xn1 -xn)) / ((xn1-xn)'*(xn1-xn))) * (xn1-xn); 
+                % discrete gradient of kinetic energy w.r.t position
+                DG_1_T_x_pn = D_1_T_xn05_pn + ((T_xn1pn - T_xnpn - D_1_T_xn05_pn'*(xn1 -xn)) / ((xn1-xn)'*(xn1-xn))) * (xn1-xn);
+                DG_1_T_x_pn1 = D_1_T_xn05_pn1 + ((T_xn1pn1 - T_xnpn1 - D_1_T_xn05_pn1'*(xn1 -xn)) / ((xn1-xn)'*(xn1-xn))) * (xn1-xn);
                 DG_T_x = 0.5*(DG_1_T_x_pn + DG_1_T_x_pn1);
 
-            DG_Vext = DVext_n05 + ((Vext_n1 - Vext_n - DVext_n05'*(xn1 -xn)) / ((xn1-xn)'*(xn1-xn))) * (xn1-xn);
+                DG_Vext = DVext_n05 + ((Vext_n1 - Vext_n - DVext_n05'*(xn1 -xn)) / ((xn1-xn)'*(xn1-xn))) * (xn1-xn);
 
             else
                 % use MP evaluation if qn1 is approx. qn
                 DG_T_x = D_1_T_n05;
                 DG_Vext = DVext_n05;
             end
-            
-            % discrete gradient of kinetic energy w.r.t velocity 
+
+            % discrete gradient of kinetic energy w.r.t velocity
             DG_T_p = 0.5*(IMn + IMn1)*p_n05;
             DG_T_x = [DG_T_x;0;0];
             DG_Vext = [DG_Vext;0;0];
 
 
             %% Residual vector
-            resi = [qn1 - qn - h * DG_T_p; 
-                    pn1 - pn + h * DG_T_x + h * DG_Vext];
+            resi = [qn1 - qn - h * DG_T_p;
+                pn1 - pn + h * DG_T_x + h * DG_Vext];
 
             %% Tangent matrix
             tang = [];

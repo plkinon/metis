@@ -32,7 +32,7 @@ classdef MP_noCons_Livens < Integrator
 
         end
 
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, ~)
             % Computes residual vector & tangent matrix
             %
             % :param zn1: state vector for next time step
@@ -41,7 +41,7 @@ classdef MP_noCons_Livens < Integrator
             % :returns: [ResidualVector, TangentMatrix] for the Newton's method to update zn1
 
             %% Abbreviations
-            
+
             h = self.DT;
             n = this_system.nDOF;
 
@@ -64,12 +64,12 @@ classdef MP_noCons_Livens < Integrator
             D2V_n05 = this_system.internal_potential_hessian(q_n05) + this_system.external_potential_hessian(q_n05);
             Dq_T_n05 = this_system.kinetic_energy_gradient_from_velocity(q_n05, v_n05);
             %% Residual vector
-            resi = [qn1 - qn - h * v_n05; 
-                    pn1 - pn - h * Dq_T_n05 + h * DV_n05;
-                    p_n05 - Mn05*v_n05];
+            resi = [qn1 - qn - h * v_n05;
+                pn1 - pn - h * Dq_T_n05 + h * DV_n05;
+                p_n05 - Mn05*v_n05];
 
             %% Tangent matrix
-            %tang = [eye(n), -h * 0.5 * IMn05; 
+            %tang = [eye(n), -h * 0.5 * IMn05;
             %       h * 0.5 * D2V_n05 , eye(n)];
             tang = [];
         end
