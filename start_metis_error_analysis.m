@@ -37,7 +37,7 @@ for i = 1:n_DT
     for j = 1:n_INT
 
         % Metis creates objects for current timestepsize and integrator
-        [current_simulation, ~, current_integrator, ~] = Metis('input/published/XYZ_kinon_morandin_schulze_2024/error_analysis_4P', i, j);
+        [current_simulation, ~, current_integrator, ~] = Metis('input/published/MUBO_kinon_betsch_2024/quat_heavytop/error_analysis_HeavyTopQuat', i, j);
 
         %% METIS solver
         % Solve system with solver and current integrator
