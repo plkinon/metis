@@ -32,7 +32,7 @@ classdef CSE_B < Integrator
 
         end
 
-        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system)
+        function [resi, tang] = compute_resi_tang(self, zn1, zn, this_system, ~)
             % Computes residual vector & tangent matrix
             %
             % :param zn1: state vector for next time step
