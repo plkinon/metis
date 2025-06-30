@@ -161,6 +161,11 @@ classdef Postprocess
                 if this_integrator.compute_potential_from_mixed_quantity
                     V(j) = this_system.internal_potential_from_mixed_quantity(alpha(j, :)') + this_system.external_potential(q(j, :)');
                     alpha_from_q(j) = (q(j, :)*q(j, :)'-1)/2;
+                    if strcmpi(this_integrator.NAME,"LinearImplicit-ph")
+                        q_bar = q(j, :) + v(j,:)*this_simulation.DT/2;
+                        alpha_from_q(j) = this_system.mixed_quantity(q(j, :)');
+                        V(j) = this_system.internal_potential_from_mixed_quantity(alpha(j, :)') + this_system.external_potential(q_bar');
+                    end
                 end
                 
                 H(j) = T(j) + V(j);
