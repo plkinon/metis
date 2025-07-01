@@ -247,9 +247,11 @@ classdef SpringPendulumLinear < System
      function analyzed_quantity = hconvergence_set(~, this_simulation)
 
         if strcmp(this_simulation.CONV_QUANTITY,'q')
-            analyzed_quantity = this_simulation.z(end, 2); %position of 4th particle
+            analyzed_quantity = this_simulation.z(end, 2); 
         elseif strcmp(this_simulation.CONV_QUANTITY,'p')
-            analyzed_quantity = this_simulation.z(end, 4); %momentum of 4th particle
+            analyzed_quantity = this_simulation.z(end, 4); 
+        elseif strcmp(this_simulation.CONV_QUANTITY,'v')
+            analyzed_quantity = this_simulation.z(end, 7:9); %momentum of 4th particle
         elseif strcmp(this_simulation.CONV_QUANTITY,'lambda')
             error('not available.')
         else
@@ -259,10 +261,10 @@ classdef SpringPendulumLinear < System
     end
 
 
-    function reference_solution = hconvergence_reference(~, ~, analyzed_quantity)
+    function [reference_solution, this_simulation] = hconvergence_reference(~, this_simulation, analyzed_quantity)
 
         reference_solution = analyzed_quantity(:, end, end); %position
-      
+        this_simulation.matrix_error_analysis = false;
     end
 
         %% Animation method
