@@ -25,7 +25,7 @@ classdef SpringPendulumLinear < System
 
             self.nPotentialInvariants = 1;
 
-            self.DISS_MAT = zeros(3,3);
+            self.DISS_MAT = 1*eye(3,3);
             self.isCyclicCoordinate = [false;false;false];
 
         end
@@ -138,6 +138,12 @@ classdef SpringPendulumLinear < System
         function D2g = constraint_hessian(~, ~, ~)
 
              D2g=NaN;
+
+        end
+
+        function D = get_dissipation_matrix(self,q)
+            
+            D = self.DISS_MAT;
 
         end
 
