@@ -68,10 +68,11 @@ end
             DVint_n05 = this_system.internal_potential_gradient_from_mixed_quantity(C_n05);
             D_C_q_n_bar = this_system.mixed_quantity_gradient(q_n_bar);
             D2Vint_n05 = this_system.internal_potential_hessian_from_mixed_quantity(C_n05);
+            D_diss_bar = this_system.get_dissipation_matrix(q_n_bar);
 
             %% Residual vector
             resi = [qn1 - qn - h * vn; 
-                    M*vn1 - M*vn + h * DVext_n05 + h * D_C_q_n_bar * DVint_n05;
+                    M*vn1 - M*vn + h * DVext_n05 + h * D_C_q_n_bar * DVint_n05 + h*D_diss_bar*v_n05;
                     Cn1 - Cn - h *  D_C_q_n_bar' * v_n05;
                     pn1 - M*vn1];
             
@@ -80,7 +81,7 @@ end
 
             %% Tangent matrix
             tang = [eye(lenq,lenq), zeros(lenq,lenq), zeros(lenq,lenq), zeros(lenq,lenC); %check
-                    zeros(lenq,lenq), zeros(lenq,lenq), M, h * D_C_q_n_bar*D2Vint_n05*1/2; %check
+                    zeros(lenq,lenq), zeros(lenq,lenq), M+h/2*D_diss_bar, h * D_C_q_n_bar*D2Vint_n05*1/2; %check
                     zeros(lenC,lenq), zeros(lenC,lenq), -h*D_C_q_n_bar'*1/2, eye(lenC,lenC);
                     zeros(lenq,lenq), eye(lenq,lenq),   -M, zeros(lenq, lenC)          ];
         end

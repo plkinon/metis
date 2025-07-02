@@ -65,14 +65,14 @@ end
 
             DVext_n05 = this_system.external_potential_gradient(q_n05);
             DVint_n05 = this_system.internal_potential_gradient_from_mixed_quantity(C_n05);
-
+            D_diss_n05 = this_system.get_dissipation_matrix(q_n05);
 
             D_C_q_n05 = this_system.mixed_quantity_gradient(q_n05);
 
 
             %% Residual vector
             resi = [qn1 - qn - h * v_n05; 
-                    M*vn1 - M*vn + h * DVext_n05 + h * D_C_q_n05 * DVint_n05;
+                    M*vn1 - M*vn + h * DVext_n05 + h * D_C_q_n05 * DVint_n05 + h * D_diss_n05 * v_n05;
                     Cn1 - Cn - h *  D_C_q_n05' * v_n05;
                     pn1 - M*vn1];
 
