@@ -77,7 +77,7 @@ classdef SpringPendulumLinear < System
             length0 = self.GEOM(1);
             k = self.GEOM(2);
 
-            epsilon = 1/(length0^2)*(q'*q - length0^2);
+            epsilon = 1/(2*length0^2)*(q'*q - length0^2);
             V_int = 1/2*k*epsilon^2;
 
         end
@@ -94,7 +94,7 @@ classdef SpringPendulumLinear < System
             length0 = self.GEOM(1);
             k = self.GEOM(2);
 
-            epsilon = 1/(length0^2)*(q'*q - length0^2);
+            epsilon = 1/(2*length0^2)*(q'*q - length0^2);
 
             DV_int = k*epsilon ;
         end
@@ -112,7 +112,7 @@ classdef SpringPendulumLinear < System
         
         function epsilon_q = mixed_quantity(self,q)
             length0 = self.GEOM(1);
-            epsilon_q = 1/(length0^2)*(q'*q - length0^2);
+            epsilon_q = 1/(2*length0^2)*(q'*q - length0^2);
         end
 
         function D_epsilon_q = mixed_quantity_gradient(self,q)
